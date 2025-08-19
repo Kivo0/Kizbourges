@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KizBourges — Association de danse</title>
+  <meta name="description" content="Site officiel de KizBourges : cours, événements, covoiturage et adhésion à Bourges.">
+  <meta property="og:title" content="KizBourges — Association de danse">
+  <meta property="og:description" content="Cours, soirées & covoiturage à Bourges. Rejoins la communauté Kizomba !">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="images/cover.jpg">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="/" aria-label="KizBourges">
+        <img src="images/logo.png" alt="Logo KizBourges" class="logo-img">
+      </a>
+      <button id="menu" aria-label="Ouvrir le menu">☰</button>
+      <nav id="nav" class="nav" aria-label="Navigation principale">
+        <a href="#asso">L’asso</a>
+        <a href="#cours">Cours & tarifs</a>
+        <a href="#events">Événements</a>
+        <a href="#covoit">Covoiturage</a>
+        <a href="#adhesion">Adhésion</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero (background image set in styles.css -> images/cover.jpg) -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <h1>Bienvenue chez KizBourges</h1>
+      <p>Kizomba, urban kiz & good vibes à Bourges ✨</p>
+      <div class="cta-row">
+        <a class="btn" href="#adhesion">Adhérer</a>
+        <a class="btn alt" href="#events">Prochaines soirées</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <!-- Association -->
+    <section id="asso" class="section">
+      <div class="container">
+        <h2>L’association</h2>
+        <p>KizBourges promeut la Kizomba à Bourges : cours hebdomadaires, stages et soirées sociales ouvertes à tous niveaux.</p>
+      </div>
+    </section>
+
+    <!-- Cours & tarifs -->
+    <section id="cours" class="section alt">
+      <div class="container">
+        <h2>Cours & tarifs</h2>
+        <ul class="cards" role="list">
+          <li class="card">
+            <h3>Débutants</h3>
+            <p><strong>Quand :</strong> Lundi 19h–20h</p>
+            <p><strong>Où :</strong> Salle Exemple, Bourges</p>
+            <p><strong>Tarif :</strong> 10€ / cours ou 120€ / année</p>
+          </li>
+          <li class="card">
+            <h3>Intermédiaires</h3>
+            <p><strong>Quand :</strong> Lundi 20h–21h</p>
+            <p><strong>Où :</strong> Salle Exemple, Bourges</p>
+            <p><strong>Tarif :</strong> 10€ / cours ou 120€ / année</p>
+          </li>
+        </ul>
+        <p class="note">✏️ Mets à jour horaires, salle et tarifs si besoin.</p>
+      </div>
+    </section>
+
+    <!-- Événements -->
+    <section id="events" class="section">
+      <div class="container">
+        <h2>Événements à venir</h2>
+        <ul class="cards" role="list">
+          <li class="card">
+            <img src="images/event-1.jpg" alt="Affiche d’une soirée KizBourges" class="card-img">
+            <h3>Soirée KizBourges</h3>
+            <p><strong>Date :</strong> JJ mois AAAA — <strong>Lieu :</strong> Bourges</p>
+            <a class="btn" href="https://www.facebook.com/KizBourges" target="_blank" rel="noopener">Événement Facebook</a>
+          </li>
+          <!-- Duplique ce bloc pour d'autres affiches : images/event-2.jpg, event-3.jpg, etc. -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- Covoiturage -->
+    <section id="covoit" class="section alt">
+      <div class="container">
+        <h2>Covoiturage</h2>
+        <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
+        <p><a class="btn" href="https://forms.gle/PLACEHOLDER" target="_blank" rel="noopener">Formulaire covoiturage</a></p>
+        <p class="hint">Astuce : crée un Google Form (départ, destination, date/heure, nb places, contact) et colle le lien ici.</p>
+      </div>
+    </section>
+
+    <!-- Adhésion -->
+    <section id="adhesion" class="section">
+      <div class="container">
+        <h2>Adhésion</h2>
+        <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
+        <p><a class="btn" href="https://helloasso.com/PLACEHOLDER" target="_blank" rel="noopener">Adhérer en ligne</a></p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section alt">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>Email : <a href="mailto:kizbourges@example.org">kizbourges@example.org</a></p>
+        <p>Instagram : <a href="https://instagram.com/PLACEHOLDER" target="_blank" rel="noopener">@kizbourges</a></p>
+        <p>Facebook : <a href="https://www.facebook.com/KizBourges" target="_blank" rel="noopener">KizBourges</a></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      © <span id="year"></span> KizBourges — Tous droits réservés.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
