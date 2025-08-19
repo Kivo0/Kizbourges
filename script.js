@@ -75,3 +75,65 @@ $$('a[href^="#"]').forEach(a => {
 $$('img').forEach(img => {
   if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
 });
+// ===== Events slider: fetch events.json and render cards =====
+(async function initEvents(){
+  try {
+    const res = await fetch('events.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('events.json not found');
+    const events = await res.json();
+
+    // Sort by startDate ascending
+    events.sort((a,b) => new Date(a.startDate) - new Date(b.startDate));
+
+    const scroller = document.getElementById('events-scroller');
+    if (!scroller) return;
+
+    // Render
+    scroller.innerHTML = events.map(ev => {
+      const date = new Date(ev.startDate);
+      const nice = date.toLocaleString('fr-FR', {
+        weekday: 'short', day: '2-digit', month: 'short',
+        hour: '2-digit', minute: '2-digit'
+      });
+      const img = ev.image || 'images/event-placeholder.jpg';
+      const fb = ev.facebook || '#';
+
+      return `
+        <article class="event-card">
+          <img src="${img}" alt="${ev.title || 'Événement'}">
+          <h3>${ev.title || 'Événement KizBourges'}</h3>
+          <div class="event-meta">
+            <div><strong>${nice}</strong></div>
+            ${ev.location ? `<div>${ev.location}</div>` : ``}
+          </div>
+          <p>${ev.description ? ev.description : ''}</p>
+          <div class="event-actions">
+            <a class="btn" href="${fb}" target="_blank" rel="noopener">Voir sur Facebook</a>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Nav buttons
+    const prev = document.querySelector('.events-nav.prev');
+    const next = document.querySelector('.events-nav.next');
+
+    const cardWidth = () => {
+      const first = scroller.querySelector('.event-card');
+      return first ? first.getBoundingClientRect().width + 16 : 320; // +gap
+    };
+
+    prev?.addEventListener('click', () => scroller.scrollBy({ left: -cardWidth(), behavior: 'smooth' }));
+    next?.addEventListener('click', () => scroller.scrollBy({ left: cardWidth(), behavior: 'smooth' }));
+
+    // Keyboard support
+    scroller.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prev?.click();
+      if (e.key === 'ArrowRight') next?.click();
+    });
+
+  } catch (e) {
+    console.warn('Events load error:', e);
+  }
+})();
+
