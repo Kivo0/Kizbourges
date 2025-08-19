@@ -1,0 +1,143 @@
+/* =========================================================
+   KizBourges — styles.css
+   Palette: charcoal / slate / steel blue
+   Folder: images/logo.png, images/cover.jpg
+   ========================================================= */
+
+:root{
+  --max: 1000px;
+
+  /* Colors */
+  --charcoal: #3B3C3F;
+  --slate:    #6F7889;
+  --steel:    #8299BE;
+  --light:    #ECEEF0;
+  --ink:      #1a1b1d;
+  --bg:       #ffffff;
+
+  /* Typography scale */
+  --base-size: 17px;
+  --h1: 2.2rem;
+  --h2: 1.6rem;
+  --h3: 1.25rem;
+
+  /* Radii & borders */
+  --radius: 10px;
+  --card-border: #dde2ea;
+}
+
+/* ===== Base ===== */
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg);
+  font-size: var(--base-size);
+}
+a{ color: inherit; }
+img{ max-width: 100%; height: auto; display: block; }
+.container{ max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+h1, h2, h3{ margin: 0 0 12px; line-height: 1.2; }
+p{ margin: 0 0 12px; }
+
+/* ===== Header / Navigation ===== */
+.site-header{
+  position: sticky; top: 0; z-index: 10; color: #fff;
+  background: linear-gradient(90deg, var(--charcoal), var(--steel));
+}
+.site-header .container{
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+
+/* Smaller logo */
+.logo-img{ height: 32px; }
+
+/* Menu button */
+#menu{ font-size: 24px; background: transparent; color: #fff; border: 0; display: none; }
+
+/* Desktop nav links */
+.nav a{
+  text-decoration: none; margin-left: 16px;
+  color: #fff; opacity: .95;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+.nav a:hover{ opacity: 1; }
+
+/* ===== Hero (cover) ===== */
+.hero{
+  padding: 72px 0; text-align: center; color: #fff;
+  background:
+    linear-gradient(180deg, rgba(59,60,63,.65), rgba(130,153,190,.55)),
+    url('images/cover.jpg') center / cover no-repeat;
+}
+.cta-row{ display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
+
+/* ===== Sections ===== */
+.section{ padding: 48px 0; }
+.section.alt{ background: var(--light); }
+.note, .hint{ font-size: .9rem; color: #4b4f56; }
+
+/* ===== Cards ===== */
+.cards{
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.card{
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px; background: #fff;
+}
+.card-img{ border-radius: 8px; }
+
+/* ===== Buttons ===== */
+.btn{
+  display: inline-block; padding: 12px 18px; border-radius: var(--radius);
+  text-decoration: none; font-weight: 600; border: 0; color: #fff;
+  background: linear-gradient(90deg, var(--charcoal), var(--steel));
+  transition: filter .15s ease;
+}
+.btn:hover{ filter: brightness(1.05); }
+.btn.alt{ background: linear-gradient(90deg, var(--slate), var(--steel)); }
+
+/* ===== Footer ===== */
+.site-footer{
+  border-top: 1px solid var(--card-border);
+  background: #fff; color: var(--charcoal);
+  padding: 16px 0; text-align: center; font-size: 14px;
+}
+
+/* ===== Headings sizing ===== */
+h1{ font-size: var(--h1); font-weight: 700; }
+h2{ font-size: var(--h2); font-weight: 600; }
+h3{ font-size: var(--h3); font-weight: 600; }
+
+/* ===== Mobile navigation (with fade animation) ===== */
+@media (max-width: 720px){
+  #menu{ display: block; }
+
+  .site-header .container{
+    justify-content: space-between; /* logo left, menu right */
+  }
+
+  .nav{
+    display: none;
+    position: absolute; top: 56px; left: 0; right: 0;
+    background: #1e2024;
+    padding: 8px 16px;
+    opacity: 0; transform: translateY(-6px);
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .nav a{
+    display: block; margin: 10px 0;
+    font-size: 1.1rem;
+  }
+
+  .nav.open{ display: block; }
+  .nav.open.fade-in{ opacity: 1; transform: translateY(0); }
+}
