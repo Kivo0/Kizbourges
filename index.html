@@ -84,13 +84,40 @@
     <h2>Événements à venir</h2>
 
     <!-- Custom slider (from events.json) -->
-    <div class="events-wrap">
-      <button class="events-nav prev" aria-label="Événements précédents">‹</button>
-      <div class="events-scroller" id="events-scroller" aria-live="polite">
-        <!-- Cards injected by script.js from events.json -->
+<div class="events-wrap">
+  <button class="events-nav prev" aria-label="Événements précédents">‹</button>
+
+  <div class="events-scroller" id="events-scroller" aria-live="polite">
+    <!-- Cards from events.json injected by script.js -->
+
+    <!-- Facebook “All events” card (static) -->
+    <article class="event-card fb-card">
+      <div class="fb-card-head">
+        <h3>Tous les événements</h3>
+        <p class="event-meta">Directement depuis notre page Facebook</p>
       </div>
-      <button class="events-nav next" aria-label="Événements suivants">›</button>
-    </div>
+      <div class="fb-card-body">
+        <div class="fb-page"
+             data-href="https://www.facebook.com/KizBourges"
+             data-tabs="events"
+             data-width="500"
+             data-hide-cover="false"
+             data-show-facepile="false">
+          <blockquote cite="https://www.facebook.com/KizBourges" class="fb-xfbml-parse-ignore">
+            <a href="https://www.facebook.com/KizBourges">KizBourges Facebook</a>
+          </blockquote>
+        </div>
+      </div>
+      <div class="event-actions">
+        <a class="btn" href="https://www.facebook.com/KizBourges/events" target="_blank" rel="noopener">
+          Voir sur Facebook
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <button class="events-nav next" aria-label="Événements suivants">›</button>
+</div>
 
     <!-- Auto-updating Facebook events -->
     <div class="fb-page"
