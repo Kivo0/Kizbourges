@@ -1,7 +1,77 @@
-// Mobile menu toggle
-const menuBtn = document.getElementById('menu');
-const nav = document.getElementById('nav');
-menuBtn?.addEventListener('click', () => nav.classList.toggle('open'));
 
-// Year in footer
-document.getElementById('year').textContent = new Date().getFullYear();
+// ---- Helpers ----
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+const menuBtn = $('#menu');
+const nav = $('#nav');
+const header = $('.site-header');
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function openNav() {
+  nav.classList.add('open');
+  if (!prefersReduced) nav.classList.add('fade-in');
+  document.body.style.overflow = 'hidden'; // prevent page scroll while menu open on mobile
+}
+
+function closeNav() {
+  nav.classList.remove('open', 'fade-in');
+  document.body.style.overflow = '';
+}
+
+function isNavOpen() {
+  return nav.classList.contains('open');
+}
+
+// ---- Toggle button ----
+menuBtn?.addEventListener('click', () => {
+  isNavOpen() ? closeNav() : openNav();
+});
+
+// ---- Close on nav link click ----
+$('#nav')?.addEventListener('click', (e) => {
+  if (e.target.matches('a')) closeNav();
+});
+
+// ---- Close on outside click ----
+document.addEventListener('click', (e) => {
+  if (!isNavOpen()) return;
+  const clickedInsideNav = nav.contains(e.target) || menuBtn.contains(e.target);
+  if (!clickedInsideNav) closeNav();
+});
+
+// ---- Close on ESC ----
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && isNavOpen()) closeNav();
+});
+
+// ---- Smooth scroll for in-page links (accounts for sticky header) ----
+function smoothScrollTo(target) {
+  const el = document.getElementById(target);
+  if (!el) return;
+  const headerH = header?.offsetHeight || 0;
+  const y = el.getBoundingClientRect().top + window.scrollY - headerH - 8; // small padding
+  if (prefersReduced) {
+    window.scrollTo(0, y);
+  } else {
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+
+$$('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href').slice(1);
+    if (!id) return;
+    const exists = document.getElementById(id);
+    if (!exists) return; // allow default if target doesn't exist
+    e.preventDefault();
+    closeNav();
+    smoothScrollTo(id);
+    history.pushState(null, '', `#${id}`); // keep URL in sync
+  });
+});
+
+// ---- Progressive enhancement: add lazy to images if missing ----
+$$('img').forEach(img => {
+  if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
+});
