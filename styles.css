@@ -199,3 +199,27 @@ h3{ font-size: var(--h3); font-weight: 600; }
   .events-nav{ display: inline-flex; align-items: center; justify-content: center; }
   .events-scroller{ grid-auto-columns: minmax(320px, 1fr); }
 }
+/* ===== Facebook embed styling ===== */
+.fb-page,
+.fb-page iframe {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.fb-page {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #fff; /* or var(--bg) if you prefer */
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+/* Optional: make it full-width on large screens */
+@media (min-width: 1024px) {
+  #events .container {
+    max-width: 100%;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
