@@ -74,24 +74,34 @@
       </div>
     </section>
 
- <!-- Événements (slider) -->
+<!-- Événements -->
 <section id="events" class="section">
   <div class="container">
     <h2>Événements à venir</h2>
 
-    <!-- Slider wrapper -->
+    <!-- Custom slider (from events.json) -->
     <div class="events-wrap">
       <button class="events-nav prev" aria-label="Événements précédents">‹</button>
-
       <div class="events-scroller" id="events-scroller" aria-live="polite">
         <!-- Cards injected by script.js from events.json -->
       </div>
-
       <button class="events-nav next" aria-label="Événements suivants">›</button>
     </div>
 
+    <!-- Auto-updating Facebook events -->
+    <div class="fb-page"
+         data-href="https://www.facebook.com/KizBourges"
+         data-tabs="events"
+         data-width="800"
+         data-hide-cover="false"
+         data-show-facepile="false">
+      <blockquote cite="https://www.facebook.com/KizBourges" class="fb-xfbml-parse-ignore">
+        <a href="https://www.facebook.com/KizBourges">KizBourges Facebook</a>
+      </blockquote>
+    </div>
+
     <p class="hint">
-      Plus d’événements sur notre Facebook :
+      Plus d’événements sur notre page :
       <a href="https://www.facebook.com/KizBourges/events" target="_blank" rel="noopener">
         facebook.com/KizBourges/events
       </a>
