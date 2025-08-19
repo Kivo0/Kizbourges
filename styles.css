@@ -223,3 +223,33 @@ h3{ font-size: var(--h3); font-weight: 600; }
     padding-right: 5%;
   }
 }
+
+/* Facebook card inside slider */
+.fb-card { padding: 0; display: grid; grid-template-rows: auto 1fr auto; }
+.fb-card-head { padding: 12px 12px 0; }
+.fb-card-body { padding: 0 12px 12px; }
+
+/* Make the FB widget fit like a card */
+.fb-card .fb-page,
+.fb-card .fb-page iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.fb-card .fb-page {
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+/* Ensure card width matches others and the widget isn’t too tall */
+.events-scroller .fb-card {
+  min-width: 320px;
+}
+@media (min-width: 900px){
+  .events-scroller .fb-card {
+    min-width: 360px;
+  }
+}
