@@ -152,21 +152,73 @@
         <p class="hint">Astuce : crée un Google Form (départ, destination, date/heure, nb places, contact) et colle le lien ici.</p>
       </div>
     </section>
-
-    <!-- Ambiance / SoundCloud -->
+    <!-- Ambiance / SoundCloud (carousel) -->
     <section id="son" class="section">
       <div class="container">
         <h2>Ambiance musicale</h2>
-        <p>Une sélection de sons Kizomba pour s’échauffer avant la soirée :</p>
-        <div class="soundcloud-embed" style="max-width:800px;margin:auto;">
-          <iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
-          <div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;">
-            <a href="https://soundcloud.com/danableu" title="Danableu" target="_blank" style="color: #cccccc; text-decoration: none;">Danableu</a> · 
-            <a href="https://soundcloud.com/danableu/sets/kizbourges" title="Kiz'Bourges" target="_blank" style="color: #cccccc; text-decoration: none;">Kiz'Bourges</a>
+        <p>Fais défiler nos playlists avec les flèches :</p>
+
+        <div class="soundcloud-carousel" style="max-width:820px;margin:auto;position:relative;">
+          <button id="sc-prev" aria-label="Playlist précédente" class="sc-arrow" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
+
+          <div class="sc-player" style="padding:0 28px;">
+            <h3 id="sc-title" style="text-align:center;margin-bottom:8px;">Kizomba</h3>
+            <iframe id="sc-player" title="Playlist SoundCloud KizBourges" width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay"
+              src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+            <p class="hint" style="text-align:center;font-size:12px;margin-top:6px;">Astuce : touche ← / → de ton clavier pour changer.</p>
           </div>
+
+          <button id="sc-next" aria-label="Playlist suivante" class="sc-arrow" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+        </div>
+
+        <div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100; text-align:center;">
+          <a href="https://soundcloud.com/danableu" title="Danableu" target="_blank" style="color: #cccccc; text-decoration: none;">Danableu</a>
         </div>
       </div>
     </section>
+
+    <script>
+      // SoundCloud playlist carousel
+      (function(){
+        const playlists = [
+          { title: 'Kizomba', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
+          { title: 'Kizomba - Tarraxa', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/124156830&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' }
+        ];
+
+        let idx = 0; // start with the last requested (Kizomba)
+        const titleEl = document.getElementById('sc-title');
+        const frameEl = document.getElementById('sc-player');
+        const prevBtn = document.getElementById('sc-prev');
+        const nextBtn = document.getElementById('sc-next');
+
+        function render(){
+          titleEl.textContent = playlists[idx].title;
+          if (frameEl && frameEl.src !== playlists[idx].url) {
+            frameEl.src = playlists[idx].url;
+          }
+        }
+
+        function prev(){ idx = (idx - 1 + playlists.length) % playlists.length; render(); }
+        function next(){ idx = (idx + 1) % playlists.length; render(); }
+
+        prevBtn.addEventListener('click', prev);
+        nextBtn.addEventListener('click', next);
+        document.addEventListener('keydown', (e)=>{
+          if (e.key === 'ArrowLeft') prev();
+          if (e.key === 'ArrowRight') next();
+        });
+
+        render();
+
+        // Expose a simple API to add more playlists later if needed
+        window.KizBourgesPlaylists = {
+          add: function(title, soundcloudPlaylistId){
+            const url = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent('https://api.soundcloud.com/playlists/' + soundcloudPlaylistId) + '&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
+            playlists.push({ title, url });
+          }
+        };
+      })();
+    </script>
 
     <!-- Adhésion -->
     <section id="adhesion" class="section">
