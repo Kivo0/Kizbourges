@@ -102,7 +102,20 @@
     <section id="events" class="section">
       <div class="container">
         <h2>Événements à venir</h2>
-        <!-- events content ... -->
+        <!-- Facebook Events embed: shows only the Events tab (not the full page) -->
+        <div class="fb-page"
+             data-href="https://www.facebook.com/KizBourges"
+             data-tabs="events"
+             data-width="800"
+             data-hide-cover="true"
+             data-show-facepile="false">
+          <blockquote cite="https://www.facebook.com/KizBourges" class="fb-xfbml-parse-ignore">
+            <a href="https://www.facebook.com/KizBourges/events">KizBourges — Événements</a>
+          </blockquote>
+        </div>
+        <p class="hint" style="text-align:center;margin-top:10px;">
+          Si le module ne s’affiche pas, <a href="https://www.facebook.com/KizBourges/events" target="_blank" rel="noopener">ouvre les événements dans un nouvel onglet</a>.
+        </p>
       </div>
     </section>
 
@@ -119,7 +132,86 @@
     <section id="son" class="section">
       <div class="container">
         <h2>Ambiance musicale</h2>
-        <!-- soundcloud carousel code here ... -->
+        <p>Fais défiler nos playlists avec les flèches :</p>
+
+        <div class="soundcloud-carousel" style="max-width:820px;margin:auto;position:relative;">
+          <button id="sc-prev" aria-label="Playlist précédente" class="sc-arrow" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
+
+          <div class="sc-player" style="padding:0 28px;">
+            <h3 id="sc-title" style="text-align:center;margin-bottom:8px;">Kizomba</h3>
+            <iframe id="sc-player" title="Playlist SoundCloud KizBourges" width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay"
+              src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+          </div>
+
+          <button id="sc-next" aria-label="Playlist suivante" class="sc-arrow" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+        </div>
+
+        <script>
+          // SoundCloud playlist carousel (with dots)
+          (function(){
+            const base = 'https://w.soundcloud.com/player/?url=';
+            const tail = '&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
+
+            const playlists = [
+              { title: 'Kizomba', url: base + encodeURIComponent('https://api.soundcloud.com/playlists/152611885') + tail },
+              { title: 'Kizomba - Tarraxa', url: base + encodeURIComponent('https://api.soundcloud.com/playlists/124156830') + tail },
+              { title: 'Kizomba - Urban', url: base + encodeURIComponent('https://api.soundcloud.com/playlists/323224243') + tail },
+              { title: 'Kizomba - Douceur', url: base + encodeURIComponent('https://api.soundcloud.com/playlists/266791296') + tail },
+              { title: 'Kizomba - Authentik', url: base + encodeURIComponent('https://soundcloud.com/danableu/sets/authentik') + tail },
+              { title: 'Semba', url: base + encodeURIComponent('https://soundcloud.com/danableu/sets/semba') + tail }
+            ];
+
+            let idx = 0; // start with Kizomba
+            const titleEl = document.getElementById('sc-title');
+            const frameEl = document.getElementById('sc-player');
+            const prevBtn = document.getElementById('sc-prev');
+            const nextBtn = document.getElementById('sc-next');
+
+            // Dots / indicators
+            const carousel = document.querySelector('.soundcloud-carousel');
+            const indicators = document.createElement('div');
+            indicators.style.textAlign = 'center';
+            indicators.style.marginTop = '10px';
+            playlists.forEach((pl,i)=>{
+              const dot = document.createElement('span');
+              dot.textContent = '●';
+              dot.style.cursor = 'pointer';
+              dot.style.margin = '0 6px';
+              dot.style.fontSize = '16px';
+              dot.style.transition = 'transform 0.2s, color 0.2s';
+              dot.addEventListener('click', ()=>{ idx=i; render(); });
+              indicators.appendChild(dot);
+            });
+            carousel.appendChild(indicators);
+
+            function updateDots(){
+              [...indicators.children].forEach((dot,i)=>{
+                if(i===idx){ dot.style.color = '#000'; dot.style.transform = 'scale(1.3)'; }
+                else { dot.style.color = '#ccc'; dot.style.transform = 'scale(1)'; }
+              });
+            }
+
+            function render(){
+              titleEl.textContent = playlists[idx].title;
+              if (frameEl && frameEl.src !== playlists[idx].url) {
+                frameEl.src = playlists[idx].url;
+              }
+              updateDots();
+            }
+
+            function prev(){ idx = (idx - 1 + playlists.length) % playlists.length; render(); }
+            function next(){ idx = (idx + 1) % playlists.length; render(); }
+
+            prevBtn.addEventListener('click', prev);
+            nextBtn.addEventListener('click', next);
+            document.addEventListener('keydown', (e)=>{
+              if (e.key === 'ArrowLeft') prev();
+              if (e.key === 'ArrowRight') next();
+            });
+
+            render();
+          })();
+        </script>
       </div>
     </section>
 
