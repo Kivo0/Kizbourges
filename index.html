@@ -12,6 +12,15 @@
   <meta property="og:image" content="images/cover.jpg">
   <link rel="icon" type="image/png" href="images/logo1.png">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Minimal mobile nav fallback (in case styles.css doesn't handle it) */
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .nav.open { display: block; }
+      #menu { font-size: 1.4rem; background:none; border:1px solid #ddd; padding:6px 10px; border-radius:8px; }
+      .nav a { display:block; padding:10px 0; }
+    }
+  </style>
 </head>
 <body>
   <div id="fb-root"></div>
@@ -181,7 +190,10 @@
         const playlists = [
           { title: 'Kizomba', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
           { title: 'Kizomba - Tarraxa', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/124156830&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
-          { title: 'Kizomba - Urban', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/323224243&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' }
+          { title: 'Kizomba - Urban', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/323224243&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
+          { title: 'Kizomba - Doucer', url: 'https://w.soundcloud.com/player/?url=https%3A%2F%2Fon.soundcloud.com%2F8M8eZpxNg7LYVhrgfB&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
+          { title: 'Kizomba - Authentik', url: 'https://w.soundcloud.com/player/?url=https%3A%2F%2Fon.soundcloud.com%2Fqaxs59zcXRpsrQ6mxL&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
+          { title: 'Semba', url: 'https://w.soundcloud.com/player/?url=https%3A%2F%2Fon.soundcloud.com%2FqLhUfJdLZi1QpKRtD7&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' }
         ];
 
         let idx = 0; // start with Kizomba
@@ -256,8 +268,9 @@
         <p>Email : <a href="mailto:kizbourges@gmail.com">kizbourges@gmail.com</a></p>
         <p>Instagram : <a href="https://www.instagram.com/kizbourges?igsh=MTQyNW9udjh6Ym5raw==" target="_blank" rel="noopener">@kizbourges</a></p>
         <p>Facebook : <a href="https://www.facebook.com/KizBourges" target="_blank" rel="noopener">KizBourges</a></p>
-        <div style="margin-top:20px;">
-          <img src="images/logo2.png" alt="Amigos Latino" style="max-width:180px;">
+        <div style="margin-top:24px;text-align:center;">
+          <img src="images/logo2.png" alt="Amigos Latino — Partenaire KizBourges" style="max-width:200px;display:inline-block;">
+          <div style="font-size:14px;color:#666;margin-top:6px;">Partenaire — Amigos Latino</div>
         </div>
       </div>
     </section>
@@ -271,5 +284,71 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Set footer year if not already set by script.js
+    (function(){
+      var y = document.getElementById('year');
+      if (y && !y.textContent) { y.textContent = new Date().getFullYear(); }
+    })();
+  </script>
+  <script>
+    // Mobile menu toggle (accessible)
+    (function(){
+      var btn = document.getElementById('menu');
+      var nav = document.getElementById('nav');
+      if(btn && nav){
+        btn.setAttribute('aria-expanded','false');
+        btn.addEventListener('click', function(){
+          var isOpen = nav.classList.toggle('open');
+          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+      }
+    })();
+
+    // Image fallback helper: handles case-sensitive paths and common extensions
+    (function(){
+      var tried = new WeakSet();
+      function tryFallback(img){
+        if(tried.has(img)) return; // prevent loops
+        tried.add(img);
+        var src = img.getAttribute('src') || '';
+        var candidates = [];
+        // swap folder case
+        if(src.indexOf('images/') === 0) candidates.push(src.replace('images/','Images/'));
+        if(src.indexOf('Images/') === 0) candidates.push(src.replace('Images/','images/'));
+        // swap extension case / common variants
+        if(/\.png$/i.test(src)){
+          candidates.push(src.replace(/\.png$/i,'.PNG'));
+        }
+        if(/\.jpg$/i.test(src)){
+          candidates.push(src.replace(/\.jpg$/i,'.JPG'));
+          candidates.push(src.replace(/\.jpg$/i,'.jpeg'));
+        }
+        if(/\.jpeg$/i.test(src)){
+          candidates.push(src.replace(/\.jpeg$/i,'.jpg'));
+        }
+        // try first viable
+        var i = 0;
+        function next(){
+          if(i >= candidates.length) return; 
+          var test = new Image();
+          var candidate = candidates[i++];
+          test.onload = function(){ img.src = candidate; };
+          test.onerror = next;
+          test.src = candidate;
+        }
+        next();
+      }
+      document.querySelectorAll('img').forEach(function(img){
+        img.addEventListener('error', function(){ tryFallback(img); }, { once:false });
+      });
+    })();
+
+    // Set footer year if not already set by script.js
+    (function(){
+      var y = document.getElementById('year');
+      if (y && !y.textContent) { y.textContent = new Date().getFullYear(); }
+    })();
+  </script>
 </body>
 </html>
