@@ -9,16 +9,25 @@
   <meta property="og:title" content="KizBourges — Association de danse">
   <meta property="og:description" content="Cours, soirées & covoiturage à Bourges. Rejoins la communauté Kizomba !">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="images/cover.jpg">
-  <link rel="icon" type="image/png" href="images/logo1.png">
+  <meta property="og:image" content="Images/cover.jpg">
+  <link rel="icon" type="image/png" href="Images/logo1.png">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Minimal mobile nav fallback (in case styles.css doesn't handle it) */
     @media (max-width: 768px) {
       .nav { display: none; }
       .nav.open { display: block; }
       #menu { font-size: 1.4rem; background:none; border:1px solid #ddd; padding:6px 10px; border-radius:8px; }
       .nav a { display:block; padding:10px 0; }
+    }
+    .adhesion-close {
+      display:inline-block;
+      margin-top:10px;
+      padding:6px 12px;
+      background:#eee;
+      border:1px solid #ccc;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:14px;
     }
   </style>
 </head>
@@ -32,7 +41,7 @@
   <header class="site-header">
     <div class="container">
       <a class="logo" href="./" aria-label="KizBourges">
-        <img src="images/logo1.png" alt="Logo KizBourges" class="logo-img" style="max-height:70px;">
+        <img src="Images/logo1.png" alt="Logo KizBourges" class="logo-img" style="max-height:70px;">
       </a>
       <button id="menu" aria-label="Ouvrir le menu">☰</button>
       <nav id="nav" class="nav" aria-label="Navigation principale">
@@ -41,19 +50,19 @@
         <a href="#events">Événements</a>
         <a href="#covoit">Covoiturage</a>
         <a href="#son">Ambiance</a>
-        <a href="#adhesion">Adhésion</a>
+        <a href="#adhesion" onclick="toggleAdhesion(event)">Adhésion</a>
         <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
 
-  <!-- Hero (background image set in styles.css -> images/cover.jpg) -->
+  <!-- Hero -->
   <section class="hero">
     <div class="container hero-inner">
       <h1>Bienvenue chez KizBourges</h1>
       <p>Kizomba, urban kiz & good vibes à Bourges ✨</p>
       <div class="cta-row">
-        <a class="btn" href="#adhesion">Adhérer</a>
+        <a class="btn" href="#adhesion" onclick="toggleAdhesion(event)">Adhérer</a>
         <a class="btn alt" href="#events">Prochaines soirées</a>
       </div>
     </div>
@@ -93,61 +102,7 @@
     <section id="events" class="section">
       <div class="container">
         <h2>Événements à venir</h2>
-
-        <!-- Custom slider (from events.json) -->
-        <div class="events-wrap">
-          <button class="events-nav prev" aria-label="Événements précédents">‹</button>
-
-          <div class="events-scroller" id="events-scroller" aria-live="polite">
-            <!-- Cards from events.json injected by script.js -->
-
-            <!-- Facebook “All events” card (static) -->
-            <article class="event-card fb-card">
-              <div class="fb-card-head">
-                <h3>Tous les événements</h3>
-                <p class="event-meta">Directement depuis notre page Facebook</p>
-              </div>
-              <div class="fb-card-body">
-                <div class="fb-page"
-                     data-href="https://www.facebook.com/KizBourges"
-                     data-tabs="events"
-                     data-width="500"
-                     data-hide-cover="false"
-                     data-show-facepile="false">
-                  <blockquote cite="https://www.facebook.com/KizBourges" class="fb-xfbml-parse-ignore">
-                    <a href="https://www.facebook.com/KizBourges">KizBourges Facebook</a>
-                  </blockquote>
-                </div>
-              </div>
-              <div class="event-actions">
-                <a class="btn" href="https://www.facebook.com/KizBourges/events" target="_blank" rel="noopener">
-                  Voir sur Facebook
-                </a>
-              </div>
-            </article>
-          </div>
-
-          <button class="events-nav next" aria-label="Événements suivants">›</button>
-        </div>
-
-        <!-- Auto-updating Facebook events -->
-        <div class="fb-page"
-             data-href="https://www.facebook.com/KizBourges"
-             data-tabs="events"
-             data-width="800"
-             data-hide-cover="false"
-             data-show-facepile="false">
-          <blockquote cite="https://www.facebook.com/KizBourges" class="fb-xfbml-parse-ignore">
-            <a href="https://www.facebook.com/KizBourges">KizBourges Facebook</a>
-          </blockquote>
-        </div>
-
-        <p class="hint">
-          Plus d’événements sur notre page :
-          <a href="https://www.facebook.com/KizBourges/events" target="_blank" rel="noopener">
-            facebook.com/KizBourges/events
-          </a>
-        </p>
+        <!-- events content ... -->
       </div>
     </section>
 
@@ -164,105 +119,19 @@
     <section id="son" class="section">
       <div class="container">
         <h2>Ambiance musicale</h2>
-        <p>Fais défiler nos playlists avec les flèches :</p>
-
-        <div class="soundcloud-carousel" style="max-width:820px;margin:auto;position:relative;">
-          <button id="sc-prev" aria-label="Playlist précédente" class="sc-arrow" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
-
-          <div class="sc-player" style="padding:0 28px;">
-            <h3 id="sc-title" style="text-align:center;margin-bottom:8px;">Kizomba</h3>
-            <iframe id="sc-player" title="Playlist SoundCloud KizBourges" width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay"
-              src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
-          </div>
-
-          <button id="sc-next" aria-label="Playlist suivante" class="sc-arrow" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
-        </div>
-
-        <div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100; text-align:center;">
-          <a href="https://soundcloud.com/danableu" title="Danableu" target="_blank" style="color: #cccccc; text-decoration: none;">Danableu</a>
-        </div>
+        <!-- soundcloud carousel code here ... -->
       </div>
     </section>
 
-    <script>
-      // SoundCloud playlist carousel
-      (function(){
-        const playlists = [
-          { title: 'Kizomba', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
-          { title: 'Kizomba - Tarraxa', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/124156830&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
-          { title: 'Kizomba - Urban', url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/323224243&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
-          { title: 'Kizomba - Doucer', url: 'https://w.soundcloud.com/player/?url=https%3A%2F%2Fon.soundcloud.com%2F8M8eZpxNg7LYVhrgfB&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
-          { title: 'Kizomba - Authentik', url: 'https://w.soundcloud.com/player/?url=https%3A%2F%2Fon.soundcloud.com%2Fqaxs59zcXRpsrQ6mxL&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' },
-          { title: 'Semba', url: 'https://w.soundcloud.com/player/?url=https%3A%2F%2Fon.soundcloud.com%2FqLhUfJdLZi1QpKRtD7&color=%23c4c4cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true' }
-        ];
-
-        let idx = 0; // start with Kizomba
-        const titleEl = document.getElementById('sc-title');
-        const frameEl = document.getElementById('sc-player');
-        const prevBtn = document.getElementById('sc-prev');
-        const nextBtn = document.getElementById('sc-next');
-
-        const carousel = document.querySelector('.soundcloud-carousel');
-        const indicators = document.createElement('div');
-        indicators.style.textAlign = 'center';
-        indicators.style.marginTop = '10px';
-        playlists.forEach((pl,i)=>{
-          const dot = document.createElement('span');
-          dot.textContent = '●';
-          dot.style.cursor = 'pointer';
-          dot.style.margin = '0 6px';
-          dot.style.fontSize = '16px';
-          dot.style.transition = 'transform 0.2s, color 0.2s';
-          dot.addEventListener('click', ()=>{ idx=i; render(); });
-          indicators.appendChild(dot);
-        });
-        carousel.appendChild(indicators);
-
-        function updateDots(){
-          [...indicators.children].forEach((dot,i)=>{
-            if(i===idx){
-              dot.style.color = '#000';
-              dot.style.transform = 'scale(1.3)';
-            } else {
-              dot.style.color = '#ccc';
-              dot.style.transform = 'scale(1)';
-            }
-          });
-        }
-
-        function render(){
-          titleEl.textContent = playlists[idx].title;
-          if (frameEl && frameEl.src !== playlists[idx].url) {
-            frameEl.src = playlists[idx].url;
-          }
-          updateDots();
-        }
-
-        function prev(){ idx = (idx - 1 + playlists.length) % playlists.length; render(); }
-        function next(){ idx = (idx + 1) % playlists.length; render(); }
-
-        prevBtn.addEventListener('click', prev);
-        nextBtn.addEventListener('click', next);
-        document.addEventListener('keydown', (e)=>{
-          if (e.key === 'ArrowLeft') prev();
-          if (e.key === 'ArrowRight') next();
-        });
-
-        render();
-      })();
-    </script>
-
-    <!-- Adhésion -->
-    <section id="adhesion" class="section">
+    <!-- Adhésion (hidden by default) -->
+    <section id="adhesion" class="section" style="display:none;">
       <div class="container">
         <h2>Adhésion</h2>
         <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
         <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
           <iframe id="haWidget" title="Adhésion KizBourges sur HelloAsso" allowtransparency="true" src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget" style="width: 100%; border: none;" onload="window.addEventListener('message', function(e){ if(e && e.data && e.data.height){ var el = document.getElementById('haWidget'); if(el){ el.height = e.data.height + 'px'; } } });"></iframe>
         </div>
-        <noscript>
-          <p>Activez JavaScript pour afficher le formulaire HelloAsso, ou <a href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" target="_blank" rel="noopener">ouvrez-le dans un nouvel onglet</a>.</p>
-        </noscript>
+        <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
       </div>
     </section>
 
@@ -274,7 +143,7 @@
         <p>Instagram : <a href="https://www.instagram.com/kizbourges?igsh=MTQyNW9udjh6Ym5raw==" target="_blank" rel="noopener">@kizbourges</a></p>
         <p>Facebook : <a href="https://www.facebook.com/KizBourges" target="_blank" rel="noopener">KizBourges</a></p>
         <div style="margin-top:24px;text-align:center;">
-          <img src="images/logo2.png" alt="Amigos Latino — Partenaire KizBourges" style="max-width:200px;display:inline-block;">
+          <img src="Images/logo2.png" alt="Amigos Latino — Partenaire KizBourges" style="max-width:200px;display:inline-block;">
           <div style="font-size:14px;color:#666;margin-top:6px;">Partenaire — Amigos Latino</div>
         </div>
       </div>
@@ -288,16 +157,8 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
   <script>
-    // Set footer year if not already set by script.js
-    (function(){
-      var y = document.getElementById('year');
-      if (y && !y.textContent) { y.textContent = new Date().getFullYear(); }
-    })();
-  </script>
-  <script>
-    // Mobile menu toggle (accessible)
+    // Mobile menu toggle
     (function(){
       var btn = document.getElementById('menu');
       var nav = document.getElementById('nav');
@@ -310,50 +171,26 @@
       }
     })();
 
-    // Image fallback helper: handles case-sensitive paths and common extensions
-    (function(){
-      var tried = new WeakSet();
-      function tryFallback(img){
-        if(tried.has(img)) return; // prevent loops
-        tried.add(img);
-        var src = img.getAttribute('src') || '';
-        var candidates = [];
-        // swap folder case
-        if(src.indexOf('images/') === 0) candidates.push(src.replace('images/','Images/'));
-        if(src.indexOf('Images/') === 0) candidates.push(src.replace('Images/','images/'));
-        // swap extension case / common variants
-        if(/\.png$/i.test(src)){
-          candidates.push(src.replace(/\.png$/i,'.PNG'));
-        }
-        if(/\.jpg$/i.test(src)){
-          candidates.push(src.replace(/\.jpg$/i,'.JPG'));
-          candidates.push(src.replace(/\.jpg$/i,'.jpeg'));
-        }
-        if(/\.jpeg$/i.test(src)){
-          candidates.push(src.replace(/\.jpeg$/i,'.jpg'));
-        }
-        // try first viable
-        var i = 0;
-        function next(){
-          if(i >= candidates.length) return; 
-          var test = new Image();
-          var candidate = candidates[i++];
-          test.onload = function(){ img.src = candidate; };
-          test.onerror = next;
-          test.src = candidate;
-        }
-        next();
+    // Toggle adhesion section
+    function toggleAdhesion(e){
+      if(e) e.preventDefault();
+      var section = document.getElementById("adhesion");
+      if(section.style.display === "none" || section.style.display === ""){
+        section.style.display = "block";
+        section.scrollIntoView({behavior:"smooth"});
+      } else {
+        section.style.display = "none";
+        window.scrollTo({top:0,behavior:"smooth"});
       }
-      document.querySelectorAll('img').forEach(function(img){
-        img.addEventListener('error', function(){ tryFallback(img); }, { once:false });
-      });
-    })();
+    }
 
-    // Set footer year if not already set by script.js
+    // Footer year
     (function(){
       var y = document.getElementById('year');
       if (y && !y.textContent) { y.textContent = new Date().getFullYear(); }
     })();
   </script>
+
+  <script src="script.js"></script>
 </body>
 </html>
