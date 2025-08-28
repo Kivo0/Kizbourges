@@ -137,3 +137,164 @@ $$('img').forEach(img => {
   }
 })();
 
+
+<script>
+// ---- KizBourges Events Loader & Carousel ----
+(function(){
+  const FEED_URL = 'events.json'; // swap to your proxy later if needed
+
+  // DOM
+  const img   = document.getElementById('ev-img');
+  const title = document.getElementById('ev-title');
+  const when  = document.getElementById('ev-when');
+  const where = document.getElementById('ev-where');
+  const link  = document.getElementById('ev-link');
+  const cta   = document.getElementById('ev-cta');
+  const prevB = document.getElementById('ev-prev');
+  const nextB = document.getElementById('ev-next');
+  const dots  = document.getElementById('ev-dots');
+  const list  = document.getElementById('ev-list');
+
+  let events = [];
+  let idx = 0;
+
+  function fmtDate(iso){
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString('fr-FR', {
+        weekday: 'short', day: '2-digit', month: 'short',
+        hour: '2-digit', minute: '2-digit'
+      });
+    } catch { return ''; }
+  }
+
+  function renderCarousel(){
+    if (!events.length) return;
+    const ev = events[idx];
+
+    img.src = ev.cover || 'Images/cover.jpg';
+    img.alt = `Affiche : ${ev.name || 'Événement'}`;
+    title.textContent = ev.name || 'Événement';
+    when.textContent  = ev.start_time ? fmtDate(ev.start_time) : '';
+    where.textContent = ev.place?.name ? ev.place.name : '—';
+    link.href = ev.event_url || '#';
+
+    cta.innerHTML = '';
+    if (ev.ticket_url){
+      const a = document.createElement('a');
+      a.href = ev.ticket_url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'btn';
+      a.textContent = 'Billetterie';
+      cta.appendChild(a);
+    }
+
+    // Update dots
+    dots.querySelectorAll('span').forEach((dot, i)=>{
+      dot.style.color = (i === idx) ? '#000' : '#ccc';
+      dot.style.transform = (i === idx) ? 'scale(1.25)' : 'scale(1)';
+    });
+  }
+
+  function renderDots(){
+    dots.innerHTML = '';
+    events.forEach((_, i)=>{
+      const s = document.createElement('span');
+      s.textContent = '●';
+      s.style.cursor = 'pointer';
+      s.style.margin = '0 6px';
+      s.style.fontSize = '16px';
+      s.style.transition = 'transform .2s, color .2s';
+      s.addEventListener('click', ()=>{ idx = i; renderCarousel(); });
+      dots.appendChild(s);
+    });
+  }
+
+  function renderList(){
+    list.innerHTML = '';
+    events.forEach(ev=>{
+      const li = document.createElement('div');
+      li.className = 'card';
+      li.style.display = 'grid';
+      li.style.gridTemplateColumns = '120px 1fr';
+      li.style.gap = '14px';
+      li.style.alignItems = 'center';
+
+      const pic = document.createElement('img');
+      pic.src = ev.cover || 'Images/cover.jpg';
+      pic.alt = `Affiche : ${ev.name || 'Événement'}`;
+      pic.loading = 'lazy';
+      pic.style.width = '120px';
+      pic.style.height = '80px';
+      pic.style.objectFit = 'cover';
+      pic.style.borderRadius = '8px';
+
+      const meta = document.createElement('div');
+      const h3 = document.createElement('h3');
+      h3.textContent = ev.name || 'Événement';
+      const p1 = document.createElement('p');
+      p1.style.margin = '4px 0';
+      p1.textContent = ev.start_time ? fmtDate(ev.start_time) : '';
+      const p2 = document.createElement('p');
+      p2.style.margin = '2px 0';
+      p2.style.color = '#666';
+      p2.textContent = ev.place?.name || '—';
+
+      const row = document.createElement('div');
+      row.style.marginTop = '6px';
+      if (ev.event_url){
+        const a1 = document.createElement('a');
+        a1.href = ev.event_url; a1.target = '_blank'; a1.rel = 'noopener';
+        a1.className = 'btn alt';
+        a1.textContent = 'Détails';
+        row.appendChild(a1);
+      }
+      if (ev.ticket_url){
+        const a2 = document.createElement('a');
+        a2.href = ev.ticket_url; a2.target = '_blank'; a2.rel = 'noopener';
+        a2.className = 'btn';
+        a2.style.marginLeft = '8px';
+        a2.textContent = 'Billets';
+        row.appendChild(a2);
+      }
+
+      meta.appendChild(h3);
+      meta.appendChild(p1);
+      meta.appendChild(p2);
+      meta.appendChild(row);
+
+      li.appendChild(pic);
+      li.appendChild(meta);
+      list.appendChild(li);
+    });
+  }
+
+  function prev(){ if (!events.length) return; idx = (idx - 1 + events.length) % events.length; renderCarousel(); }
+  function next(){ if (!events.length) return; idx = (idx + 1) % events.length; renderCarousel(); }
+
+  prevB.addEventListener('click', prev);
+  nextB.addEventListener('click', next);
+  document.addEventListener('keydown', (e)=>{ if (e.key === 'ArrowLeft') prev(); if (e.key === 'ArrowRight') next(); });
+
+  fetch(FEED_URL, {cache:'no-store'})
+    .then(r => r.json())
+    .then(data => {
+      // Expecting an array of events
+      events = (Array.isArray(data) ? data : data?.data || [])
+        .filter(ev => ev && (ev.cover || ev.name))
+        // sort by start_time ascending
+        .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
+      if (!events.length) return;
+
+      renderDots();
+      renderCarousel();
+      renderList();
+    })
+    .catch(err => {
+      console.error('Events load error:', err);
+    });
+})();
+</script>
+
+
