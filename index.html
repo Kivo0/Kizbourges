@@ -98,26 +98,44 @@
       </div>
     </section>
 
-    <!-- Événements -->
-    <section id="events" class="section">
-      <div class="container">
-        <h2>Événements à venir</h2>
-        <!-- Facebook Events embed: shows only the Events tab (not the full page) -->
-        <div class="fb-page"
-             data-href="https://www.facebook.com/KizBourges"
-             data-tabs="events"
-             data-width="800"
-             data-hide-cover="true"
-             data-show-facepile="false">
-          <blockquote cite="https://www.facebook.com/KizBourges" class="fb-xfbml-parse-ignore">
-            <a href="https://www.facebook.com/KizBourges/events">KizBourges — Événements</a>
-          </blockquote>
-        </div>
-        <p class="hint" style="text-align:center;margin-top:10px;">
-          Si le module ne s’affiche pas, <a href="https://www.facebook.com/KizBourges/events" target="_blank" rel="noopener">ouvre les événements dans un nouvel onglet</a>.
-        </p>
+   <!-- Événements -->
+<section id="events" class="section">
+  <div class="container">
+    <h2>Événements à venir</h2>
+
+    <!-- Carousel -->
+    <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
+      <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
+        style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
+
+      <div class="ev-card" id="ev-card" style="padding:0 28px;text-align:center;">
+        <a id="ev-link" href="#" target="_blank" rel="noopener"
+           style="text-decoration:none;color:inherit;display:inline-block;">
+          <img id="ev-img" src="" alt="Affiche de l’événement" loading="lazy"
+               style="width:100%;max-height:460px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
+          <h3 id="ev-title" style="margin:10px 0 6px;"></h3>
+          <p id="ev-when" style="margin:0;color:#555;"></p>
+          <p id="ev-where" style="margin:2px 0 0;color:#777;font-size:14px;"></p>
+        </a>
+        <div id="ev-cta" style="margin-top:10px;"></div>
       </div>
-    </section>
+
+      <button id="ev-next" aria-label="Événement suivant" class="ev-arrow"
+        style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+    </div>
+
+    <!-- Dots -->
+    <div id="ev-dots" style="text-align:center;margin-top:12px;"></div>
+
+    <!-- List view (optional) -->
+    <div id="ev-list" class="cards" role="list" style="margin-top:22px;"></div>
+
+    <p class="hint" style="text-align:center;margin-top:12px;">
+      Tu ne vois rien ? <a href="https://www.facebook.com/KizBourges/events" target="_blank" rel="noopener">Voir les événements sur Facebook</a>.
+    </p>
+  </div>
+</section>
+
 
     <!-- Covoiturage -->
     <section id="covoit" class="section alt">
