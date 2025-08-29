@@ -296,6 +296,15 @@ $$('img').forEach(img => {
     });
 })();
 
+Papa.parse(CSV_URL, {
+  download: true,
+  header: true,
+  skipEmptyLines: true,
+  delimiter: ';', // ← add this if your CSV uses ;
+  complete: ({ data }) => { /* ... */ }
+});
+
+
 
 const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
