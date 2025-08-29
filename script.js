@@ -309,5 +309,39 @@ Papa.parse(CSV_URL, {
 const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
 </script>
+<script>
+(function(){
+  // Make toggle function global (works with inline onclick and JS binding)
+  window.toggleAdhesion = function(e){
+    if (e && e.preventDefault) e.preventDefault();
+    var s = document.getElementById('adhesion');
+    if (!s) return;
+    var isHidden = (s.style.display === 'none' || !s.style.display);
+    if (isHidden){
+      s.style.display = 'block';
+      s.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      s.style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Robust: any link to #adhesion opens it (desktop-safe)
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('a[href="#adhesion"]').forEach(function(a){
+      a.addEventListener('click', function(ev){
+        ev.preventDefault();
+        window.toggleAdhesion();
+      });
+    });
+  });
+
+  // Optional: if someone lands on /#adhesion, open it
+  if (location.hash === '#adhesion') {
+    window.addEventListener('load', function(){ window.toggleAdhesion(); });
+  }
+})();
+</script>
+
 
 
