@@ -33,8 +33,6 @@
 </head>
 <body>
 
-
-  
   <div id="fb-root"></div>
   <script async defer crossorigin="anonymous"
     src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v19.0"
@@ -97,75 +95,71 @@
             <p><strong>Où :</strong> Salle Baptiste Marcel, 2 Rue Parmentier, 18000 Bourges</p>
             <p>Inclus dans l’adhésion — selon planning.</p>
           </li>
+
+          <!-- Video promo card -->
           <li class="card course-ad">
-  <div class="video-grid">
-    <div class="copy">
-      <h3>Découvre la Kizomba en 60 secondes</h3>
-      <p>Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours ✨</p>
-      <div class="cta-row" style="margin-top:8px;">
-        <a class="btn" href="#adhesion" onclick="toggleAdhesion(event)">S’inscrire / Adhérer</a>
-        <a class="btn alt" href="#events">Voir les prochaines dates</a>
-      </div>
-    </div>
+            <div class="video-grid">
+              <div class="copy">
+                <h3>Découvre la Kizomba en 60 secondes</h3>
+                <p>Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours ✨</p>
+                <div class="cta-row" style="margin-top:8px;">
+                  <a class="btn" href="#adhesion" onclick="toggleAdhesion(event)">S’inscrire / Adhérer</a>
+                  <a class="btn alt" href="#events">Voir les prochaines dates</a>
+                </div>
+              </div>
 
-    <div class="media">
-      <video
-        id="courseAdVideo"
-        class="course-video"
-        title="KizBourges — Promo cours"
-        playsinline
-        muted
-        loop
-        preload="metadata"
-        poster="Images/course-poster.jpg"
-        controls
-      >
-        <source src="Videos/course-ad.mp4" type="video/mp4">
-        Votre navigateur ne supporte pas la vidéo HTML5.
-      </video>
-    </div>
-  </div>
-</li>
-
+              <div class="media">
+                <video
+                  id="courseAdVideo"
+                  class="course-video"
+                  title="KizBourges — Promo cours"
+                  playsinline
+                  muted
+                  loop
+                  preload="metadata"
+                  poster="Images/course-poster.jpg"
+                  controls
+                >
+                  <source src="Videos/course-ad.mp4" type="video/mp4">
+                  Votre navigateur ne supporte pas la vidéo HTML5.
+                </video>
+              </div>
+            </div>
+          </li>
         </ul>
       </div>
     </section>
 
-    
-<section id="events" class="section">
-  <div class="container">
-    <h2>Événements à venir</h2>
+    <!-- Événements -->
+    <section id="events" class="section">
+      <div class="container">
+        <h2>Événements à venir</h2>
 
-    <!-- START: KizBourges Events Slider (single instance) -->
-    <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
-      <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
-        style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
+        <!-- START: KizBourges Events Slider (single instance) -->
+        <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
+          <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
+            style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
 
-      <div class="ev-card" id="ev-card" style="padding:0 28px;text-align:center;">
-        <a id="ev-link" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-block;">
-          <img id="ev-img" src="" alt="Affiche de l’événement"
-               loading="lazy"
-               style="width:100%;max-height:460px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
-          <h3 id="ev-title" style="margin:10px 0 6px;"></h3>
-          <p id="ev-when" style="margin:0;color:#555;"></p>
-          <p id="ev-where" style="margin:2px 0 0;color:#777;font-size:14px;"></p>
-        </a>
-        <div id="ev-cta" style="margin-top:10px;"></div>
+          <div class="ev-card" id="ev-card" style="padding:0 28px;text-align:center;">
+            <a id="ev-link" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-block;">
+              <img id="ev-img" src="" alt="Affiche de l’événement"
+                  loading="lazy"
+                  style="width:100%;max-height:460px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
+              <h3 id="ev-title" style="margin:10px 0 6px;"></h3>
+              <p id="ev-when" style="margin:0;color:#555;"></p>
+              <p id="ev-where" style="margin:2px 0 0;color:#777;font-size:14px;"></p>
+            </a>
+            <div id="ev-cta" style="margin-top:10px;"></div>
+          </div>
+
+          <button id="ev-next" aria-label="Événement suivant" class="ev-arrow"
+            style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+        </div>
+        <div id="ev-dots" style="text-align:center;margin-top:12px;"></div>
+        <div id="ev-list" class="cards" role="list" style="margin-top:22px;"></div>
+        <!-- END: KizBourges Events Slider -->
       </div>
-
-      <button id="ev-next" aria-label="Événement suivant" class="ev-arrow"
-        style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
-    </div>
-    <div id="ev-dots" style="text-align:center;margin-top:12px;"></div>
-    <div id="ev-list" class="cards" role="list" style="margin-top:22px;"></div>
-    <!-- END: KizBourges Events Slider -->
-
-    <!-- (Optional) Facebook embed below -->
-    <!-- <div class="fb-page" ...> ... </div> -->
-  </div>
-</section>
-
-
+    </section>
 
     <!-- Covoiturage -->
     <section id="covoit" class="section alt">
@@ -269,8 +263,14 @@
         <h2>Adhésion</h2>
         <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
         <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
-<iframe id="haWidget" allowtransparency="true" src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )" ></iframe>
-
+          <iframe
+            id="haWidget"
+            title="Adhésion KizBourges sur HelloAsso"
+            allowtransparency="true"
+            loading="lazy"
+            src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
+            style="width:100%; border:0; height:600px;"
+          ></iframe>
         </div>
         <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
       </div>
@@ -298,6 +298,7 @@
     </div>
   </footer>
 
+  <!-- Basic site JS -->
   <script>
     // Mobile menu toggle
     (function(){
@@ -312,7 +313,7 @@
       }
     })();
 
-    // Toggle adhesion section
+    // Toggle adhesion section (also used by close button)
     function toggleAdhesion(e){
       if(e) e.preventDefault();
       var section = document.getElementById("adhesion");
@@ -332,414 +333,208 @@
     })();
   </script>
 
-  <script src="script.js"></script>
+  <!-- Papa Parse (once) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
+  <!-- KizBourges Events loader (single instance) -->
+  <script defer>
+  (function(){
+    const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
-<script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script defer>
-(function(){
-  const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now(); // cache-buster
+    // DOM
+    const img   = document.getElementById('ev-img');
+    const title = document.getElementById('ev-title');
+    const when  = document.getElementById('ev-when');
+    const where = document.getElementById('ev-where');
+    const link  = document.getElementById('ev-link');
+    const cta   = document.getElementById('ev-cta');
+    const prevB = document.getElementById('ev-prev');
+    const nextB = document.getElementById('ev-next');
+    const dots  = document.getElementById('ev-dots');
+    const list  = document.getElementById('ev-list');
 
-  const img   = document.getElementById('ev-img');
-  const title = document.getElementById('ev-title');
-  const when  = document.getElementById('ev-when');
-  const where = document.getElementById('ev-where');
-  const link  = document.getElementById('ev-link');
-  const cta   = document.getElementById('ev-cta');
-  const prevB = document.getElementById('ev-prev');
-  const nextB = document.getElementById('ev-next');
-  const dots  = document.getElementById('ev-dots');
-  const list  = document.getElementById('ev-list');
+    let events = [], idx = 0;
 
-  let events = [], idx = 0;
-
-  function fmtDate(iso){
-    try {
-      return new Date(iso).toLocaleString('fr-FR', {
-        timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
+    // Helpers
+    function detectDelimiter(text){
+      const header = text.split(/\r?\n/,1)[0] || '';
+      const semis  = (header.match(/;/g)||[]).length;
+      const commas = (header.match(/,/g)||[]).length;
+      return semis > commas ? ';' : ',';
+    }
+    function normalizeCover(url){
+      if(!url) return '';
+      url = url.trim();
+      if (url.startsWith('/')) url = url.slice(1); // GH Pages project path
+      if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
+        url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
+      }
+      if (url.startsWith('images/')) url = 'Images/' + url.slice(7);
+      return url;
+    }
+    function fmtDate(iso){
+      if(!iso) return '';
+      const d = new Date(iso);
+      return isNaN(d) ? '' : d.toLocaleString('fr-FR', {
+        timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short',
+        hour:'2-digit', minute:'2-digit'
       });
-    } catch { return ''; }
-  }
-
-  function renderCarousel(){
-    if (!events.length) return;
-    const ev = events[idx];
-    img.src  = ev.cover || 'Images/cover.jpg';
-    img.alt  = `Affiche : ${ev.name || 'Événement'}`;
-    title.textContent = ev.name || 'Événement';
-    when.textContent  = ev.start_time ? fmtDate(ev.start_time) : '';
-    where.textContent = ev.place?.name || ev.place || '—';
-    link.href         = ev.event_url || '#';
-
-    cta.innerHTML = '';
-    if (ev.ticket_url){
-      const a = document.createElement('a');
-      a.href = ev.ticket_url; a.target = '_blank'; a.rel = 'noopener';
-      a.className = 'btn'; a.textContent = 'Billetterie';
-      cta.appendChild(a);
     }
 
-    dots.querySelectorAll('span').forEach((dot,i)=>{
-      dot.style.color = (i===idx)?'#000':'#ccc';
-      dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
-    });
-  }
-
-  function renderDots(){
-    dots.innerHTML = '';
-    events.forEach((_, i)=>{
-      const s = document.createElement('span');
-      s.textContent = '●';
-      s.style.cursor = 'pointer';
-      s.style.margin = '0 6px';
-      s.style.fontSize = '16px';
-      s.style.transition = 'transform .2s, color .2s';
-      s.addEventListener('click', ()=>{ idx = i; renderCarousel(); });
-      dots.appendChild(s);
-    });
-  }
-
-  function renderList(){
-    list.innerHTML = '';
-    events.forEach(ev=>{
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.style.display = 'grid';
-      card.style.gridTemplateColumns = '120px 1fr';
-      card.style.gap = '14px'; card.style.alignItems = 'center';
-
-      const pic = document.createElement('img');
-      pic.src = ev.cover || 'Images/cover.jpg';
-      pic.alt = `Affiche : ${ev.name || 'Événement'}`;
-      pic.loading = 'lazy';
-      pic.style.width = '120px'; pic.style.height = '80px';
-      pic.style.objectFit = 'cover'; pic.style.borderRadius = '8px';
-
-      const meta = document.createElement('div');
-      const h3 = document.createElement('h3'); h3.textContent = ev.name || 'Événement';
-      const p1 = document.createElement('p'); p1.style.margin='4px 0'; p1.textContent = ev.start_time ? fmtDate(ev.start_time) : '';
-      const p2 = document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent = ev.place?.name || ev.place || '—';
-
-      const row = document.createElement('div'); row.style.marginTop = '6px';
-      if (ev.event_url){ const a1 = document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
-      if (ev.ticket_url){ const a2 = document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
-
-      meta.append(h3,p1,p2,row);
-      card.append(pic,meta);
-      list.appendChild(card);
-    });
-  }
-
-  function prev(){ if(!events.length) return; idx = (idx - 1 + events.length) % events.length; renderCarousel(); }
-  function next(){ if(!events.length) return; idx = (idx + 1) % events.length; renderCarousel(); }
-
-  prevB.addEventListener('click', prev);
-  nextB.addEventListener('click', next);
-  document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')prev(); if(e.key==='ArrowRight')next(); });
-
-  Papa.parse(CSV_URL, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    // If your CSV uses semicolons, uncomment:
-    // delimiter: ';',
-    complete: ({ data }) => {
-      // CSV headers: id,name,start_time,place,cover,event_url,ticket_url
-      events = data.map(r => ({
-        id: r.id || r.name,
-        name: r.name,
-        start_time: r.start_time,
-        place: r.place ? { name: r.place } : { name: '' },
-        cover: r.cover,
-        event_url: r.event_url,
-        ticket_url: r.ticket_url
-      }))
-      .filter(ev => ev.name)
-      .sort((a,b) => new Date(a.start_time || 0) - new Date(b.start_time || 0));
-
-      if (!events.length) return;
-      renderDots(); renderCarousel(); renderList();
-      console.log('Loaded events:', events.length);
-    },
-    error: err => console.error('CSV load error:', err)
-  });
-})();
-</script>
-
-<script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script defer>
-(function(){
-  const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
-
-  // ---- DOM (must match your single slider) ----
-  const img   = document.getElementById('ev-img');
-  const title = document.getElementById('ev-title');
-  const when  = document.getElementById('ev-when');
-  const where = document.getElementById('ev-where');
-  const link  = document.getElementById('ev-link');
-  const cta   = document.getElementById('ev-cta');
-  const prevB = document.getElementById('ev-prev');
-  const nextB = document.getElementById('ev-next');
-  const dots  = document.getElementById('ev-dots');
-  const list  = document.getElementById('ev-list');
-
-  let events = [], idx = 0;
-
-  // -------- helpers (robust CSV + images) --------
-  function detectDelimiter(text){
-    const header = text.split(/\r?\n/,1)[0] || '';
-    const semis  = (header.match(/;/g)||[]).length;
-    const commas = (header.match(/,/g)||[]).length;
-    return semis > commas ? ';' : ',';
-  }
-  function normalizeCover(url){
-    if(!url) return '';
-    url = url.trim();
-    // remove leading slash (breaks GitHub Pages project path)
-    if (url.startsWith('/')) url = url.slice(1);
-    // fix GitHub blob -> raw
-    if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
-      url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
-    }
-    // try to fix images vs Images case if needed
-    if (url.startsWith('images/')) url = 'Images/' + url.slice(7);
-    return url;
-  }
-  function fmtDate(iso){
-    if(!iso) return '';
-    const d = new Date(iso);
-    return isNaN(d) ? '' : d.toLocaleString('fr-FR', {
-      timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short',
-      hour:'2-digit', minute:'2-digit'
-    });
-  }
-
-  function renderCarousel(){
-    if(!events.length) return;
-    const ev = events[idx];
-
-    img.onerror = () => { img.onerror = null; img.src = 'Images/cover.jpg'; };
-    img.src  = ev.cover || 'Images/cover.jpg';
-    img.alt  = `Affiche : ${ev.name || 'Événement'}`;
-    title.textContent = ev.name || 'Événement';
-    when.textContent  = fmtDate(ev.start_time);
-    where.textContent = ev.place?.name || ev.place || '—';
-    link.href         = ev.event_url || '#';
-
-    cta.innerHTML = '';
-    if (ev.ticket_url){
-      const a = document.createElement('a');
-      a.href = ev.ticket_url; a.target='_blank'; a.rel='noopener';
-      a.className='btn'; a.textContent='Billetterie';
-      cta.appendChild(a);
+    function renderCarousel(){
+      if(!events.length) return;
+      const ev = events[idx];
+      img.onerror = () => { img.onerror = null; img.src = 'Images/cover.jpg'; };
+      img.src  = ev.cover || 'Images/cover.jpg';
+      img.alt  = `Affiche : ${ev.name || 'Événement'}`;
+      title.textContent = ev.name || 'Événement';
+      when.textContent  = fmtDate(ev.start_time);
+      where.textContent = ev.place?.name || ev.place || '—';
+      link.href         = ev.event_url || '#';
+      cta.innerHTML = '';
+      if (ev.ticket_url){
+        const a = document.createElement('a');
+        a.href = ev.ticket_url; a.target='_blank'; a.rel='noopener';
+        a.className='btn'; a.textContent='Billetterie';
+        cta.appendChild(a);
+      }
+      dots.querySelectorAll('span').forEach((dot,i)=>{
+        dot.style.color = (i===idx)?'#000':'#ccc';
+        dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
+      });
     }
 
-    dots.querySelectorAll('span').forEach((dot,i)=>{
-      dot.style.color = (i===idx)?'#000':'#ccc';
-      dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
-    });
-  }
+    function renderDots(){
+      dots.innerHTML = '';
+      events.forEach((_, i)=>{
+        const s = document.createElement('span');
+        s.textContent='●';
+        s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px';
+        s.style.transition='transform .2s, color .2s';
+        s.addEventListener('click', ()=>{ idx=i; renderCarousel(); });
+        dots.appendChild(s);
+      });
+    }
 
-  function renderDots(){
-    dots.innerHTML = '';
-    events.forEach((_, i)=>{
-      const s = document.createElement('span');
-      s.textContent='●';
-      s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px';
-      s.style.transition='transform .2s, color .2s';
-      s.addEventListener('click', ()=>{ idx=i; renderCarousel(); });
-      dots.appendChild(s);
-    });
-  }
+    function renderList(){
+      list.innerHTML='';
+      events.forEach(ev=>{
+        const card=document.createElement('div');
+        card.className='card';
+        card.style.display='grid';
+        card.style.gridTemplateColumns='120px 1fr';
+        card.style.gap='14px'; card.style.alignItems='center';
 
-  function renderList(){
-    list.innerHTML='';
-    events.forEach(ev=>{
-      const card=document.createElement('div');
-      card.className='card';
-      card.style.display='grid';
-      card.style.gridTemplateColumns='120px 1fr';
-      card.style.gap='14px'; card.style.alignItems='center';
+        const pic=document.createElement('img');
+        pic.onerror = () => { pic.onerror = null; pic.src = 'Images/cover.jpg'; };
+        pic.src=ev.cover||'Images/cover.jpg';
+        pic.alt=`Affiche : ${ev.name||'Événement'}`;
+        pic.loading='lazy'; pic.style.width='120px'; pic.style.height='80px';
+        pic.style.objectFit='cover'; pic.style.borderRadius='8px';
 
-      const pic=document.createElement('img');
-      pic.onerror = () => { pic.onerror = null; pic.src = 'Images/cover.jpg'; };
-      pic.src=ev.cover||'Images/cover.jpg';
-      pic.alt=`Affiche : ${ev.name||'Événement'}`;
-      pic.loading='lazy'; pic.style.width='120px'; pic.style.height='80px';
-      pic.style.objectFit='cover'; pic.style.borderRadius='8px';
+        const meta=document.createElement('div');
+        const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement';
+        const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time);
+        const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
 
-      const meta=document.createElement('div');
-      const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement';
-      const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time);
-      const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
+        const row=document.createElement('div'); row.style.marginTop='6px';
+        if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
+        if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
 
-      const row=document.createElement('div'); row.style.marginTop='6px';
-      if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
-      if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
+        meta.append(h3,p1,p2,row);
+        card.append(pic,meta);
+        list.appendChild(card);
+      });
+    }
 
-      meta.append(h3,p1,p2,row);
-      card.append(pic,meta);
-      list.appendChild(card);
-    });
-  }
+    function prev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
+    function next(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
+    prevB.addEventListener('click', prev);
+    nextB.addEventListener('click', next);
+    document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')prev(); if(e.key==='ArrowRight')next(); });
 
-  function prev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
-  function next(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
-  prevB.addEventListener('click', prev);
-  nextB.addEventListener('click', next);
-  document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')prev(); if(e.key==='ArrowRight')next(); });
+    // Load CSV (auto-detect delimiter)
+    fetch(CSV_URL)
+      .then(r => r.text())
+      .then(text => {
+        const delimiter = detectDelimiter(text);
+        const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
+        const rows = parsed.data.map(row => {
+          const o = {};
+          for (const k in row) if (Object.hasOwn(row, k)) {
+            const key = (k||'').trim();
+            const val = typeof row[k]==='string' ? row[k].trim() : row[k];
+            o[key] = val;
+          }
+          return o;
+        });
+        events = rows.map(r => ({
+          id: r.id || r.name,
+          name: r.name,
+          start_time: r.start_time,
+          place: r.place ? { name: r.place } : { name: '' },
+          cover: normalizeCover(r.cover || ''),
+          event_url: r.event_url,
+          ticket_url: r.ticket_url
+        }))
+        .filter(ev => ev.name)
+        .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
 
-  // -------- load CSV (auto-detect delimiter) --------
-  fetch(CSV_URL)
-    .then(r => r.text())
-    .then(text => {
-      const delimiter = detectDelimiter(text);
-      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
-      let rows = parsed.data.map(row => {
-        const o = {};
-        for (const k in row) if (Object.hasOwn(row, k)) {
-          const key = (k||'').trim();
-          const val = typeof row[k]==='string' ? row[k].trim() : row[k];
-          o[key] = val;
+        console.log('CSV delimiter:', delimiter, 'events parsed:', events.length);
+        if (!events.length) return;
+        renderDots(); renderCarousel(); renderList();
+      })
+      .catch(err => console.error('CSV load error:', err));
+  })();
+  </script>
+
+  <!-- Auto play/pause promo video when visible -->
+  <script>
+  (function(){
+    const v = document.getElementById('courseAdVideo');
+    if (!('IntersectionObserver' in window) || !v) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          v.play().catch(()=>{});
+        } else {
+          v.pause();
         }
-        return o;
-      });
-
-      events = rows.map(r => ({
-        id: r.id || r.name,
-        name: r.name,
-        start_time: r.start_time,
-        place: r.place ? { name: r.place } : { name: '' },
-        cover: normalizeCover(r.cover || ''),
-        event_url: r.event_url,
-        ticket_url: r.ticket_url
-      }))
-      .filter(ev => ev.name)
-      .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
-
-      console.log('CSV delimiter:', delimiter, 'events parsed:', events.length);
-      if (!events.length) {
-        console.error('No events found. CSV headers must be: id,name,start_time,place,cover,event_url,ticket_url');
-        return;
       }
-      renderDots(); renderCarousel(); renderList();
-    })
-    .catch(err => console.error('CSV load error:', err));
-})();
-</script>
+    }, { threshold: 0.5 });
+    io.observe(v);
+  })();
+  </script>
+
+  <!-- Unified Adhésion bindings + auto-resize -->
   <script>
-(function(){
-  const v = document.getElementById('courseAdVideo');
-  if (!('IntersectionObserver' in window) || !v) return;
-
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) {
-        v.play().catch(()=>{ /* user can press play if blocked */ });
-      } else {
-        v.pause();
-      }
-    }
-  }, { threshold: 0.5 });
-
-  io.observe(v);
-})();
-</script>
-  <script>
-// Open/close the adhesion section when any link to #adhesion is clicked
-(function(){
-  // Ensure toggleAdhesion exists and works even without inline onclick
-  window.toggleAdhesion = function(e){
-    if (e && e.preventDefault) e.preventDefault();
-    var s = document.getElementById('adhesion');
-    if (!s) return;
-    var isHidden = (s.style.display === 'none' || !s.style.display);
-    if (isHidden){
-      s.style.display = 'block';
-      s.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      s.style.display = 'none';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  document.addEventListener('DOMContentLoaded', function(){
+  (function(){
+    // Ensure every <a href="#adhesion"> opens/closes the section
     document.querySelectorAll('a[href="#adhesion"]').forEach(function(a){
       a.addEventListener('click', function(ev){
         ev.preventDefault();
-        window.toggleAdhesion();
+        (window.toggleAdhesion || function(){}) ();
       });
     });
-  });
 
-  // If someone lands on /#adhesion, open it automatically
-  if (location.hash === '#adhesion') {
-    window.addEventListener('load', function(){ window.toggleAdhesion(); });
-  }
-})();
-</script>
-
-<script>
-// Auto-resize the HelloAsso iframe height safely via postMessage
-window.addEventListener('message', function(e){
-  try{
-    if (!e || !e.data || typeof e.data.height === 'undefined') return;
-    // Only accept messages from HelloAsso
-    var host = new URL(e.origin).hostname;
-    if (!/helloasso\.com$/.test(host)) return;
-    var f = document.getElementById('haWidget');
-    if (f) f.style.height = e.data.height + 'px';
-  }catch(_){}
-}, false);
-</script>
-<script>
-(function(){
-  // 1) Toggle open/close (global so inline onclick still works)
-  function toggleAdhesion(e){
-    if (e && e.preventDefault) e.preventDefault();
-    var s = document.getElementById('adhesion');
-    if (!s) return;
-
-    var show = (s.style.display === 'none' || !s.style.display);
-    s.style.display = show ? 'block' : 'none';
-    if (show) {
-      s.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Open automatically if URL ends with #adhesion
+    if (location.hash === '#adhesion' && typeof window.toggleAdhesion === 'function') {
+      window.toggleAdhesion();
     }
-    // console.log('Adhésion:', show ? 'open' : 'closed');
-  }
-  window.toggleAdhesion = toggleAdhesion;
 
-  // 2) Make EVERY link to #adhesion work (desktop & mobile)
-  // (No need to wait for DOMContentLoaded since this is at the end of <body>)
-  var links = document.querySelectorAll('a[href="#adhesion"]');
-  links.forEach(function(a){
-    a.addEventListener('click', toggleAdhesion);
-  });
-
-  // 3) If someone lands on /#adhesion, open it automatically
-  if (location.hash === '#adhesion') {
-    toggleAdhesion();
-  }
-
-  // 4) Safely auto-resize the HelloAsso widget via postMessage
-  window.addEventListener('message', function(e){
-    try{
-      if (!e || !e.data || typeof e.data.height === 'undefined') return;
-      // Accept only HelloAsso
-      var origin = e.origin || '';
-      var ok = origin && /helloasso\.com$/.test(new URL(origin).hostname);
-      if (!ok) return;
-
-      var f = document.getElementById('haWidget');
-      if (f) f.style.height = e.data.height + 'px';
-    }catch(_){}
-  }, false);
-})();
-</script>
-
-
+    // Auto-resize HelloAsso widget height via postMessage
+    window.addEventListener('message', function(e){
+      try{
+        if (!e || !e.data || typeof e.data.height === 'undefined') return;
+        var origin = e.origin || '';
+        var host = origin ? new URL(origin).hostname : '';
+        if (!/helloasso\.com$/.test(host)) return;  // trust only HelloAsso
+        var f = document.getElementById('haWidget');
+        if (f) f.style.height = e.data.height + 'px';
+      }catch(_){}
+    }, false);
+  })();
+  </script>
 
 </body>
 </html>
