@@ -295,6 +295,10 @@ $$('img').forEach(img => {
       console.error('Events load error:', err);
     });
 })();
+
+
+const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
+
 </script>
 
 
