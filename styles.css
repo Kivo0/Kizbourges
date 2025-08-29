@@ -284,4 +284,24 @@ h3{ font-size: var(--h3); font-weight: 600; }
   box-shadow: 0 6px 18px rgba(0,0,0,.15);
   background: #000;
 }
+/* Layout only inside the Cours & tarifs section */
+#cours .cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* Make the video card span both columns = full width under the first row */
+#cours .cards .course-ad {
+  grid-column: 1 / -1;
+}
+
+/* Prevent any horizontal overflow */
+#cours .cards .card { min-width: 0; }
+
+@media (max-width: 900px) {
+  #cours .cards { grid-template-columns: 1fr; }
+  #cours .cards .course-ad { grid-column: auto; }
+}
 
