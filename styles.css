@@ -253,3 +253,24 @@ h3{ font-size: var(--h3); font-weight: 600; }
     min-width: 360px;
   }
 }
+
+/* Promo video card */
+.video-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 16px;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .video-grid { grid-template-columns: 1fr; }
+}
+.course-video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.15);
+  background: #000;
+}
+.course-ad .copy p { margin: 6px 0 0; }
+
