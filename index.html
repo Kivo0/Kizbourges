@@ -269,7 +269,15 @@
         <h2>Adhésion</h2>
         <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
         <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
-          <iframe id="haWidget" title="Adhésion KizBourges sur HelloAsso" allowtransparency="true" src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget" style="width: 100%; border: none;" onload="window.addEventListener('message', function(e){ if(e && e.data && e.data.height){ var el = document.getElementById('haWidget'); if(el){ el.height = e.data.height + 'px'; } } });"></iframe>
+          <iframe
+  id="haWidget"
+  title="Adhésion KizBourges sur HelloAsso"
+  allowtransparency="true"
+  loading="lazy"
+  src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
+  style="width:100%; border:0; height:600px;"
+></iframe>
+
         </div>
         <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
       </div>
@@ -644,6 +652,54 @@
   io.observe(v);
 })();
 </script>
+  <script>
+// Open/close the adhesion section when any link to #adhesion is clicked
+(function(){
+  // Ensure toggleAdhesion exists and works even without inline onclick
+  window.toggleAdhesion = function(e){
+    if (e && e.preventDefault) e.preventDefault();
+    var s = document.getElementById('adhesion');
+    if (!s) return;
+    var isHidden = (s.style.display === 'none' || !s.style.display);
+    if (isHidden){
+      s.style.display = 'block';
+      s.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      s.style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('a[href="#adhesion"]').forEach(function(a){
+      a.addEventListener('click', function(ev){
+        ev.preventDefault();
+        window.toggleAdhesion();
+      });
+    });
+  });
+
+  // If someone lands on /#adhesion, open it automatically
+  if (location.hash === '#adhesion') {
+    window.addEventListener('load', function(){ window.toggleAdhesion(); });
+  }
+})();
+</script>
+
+<script>
+// Auto-resize the HelloAsso iframe height safely via postMessage
+window.addEventListener('message', function(e){
+  try{
+    if (!e || !e.data || typeof e.data.height === 'undefined') return;
+    // Only accept messages from HelloAsso
+    var host = new URL(e.origin).hostname;
+    if (!/helloasso\.com$/.test(host)) return;
+    var f = document.getElementById('haWidget');
+    if (f) f.style.height = e.data.height + 'px';
+  }catch(_){}
+}, false);
+</script>
+
 
 
 </body>
