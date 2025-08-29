@@ -626,6 +626,25 @@
     .catch(err => console.error('CSV load error:', err));
 })();
 </script>
+  <script>
+(function(){
+  const v = document.getElementById('courseAdVideo');
+  if (!('IntersectionObserver' in window) || !v) return;
+
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        v.play().catch(()=>{ /* user can press play if blocked */ });
+      } else {
+        v.pause();
+      }
+    }
+  }, { threshold: 0.5 });
+
+  io.observe(v);
+})();
+</script>
+
 
 </body>
 </html>
