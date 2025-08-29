@@ -269,7 +269,7 @@
         <h2>Adhésion</h2>
         <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
         <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
-          <iframe
+<iframe
   id="haWidget"
   title="Adhésion KizBourges sur HelloAsso"
   allowtransparency="true"
@@ -698,6 +698,52 @@ window.addEventListener('message', function(e){
     if (f) f.style.height = e.data.height + 'px';
   }catch(_){}
 }, false);
+</script>
+<script>
+(function(){
+  // 1) Toggle open/close (global so inline onclick still works)
+  function toggleAdhesion(e){
+    if (e && e.preventDefault) e.preventDefault();
+    var s = document.getElementById('adhesion');
+    if (!s) return;
+
+    var show = (s.style.display === 'none' || !s.style.display);
+    s.style.display = show ? 'block' : 'none';
+    if (show) {
+      s.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // console.log('Adhésion:', show ? 'open' : 'closed');
+  }
+  window.toggleAdhesion = toggleAdhesion;
+
+  // 2) Make EVERY link to #adhesion work (desktop & mobile)
+  // (No need to wait for DOMContentLoaded since this is at the end of <body>)
+  var links = document.querySelectorAll('a[href="#adhesion"]');
+  links.forEach(function(a){
+    a.addEventListener('click', toggleAdhesion);
+  });
+
+  // 3) If someone lands on /#adhesion, open it automatically
+  if (location.hash === '#adhesion') {
+    toggleAdhesion();
+  }
+
+  // 4) Safely auto-resize the HelloAsso widget via postMessage
+  window.addEventListener('message', function(e){
+    try{
+      if (!e || !e.data || typeof e.data.height === 'undefined') return;
+      // Accept only HelloAsso
+      var origin = e.origin || '';
+      var ok = origin && /helloasso\.com$/.test(new URL(origin).hostname);
+      if (!ok) return;
+
+      var f = document.getElementById('haWidget');
+      if (f) f.style.height = e.data.height + 'px';
+    }catch(_){}
+  }, false);
+})();
 </script>
 
 
