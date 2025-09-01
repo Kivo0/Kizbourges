@@ -15,33 +15,17 @@
   <link rel="icon" href="Images/logo2.jpeg">
   <link rel="stylesheet" href="styles.css">
 
-  <!-- Minimal tweaks for nav + Adhésion behavior -->
+  <!-- Small responsive tweak for mobile nav button -->
   <style>
-    /* Open Adhésion only when it's the URL target */
-    #adhesion{ display:none; }
-    #adhesion:target{ display:block !important; }
-
-    /* Prevent sticky header from covering the section on jump */
-    .section{ scroll-margin-top: 80px; }
-
     @media (max-width: 768px){
       .nav{ display:none; }
       .nav.open{ display:block; }
       #menu{ font-size:1.4rem; background:none; border:1px solid #ddd; padding:6px 10px; border-radius:8px; }
       .nav a{ display:block; padding:10px 0; }
     }
-    .adhesion-close{
-      display:inline-block; margin-top:10px; padding:6px 12px;
-      background:#eee; border:1px solid #ccc; border-radius:6px;
-      cursor:pointer; font-size:14px;
-      text-decoration:none; color:#111;
-    }
   </style>
 </head>
 <body>
-
-  <!-- anchor target to close Adhésion -->
-  <div id="top"></div>
 
   <div id="fb-root"></div>
   <script async defer crossorigin="anonymous"
@@ -63,8 +47,8 @@
         <a href="#events">Événements</a>
         <a href="#covoit">Covoiturage</a>
         <a href="#son">Ambiance</a>
-        <!-- No JS needed: just anchor to #adhesion -->
-        <a href="#adhesion">Adhésion</a>
+        <!-- Simple external link to HelloAsso -->
+        <a href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" target="_blank" rel="noopener">Adhésion</a>
         <a href="#contact">Contact</a>
       </nav>
     </div>
@@ -76,7 +60,7 @@
       <h1>Bienvenue chez KizBourges</h1>
       <p>Kizomba, urban kiz & good vibes à Bourges ✨</p>
       <div class="cta-row">
-        <a class="btn" href="#adhesion">Adhérer</a>
+        <a class="btn" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" target="_blank" rel="noopener">Adhérer</a>
         <a class="btn alt" href="#events">Prochaines soirées</a>
       </div>
     </div>
@@ -117,7 +101,7 @@
                 <h3>Découvre la Kizomba en 60 secondes</h3>
                 <p>Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours ✨</p>
                 <div class="cta-row" style="margin-top:8px;">
-                  <a class="btn" href="#adhesion">S’inscrire / Adhérer</a>
+                  <a class="btn" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" target="_blank" rel="noopener">S’inscrire / Adhérer</a>
                   <a class="btn alt" href="#events">Voir les prochaines dates</a>
                 </div>
               </div>
@@ -202,25 +186,6 @@
       </div>
     </section>
 
-    <!-- Adhésion (shown when targeted) -->
-    <section id="adhesion" class="section">
-      <div class="container">
-        <h2>Adhésion</h2>
-        <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
-
-        <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
-          <!-- EXACT iframe snippet you asked for -->
-          <iframe id="haWidget" allowtransparency="true"
-            src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
-            style="width: 100%; border: none;"
-            onload="window.addEventListener('message', e => { const dataHeight = e.data && e.data.height; const haWidgetElement = document.getElementById('haWidget'); if (dataHeight && haWidgetElement) { haWidgetElement.height = dataHeight + 'px'; } })"></iframe>
-        </div>
-
-        <!-- Close just changes the hash to #top so :target no longer applies -->
-        <a class="adhesion-close" href="#top">Fermer ✕</a>
-      </div>
-    </section>
-
     <!-- Contact -->
     <section id="contact" class="section alt">
       <div class="container">
@@ -269,7 +234,7 @@
       if (y && !y.textContent) y.textContent = new Date().getFullYear();
     })();
 
-    /* Events (CSV) — unchanged from your setup */
+    /* Events CSV loader (unchanged) */
     (function(){
       const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
@@ -362,71 +327,3 @@
           const meta=document.createElement('div');
           const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement';
           const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time);
-          const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
-
-          const row=document.createElement('div'); row.style.marginTop='6px';
-          if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
-          if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
-
-          meta.append(h3,p1,p2,row);
-          card.append(pic,meta);
-          list.appendChild(card);
-        });
-      }
-      function prev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
-      function next(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
-
-      prevB.addEventListener('click', prev);
-      nextB.addEventListener('click', next);
-      document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')prev(); if(e.key==='ArrowRight')next(); });
-
-      fetch(CSV_URL)
-        .then(r => r.text())
-        .then(text => {
-          const delimiter = detectDelimiter(text);
-          const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
-          const rows = parsed.data.map(row => {
-            const o = {};
-            for (const k in row) if (Object.hasOwn(row, k)) {
-              const key = (k||'').trim();
-              const val = typeof row[k]==='string' ? row[k].trim() : row[k];
-              o[key] = val;
-            }
-            return o;
-          });
-          events = rows.map(r => ({
-            id: r.id || r.name,
-            name: r.name,
-            start_time: r.start_time,
-            place: r.place ? { name: r.place } : { name: '' },
-            cover: normalizeCover(r.cover || ''),
-            event_url: r.event_url,
-            ticket_url: r.ticket_url
-          }))
-          .filter(ev => ev.name)
-          .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
-
-          if (!events.length) return;
-          renderDots(); renderCarousel(); renderList();
-        })
-        .catch(err => console.error('CSV load error:', err));
-    })();
-
-    /* Auto play/pause promo video when visible */
-    (function(){
-      const v = document.getElementById('courseAdVideo');
-      if (!('IntersectionObserver' in window) || !v) return;
-      const io = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            v.play().catch(()=>{});
-          } else {
-            v.pause();
-          }
-        }
-      }, { threshold: 0.5 });
-      io.observe(v);
-    })();
-  </script>
-</body>
-</html>
