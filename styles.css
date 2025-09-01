@@ -24,6 +24,7 @@
   /* Radii & borders */
   --radius: 10px;
   --card-border: #dde2ea;
+   --header-h: 80px;
 }
 
 /* ===== Base ===== */
@@ -56,7 +57,7 @@ p{ margin: 0 0 12px; }
 /* Smaller logo */
 .logo-img{
   height:auto;
-  max-height:56px;   /* adjust 48–64px to taste */
+   max-height: calc(var(--header-h) - 15px);   /* adjust 48–64px to taste */
   width:auto;
 }
 
@@ -126,9 +127,10 @@ h3{ font-size: var(--h3); font-weight: 600; }
 @media (max-width: 720px){
   #menu{ display: block; }
 
-  .site-header .container{
-    justify-content: space-between; /* logo left, menu right */
-  }
+.site-header .container{
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--header-h);
+}
 
   .nav{
     display: none;
@@ -137,6 +139,7 @@ h3{ font-size: var(--h3); font-weight: 600; }
     padding: 8px 16px;
     opacity: 0; transform: translateY(-6px);
     transition: opacity .18s ease, transform .18s ease;
+     top: var(--header-h);
   }
   .nav a{
     display: block; margin: 10px 0;
