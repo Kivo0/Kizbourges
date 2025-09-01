@@ -73,8 +73,9 @@ p{ margin: 0 0 12px; }
   padding: 72px 0; text-align: center; color: #fff;
   background:
     linear-gradient(180deg, rgba(59,60,63,.65), rgba(130,153,190,.55)),
-    url('images/cover.jpg') center / cover no-repeat;
+    url('Images/cover.jpeg') center / cover no-repeat;
 }
+
 .cta-row{ display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
 
 /* ===== Sections ===== */
