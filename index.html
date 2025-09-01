@@ -267,24 +267,26 @@
       </div>
     </section>
 
-    <!-- Adhésion (hidden by default) -->
-    <section id="adhesion" class="section" style="display:none;">
-      <div class="container">
-        <h2>Adhésion</h2>
-        <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
-        <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
-          <iframe
-            id="haWidget"
-            title="Adhésion KizBourges sur HelloAsso"
-            allowtransparency="true"
-            loading="lazy"
-            src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
-            style="width:100%; border:0; height:600px;">
-          </iframe>
-        </div>
-        <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
-      </div>
-    </section>
+   <!-- Adhésion (hidden by default) -->
+<section id="adhesion" class="section" style="display:none;">
+  <div class="container">
+    <h2>Adhésion</h2>
+    <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
+
+    <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
+      <iframe
+        id="haWidget"
+        title="Adhésion KizBourges sur HelloAsso"
+        allowtransparency="true"
+        loading="lazy"
+        src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
+        style="width:100%;border:0;height:600px;"
+      ></iframe>
+    </div>
+
+    <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
+  </div>
+</section>
 
     <!-- Contact -->
     <section id="contact" class="section alt">
@@ -548,6 +550,21 @@
     }, false);
   })();
   </script>
+  <script>
+  // Auto-resize the HelloAsso widget via postMessage (desktop + mobile)
+  window.addEventListener('message', function (e) {
+    try {
+      if (!e || !e.data || typeof e.data.height === 'undefined') return;
+      // Accept messages only from HelloAsso
+      var host = new URL(e.origin).hostname;
+      if (!/helloasso\.com$/.test(host)) return;
+
+      var f = document.getElementById('haWidget');
+      if (f) f.style.height = e.data.height + 'px';
+    } catch (_) {}
+  }, false);
+</script>
+
 
 </body>
 </html>
