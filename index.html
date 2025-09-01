@@ -185,14 +185,43 @@
       </div>
     </section>
 
-    <!-- Covoiturage -->
-    <section id="covoit" class="section alt">
-      <div class="container">
-        <h2>Covoiturage</h2>
-        <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
-        <p><a class="btn" href="https://forms.gle/PLACEHOLDER" target="_blank" rel="noopener">Formulaire covoiturage</a></p>
-      </div>
-    </section>
+<!-- Covoiturage -->
+<section id="covoit" class="section alt">
+  <div class="container">
+    <h2>Covoiturage</h2>
+    <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
+
+    <div class="cta-row" style="gap:10px; flex-wrap:wrap;">
+      <!-- 1) Lien vers Google Forms -->
+      <a class="btn"
+         href="https://forms.gle/SpdXLDX815FWxpan6"
+         target="_blank" rel="noopener">
+        Remplir le formulaire
+      </a>
+
+      <!-- 2) Placeholder WhatsApp (désactivé pour l’instant) -->
+      <a class="btn"
+         href="#"
+         aria-disabled="true"
+         onclick="return false;"
+         style="opacity:.55; cursor:not-allowed;"
+         title="Lien WhatsApp bientôt disponible">
+        Groupe WhatsApp (bientôt)
+      </a>
+    </div>
+
+    <!-- (Optionnel) Affichage du formulaire directement sur la page -->
+    <!-- Remplacez FORM_ID ci-dessous par l’ID d’intégration fourni par Google Forms -->
+    <div class="form-embed" style="margin-top:18px; max-width:900px; margin-left:auto; margin-right:auto;">
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSeCyRhMI0_3T98cekYc4D2fcgG4bG8Mgqnaf2SDTEyQAVntrw/viewform?usp=dialog"
+        width="100%" height="1200" frameborder="0" marginheight="0" marginwidth="0" loading="lazy">
+        Chargement…
+      </iframe>
+    </div>
+  </div>
+</section>
+
 
     <!-- Ambiance / SoundCloud (carousel) -->
     <section id="son" class="section">
