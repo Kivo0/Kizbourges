@@ -1,33 +1,32 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>KizBourges — Association de danse</title>
+
   <meta name="description" content="Site officiel de KizBourges : cours, événements, covoiturage et adhésion à Bourges.">
   <meta name="keywords" content="Kizomba Bourges, danse Bourges, cours kizomba, soirées kizomba, KizBourges">
   <meta property="og:title" content="KizBourges — Association de danse">
   <meta property="og:description" content="Cours, soirées & covoiturage à Bourges. Rejoins la communauté Kizomba !">
   <meta property="og:type" content="website">
   <meta property="og:image" content="Images/cover.jpeg">
+
   <link rel="icon" href="Images/logo2.jpeg">
   <link rel="stylesheet" href="styles.css">
+
+  <!-- Small responsive tweaks just for the nav & the close button -->
   <style>
-    @media (max-width: 768px) {
-      .nav { display: none; }
-      .nav.open { display: block; }
-      #menu { font-size: 1.4rem; background:none; border:1px solid #ddd; padding:6px 10px; border-radius:8px; }
-      .nav a { display:block; padding:10px 0; }
+    @media (max-width: 768px){
+      .nav{ display:none; }
+      .nav.open{ display:block; }
+      #menu{ font-size:1.4rem; background:none; border:1px solid #ddd; padding:6px 10px; border-radius:8px; }
+      .nav a{ display:block; padding:10px 0; }
     }
-    .adhesion-close {
-      display:inline-block;
-      margin-top:10px;
-      padding:6px 12px;
-      background:#eee;
-      border:1px solid #ccc;
-      border-radius:6px;
-      cursor:pointer;
-      font-size:14px;
+    .adhesion-close{
+      display:inline-block; margin-top:10px; padding:6px 12px;
+      background:#eee; border:1px solid #ccc; border-radius:6px;
+      cursor:pointer; font-size:14px;
     }
   </style>
 </head>
@@ -44,7 +43,9 @@
       <a class="logo" href="./" aria-label="KizBourges">
         <img src="Images/logo2.jpeg" alt="Logo KizBourges" class="logo-img">
       </a>
+
       <button id="menu" aria-label="Ouvrir le menu">☰</button>
+
       <nav id="nav" class="nav" aria-label="Navigation principale">
         <a href="#asso">L’asso</a>
         <a href="#cours">Cours & tarifs</a>
@@ -89,6 +90,7 @@
             <p><strong>Où :</strong> Salle Baptiste Marcel, 2 Rue Parmentier, 18000 Bourges</p>
             <p><strong>Tarif :</strong> 10€ / cours ou 150€ / année</p>
           </li>
+
           <li class="card">
             <h3>Pratique — Tous niveaux</h3>
             <p><strong>Quand :</strong> Mardi 21h15–22h15</p>
@@ -113,13 +115,8 @@
                   id="courseAdVideo"
                   class="course-video"
                   title="KizBourges — Promo cours"
-                  playsinline
-                  muted
-                  loop
-                  preload="metadata"
-                  poster="Images/course-poster.jpg"
-                  controls
-                >
+                  playsinline muted loop controls preload="metadata"
+                  poster="Images/course-poster.jpg">
                   <source src="Videos/course-ad.mp4" type="video/mp4">
                   Votre navigateur ne supporte pas la vidéo HTML5.
                 </video>
@@ -135,7 +132,6 @@
       <div class="container">
         <h2>Événements à venir</h2>
 
-        <!-- START: KizBourges Events Slider (single instance) -->
         <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
           <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
             style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
@@ -143,8 +139,8 @@
           <div class="ev-card" id="ev-card" style="padding:0 28px;text-align:center;">
             <a id="ev-link" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-block;">
               <img id="ev-img" src="" alt="Affiche de l’événement"
-                  loading="lazy"
-                  style="width:100%;max-height:460px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
+                   loading="lazy"
+                   style="width:100%;max-height:460px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
               <h3 id="ev-title" style="margin:10px 0 6px;"></h3>
               <p id="ev-when" style="margin:0;color:#555;"></p>
               <p id="ev-where" style="margin:2px 0 0;color:#777;font-size:14px;"></p>
@@ -155,9 +151,9 @@
           <button id="ev-next" aria-label="Événement suivant" class="ev-arrow"
             style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
         </div>
+
         <div id="ev-dots" style="text-align:center;margin-top:12px;"></div>
         <div id="ev-list" class="cards" role="list" style="margin-top:22px;"></div>
-        <!-- END: KizBourges Events Slider -->
       </div>
     </section>
 
@@ -177,116 +173,43 @@
         <p>Fais défiler nos playlists avec les flèches :</p>
 
         <div class="soundcloud-carousel" style="max-width:820px;margin:auto;position:relative;">
-          <button id="sc-prev" aria-label="Playlist précédente" class="sc-arrow" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
+          <button id="sc-prev" aria-label="Playlist précédente" class="sc-arrow"
+            style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
 
           <div class="sc-player" style="padding:0 28px;">
             <h3 id="sc-title" style="text-align:center;margin-bottom:8px;">Kizomba – N°1</h3>
-            <iframe
-              id="sc-player"
-              title="Playlist SoundCloud KizBourges"
-              width="100%"
-              height="450"
-              scrolling="no"
-              frameborder="no"
-              allow="autoplay"
+            <iframe id="sc-player" title="Playlist SoundCloud KizBourges"
+              width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay"
               src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
             </iframe>
           </div>
 
-          <button id="sc-next" aria-label="Playlist suivante" class="sc-arrow" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+          <button id="sc-next" aria-label="Playlist suivante" class="sc-arrow"
+            style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
         </div>
-
-        <script>
-          // SoundCloud playlist carousel (with dots)
-          (function(){
-            const base = 'https://w.soundcloud.com/player/?url=';
-            // use orange player
-            const tail = '&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
-
-            const playlists = [
-              { title: 'Kizomba – N°1',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/152611885') + tail },
-              { title: "Kiz'Bourges N°2", url: base + encodeURIComponent('https://api.soundcloud.com/playlists/879844930') + tail },
-              { title: 'Kizomba - Tarraxa', url: base + encodeURIComponent('https://api.soundcloud.com/playlists/124156830') + tail },
-              { title: 'Kizomba - Urban',   url: base + encodeURIComponent('https://api.soundcloud.com/playlists/323224243') + tail },
-              { title: 'Kizomba - Douceur', url: base + encodeURIComponent('https://api.soundcloud.com/playlists/266791296') + tail },
-              { title: 'Kizomba - Authentik', url: base + encodeURIComponent('https://api.soundcloud.com/playlists/237162467') + tail },
-              { title: 'Semba Kiz’Bourges',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/153330518') + tail }
-            ];
-
-            let idx = 0; // start with Kizomba – N°1
-            const titleEl = document.getElementById('sc-title');
-            const frameEl = document.getElementById('sc-player');
-            const prevBtn = document.getElementById('sc-prev');
-            const nextBtn = document.getElementById('sc-next');
-
-            // Dots / indicators
-            const carousel = document.querySelector('.soundcloud-carousel');
-            const indicators = document.createElement('div');
-            indicators.style.textAlign = 'center';
-            indicators.style.marginTop = '10px';
-            playlists.forEach((pl,i)=>{
-              const dot = document.createElement('span');
-              dot.textContent = '●';
-              dot.style.cursor = 'pointer';
-              dot.style.margin = '0 6px';
-              dot.style.fontSize = '16px';
-              dot.style.transition = 'transform 0.2s, color 0.2s';
-              dot.addEventListener('click', ()=>{ idx=i; render(); });
-              indicators.appendChild(dot);
-            });
-            carousel.appendChild(indicators);
-
-            function updateDots(){
-              [...indicators.children].forEach((dot,i)=>{
-                if(i===idx){ dot.style.color = '#000'; dot.style.transform = 'scale(1.3)'; }
-                else { dot.style.color = '#ccc'; dot.style.transform = 'scale(1)'; }
-              });
-            }
-
-            function render(){
-              titleEl.textContent = playlists[idx].title;
-              if (frameEl && frameEl.src !== playlists[idx].url) {
-                frameEl.src = playlists[idx].url;
-              }
-              updateDots();
-            }
-
-            function prev(){ idx = (idx - 1 + playlists.length) % playlists.length; render(); }
-            function next(){ idx = (idx + 1) % playlists.length; render(); }
-
-            prevBtn.addEventListener('click', prev);
-            nextBtn.addEventListener('click', next);
-            document.addEventListener('keydown', (e)=>{
-              if (e.key === 'ArrowLeft') prev();
-              if (e.key === 'ArrowRight') next();
-            });
-
-            render();
-          })();
-        </script>
       </div>
     </section>
 
-   <!-- Adhésion (hidden by default) -->
-<section id="adhesion" class="section" style="display:none;">
-  <div class="container">
-    <h2>Adhésion</h2>
-    <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
+    <!-- Adhésion (hidden by default) -->
+    <section id="adhesion" class="section" style="display:none;">
+      <div class="container">
+        <h2>Adhésion</h2>
+        <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
 
-    <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
-      <iframe
-        id="haWidget"
-        title="Adhésion KizBourges sur HelloAsso"
-        allowtransparency="true"
-        loading="lazy"
-        src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
-        style="width:100%;border:0;height:600px;"
-      ></iframe>
-    </div>
+        <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
+          <iframe
+            id="haWidget"
+            title="Adhésion KizBourges sur HelloAsso"
+            allowtransparency="true"
+            loading="lazy"
+            src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
+            style="width:100%;border:0;height:600px;">
+          </iframe>
+        </div>
 
-    <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
-  </div>
-</section>
+        <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
+      </div>
+    </section>
 
     <!-- Contact -->
     <section id="contact" class="section alt">
@@ -299,8 +222,7 @@
         <p>Instagram : <a href="https://www.instagram.com/kizbourges?igsh=MTQyNW9udjh6Ym5raw==" target="_blank" rel="noopener">@kizbourges</a></p>
         <p>Facebook : <a href="https://www.facebook.com/KizBourges" target="_blank" rel="noopener">KizBourges</a></p>
         <div style="margin-top:24px;text-align:center;">
-          <!-- If this file changed extension, update the src accordingly -->
-          <img src="Images/logo2.png" alt="Amigos Latino — Partenaire KizBourges" style="max-width:200px;display:inline-block;">
+          <img src="Images/logo2.jpeg" alt="Amigos Latino — Partenaire KizBourges" style="max-width:200px;display:inline-block;">
           <div style="font-size:14px;color:#666;margin-top:6px;">Partenaire — Amigos Latino</div>
         </div>
       </div>
@@ -310,261 +232,285 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
-      © <span id="year"></span> KizBourges — Tous droits réservés ·
+      © <span id="year"></span> KizBourges — Tous droits réservés
     </div>
   </footer>
 
-  <!-- Basic site JS -->
-  <script>
-    // Mobile menu toggle
-    (function(){
-      var btn = document.getElementById('menu');
-      var nav = document.getElementById('nav');
-      if(btn && nav){
-        btn.setAttribute('aria-expanded','false');
-        btn.addEventListener('click', function(){
-          var isOpen = nav.classList.toggle('open');
-          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        });
-      }
-    })();
-
-    // Toggle adhesion section (also used by close button)
-    function toggleAdhesion(e){
-      if(e) e.preventDefault();
-      var section = document.getElementById("adhesion");
-      if(section.style.display === "none" || section.style.display === ""){
-        section.style.display = "block";
-        section.scrollIntoView({behavior:"smooth"});
-      } else {
-        section.style.display = "none";
-        window.scrollTo({top:0,behavior:"smooth"});
-      }
-    }
-
-    // Footer year
-    (function(){
-      var y = document.getElementById('year');
-      if (y && !y.textContent) { y.textContent = new Date().getFullYear(); }
-    })();
-  </script>
-
-  <!-- Papa Parse (once) -->
+  <!-- Libraries -->
   <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  <!-- KizBourges Events loader (single instance) -->
-  <script defer>
-  (function(){
-    const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
-
-    // DOM
-    const img   = document.getElementById('ev-img');
-    const title = document.getElementById('ev-title');
-    const when  = document.getElementById('ev-when');
-    const where = document.getElementById('ev-where');
-    const link  = document.getElementById('ev-link');
-    const cta   = document.getElementById('ev-cta');
-    const prevB = document.getElementById('ev-prev');
-    const nextB = document.getElementById('ev-next');
-    const dots  = document.getElementById('ev-dots');
-    const list  = document.getElementById('ev-list');
-
-    let events = [], idx = 0;
-
-    // Helpers
-    function detectDelimiter(text){
-      const header = text.split(/\r?\n/,1)[0] || '';
-      const semis  = (header.match(/;/g)||[]).length;
-      const commas = (header.match(/,/g)||[]).length;
-      return semis > commas ? ';' : ',';
-    }
-    function normalizeCover(url){
-      if(!url) return '';
-      url = url.trim();
-      if (url.startsWith('/')) url = url.slice(1); // GH Pages project path
-      if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
-        url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
-      }
-      if (url.startsWith('images/')) url = 'Images/' + url.slice(7);
-      return url;
-    }
-    function fmtDate(iso){
-      if(!iso) return '';
-      const d = new Date(iso);
-      return isNaN(d) ? '' : d.toLocaleString('fr-FR', {
-        timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short',
-        hour:'2-digit', minute:'2-digit'
-      });
-    }
-
-    function renderCarousel(){
-      if(!events.length) return;
-      const ev = events[idx];
-      img.onerror = () => { img.onerror = null; img.src = 'Images/cover.jpeg'; };
-      img.src  = ev.cover || 'Images/cover.jpeg';
-      img.alt  = `Affiche : ${ev.name || 'Événement'}`;
-      title.textContent = ev.name || 'Événement';
-      when.textContent  = fmtDate(ev.start_time);
-      where.textContent = ev.place?.name || ev.place || '—';
-      link.href         = ev.event_url || '#';
-      cta.innerHTML = '';
-      if (ev.ticket_url){
-        const a = document.createElement('a');
-        a.href = ev.ticket_url; a.target='_blank'; a.rel='noopener';
-        a.className='btn'; a.textContent='Billetterie';
-        cta.appendChild(a);
-      }
-      dots.querySelectorAll('span').forEach((dot,i)=>{
-        dot.style.color = (i===idx)?'#000':'#ccc';
-        dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
-      });
-    }
-
-    function renderDots(){
-      dots.innerHTML = '';
-      events.forEach((_, i)=>{
-        const s = document.createElement('span');
-        s.textContent='●';
-        s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px';
-        s.style.transition='transform .2s, color .2s';
-        s.addEventListener('click', ()=>{ idx=i; renderCarousel(); });
-        dots.appendChild(s);
-      });
-    }
-
-    function renderList(){
-      list.innerHTML='';
-      events.forEach(ev=>{
-        const card=document.createElement('div');
-        card.className='card';
-        card.style.display='grid';
-        card.style.gridTemplateColumns='120px 1fr';
-        card.style.gap='14px'; card.style.alignItems='center';
-
-        const pic=document.createElement('img');
-        pic.onerror = () => { pic.onerror = null; pic.src = 'Images/cover.jpeg'; };
-        pic.src=ev.cover||'Images/cover.jpeg';
-        pic.alt=`Affiche : ${ev.name||'Événement'}`;
-        pic.loading='lazy'; pic.style.width='120px'; pic.style.height='80px';
-        pic.style.objectFit='cover'; pic.style.borderRadius='8px';
-
-        const meta=document.createElement('div');
-        const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement';
-        const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time);
-        const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
-
-        const row=document.createElement('div'); row.style.marginTop='6px';
-        if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
-        if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
-
-        meta.append(h3,p1,p2,row);
-        card.append(pic,meta);
-        list.appendChild(card);
-      });
-    }
-
-    function prev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
-    function next(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
-    prevB.addEventListener('click', prev);
-    nextB.addEventListener('click', next);
-    document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')prev(); if(e.key==='ArrowRight')next(); });
-
-    // Load CSV (auto-detect delimiter)
-    fetch(CSV_URL)
-      .then(r => r.text())
-      .then(text => {
-        const delimiter = detectDelimiter(text);
-        const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
-        const rows = parsed.data.map(row => {
-          const o = {};
-          for (const k in row) if (Object.hasOwn(row, k)) {
-            const key = (k||'').trim();
-            const val = typeof row[k]==='string' ? row[k].trim() : row[k];
-            o[key] = val;
-          }
-          return o;
-        });
-        events = rows.map(r => ({
-          id: r.id || r.name,
-          name: r.name,
-          start_time: r.start_time,
-          place: r.place ? { name: r.place } : { name: '' },
-          cover: normalizeCover(r.cover || ''),
-          event_url: r.event_url,
-          ticket_url: r.ticket_url
-        }))
-        .filter(ev => ev.name)
-        .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
-
-        if (!events.length) return;
-        renderDots(); renderCarousel(); renderList();
-      })
-      .catch(err => console.error('CSV load error:', err));
-  })();
-  </script>
-
-  <!-- Auto play/pause promo video when visible -->
+  <!-- Page scripts -->
   <script>
-  (function(){
-    const v = document.getElementById('courseAdVideo');
-    if (!('IntersectionObserver' in window) || !v) return;
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          v.play().catch(()=>{});
-        } else {
-          v.pause();
-        }
-      }
-    }, { threshold: 0.5 });
-    io.observe(v);
-  })();
-  </script>
-
-  <!-- Unified Adhésion bindings + auto-resize -->
-  <script>
-  (function(){
-    // Ensure every <a href="#adhesion"> opens/closes the section
-    document.querySelectorAll('a[href="#adhesion"]').forEach(function(a){
-      a.addEventListener('click', function(ev){
-        ev.preventDefault();
-        (window.toggleAdhesion || function(){})();
+    /* ===== Mobile menu toggle ===== */
+    (function(){
+      const btn = document.getElementById('menu');
+      const nav = document.getElementById('nav');
+      if(!btn || !nav) return;
+      btn.setAttribute('aria-expanded','false');
+      btn.addEventListener('click', function(){
+        const isOpen = nav.classList.toggle('open');
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
+    })();
+
+    /* ===== Toggle adhesion section ===== */
+    function toggleAdhesion(e){
+      if(e && e.preventDefault) e.preventDefault();
+      const section = document.getElementById("adhesion");
+      if(!section) return;
+      const show = (section.style.display === "none" || !section.style.display);
+      section.style.display = show ? "block" : "none";
+      if (show) {
+        section.scrollIntoView({ behavior:"smooth" });
+      } else {
+        window.scrollTo({ top:0, behavior:"smooth" });
+      }
+    }
+
+    // Make every <a href="#adhesion"> open/close the section
+    document.querySelectorAll('a[href="#adhesion"]').forEach(a=>{
+      a.addEventListener('click', toggleAdhesion);
     });
 
-    // Open automatically if URL ends with #adhesion
-    if (location.hash === '#adhesion' && typeof window.toggleAdhesion === 'function') {
-      window.toggleAdhesion();
+    // Open automatically if loading with #adhesion
+    if (location.hash === '#adhesion') {
+      window.addEventListener('load', () => toggleAdhesion());
     }
 
-    // Auto-resize HelloAsso widget height via postMessage
+    /* ===== Footer year ===== */
+    (function(){
+      const y = document.getElementById('year');
+      if (y && !y.textContent) y.textContent = new Date().getFullYear();
+    })();
+
+    /* ===== Events CSV loader ===== */
+    (function(){
+      const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
+
+      const img   = document.getElementById('ev-img');
+      const title = document.getElementById('ev-title');
+      const when  = document.getElementById('ev-when');
+      const where = document.getElementById('ev-where');
+      const link  = document.getElementById('ev-link');
+      const cta   = document.getElementById('ev-cta');
+      const prevB = document.getElementById('ev-prev');
+      const nextB = document.getElementById('ev-next');
+      const dots  = document.getElementById('ev-dots');
+      const list  = document.getElementById('ev-list');
+
+      let events = [], idx = 0;
+
+      function detectDelimiter(text){
+        const header = text.split(/\r?\n/,1)[0] || '';
+        const semis  = (header.match(/;/g)||[]).length;
+        const commas = (header.match(/,/g)||[]).length;
+        return semis > commas ? ';' : ',';
+      }
+      function normalizeCover(url){
+        if(!url) return '';
+        url = url.trim();
+        if (url.startsWith('/')) url = url.slice(1);
+        if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
+          url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
+        }
+        if (url.startsWith('images/')) url = 'Images/' + url.slice(7);
+        return url;
+      }
+      function fmtDate(iso){
+        if(!iso) return '';
+        const d = new Date(iso);
+        return isNaN(d) ? '' : d.toLocaleString('fr-FR', {
+          timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short',
+          hour:'2-digit', minute:'2-digit'
+        });
+      }
+      function renderCarousel(){
+        if(!events.length) return;
+        const ev = events[idx];
+        img.onerror = () => { img.onerror = null; img.src = 'Images/cover.jpeg'; };
+        img.src  = ev.cover || 'Images/cover.jpeg';
+        img.alt  = `Affiche : ${ev.name || 'Événement'}`;
+        title.textContent = ev.name || 'Événement';
+        when.textContent  = fmtDate(ev.start_time);
+        where.textContent = ev.place?.name || ev.place || '—';
+        link.href         = ev.event_url || '#';
+        cta.innerHTML = '';
+        if (ev.ticket_url){
+          const a = document.createElement('a');
+          a.href = ev.ticket_url; a.target = '_blank'; a.rel = 'noopener';
+          a.className = 'btn'; a.textContent = 'Billetterie';
+          cta.appendChild(a);
+        }
+        dots.querySelectorAll('span').forEach((dot,i)=>{
+          dot.style.color = (i===idx)?'#000':'#ccc';
+          dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
+        });
+      }
+      function renderDots(){
+        dots.innerHTML = '';
+        events.forEach((_, i)=>{
+          const s = document.createElement('span');
+          s.textContent='●';
+          s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px';
+          s.style.transition='transform .2s, color .2s';
+          s.addEventListener('click', ()=>{ idx=i; renderCarousel(); });
+          dots.appendChild(s);
+        });
+      }
+      function renderList(){
+        list.innerHTML='';
+        events.forEach(ev=>{
+          const card=document.createElement('div');
+          card.className='card';
+          card.style.display='grid';
+          card.style.gridTemplateColumns='120px 1fr';
+          card.style.gap='14px'; card.style.alignItems='center';
+
+          const pic=document.createElement('img');
+          pic.onerror = () => { pic.onerror = null; pic.src = 'Images/cover.jpeg'; };
+          pic.src=ev.cover||'Images/cover.jpeg';
+          pic.alt=`Affiche : ${ev.name||'Événement'}`;
+          pic.loading='lazy'; pic.style.width='120px'; pic.style.height='80px';
+          pic.style.objectFit='cover'; pic.style.borderRadius='8px';
+
+          const meta=document.createElement('div');
+          const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement';
+          const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time);
+          const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
+
+          const row=document.createElement('div'); row.style.marginTop='6px';
+          if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
+          if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
+
+          meta.append(h3,p1,p2,row);
+          card.append(pic,meta);
+          list.appendChild(card);
+        });
+      }
+      function prev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
+      function next(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
+
+      prevB.addEventListener('click', prev);
+      nextB.addEventListener('click', next);
+      document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')prev(); if(e.key==='ArrowRight')next(); });
+
+      fetch(CSV_URL)
+        .then(r => r.text())
+        .then(text => {
+          const delimiter = detectDelimiter(text);
+          const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
+          const rows = parsed.data.map(row => {
+            const o = {};
+            for (const k in row) if (Object.hasOwn(row, k)) {
+              const key = (k||'').trim();
+              const val = typeof row[k]==='string' ? row[k].trim() : row[k];
+              o[key] = val;
+            }
+            return o;
+          });
+          events = rows.map(r => ({
+            id: r.id || r.name,
+            name: r.name,
+            start_time: r.start_time,
+            place: r.place ? { name: r.place } : { name: '' },
+            cover: normalizeCover(r.cover || ''),
+            event_url: r.event_url,
+            ticket_url: r.ticket_url
+          }))
+          .filter(ev => ev.name)
+          .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
+
+          if (!events.length) return;
+          renderDots(); renderCarousel(); renderList();
+        })
+        .catch(err => console.error('CSV load error:', err));
+    })();
+
+    /* ===== SoundCloud carousel (with dots) ===== */
+    (function(){
+      const base = 'https://w.soundcloud.com/player/?url=';
+      const tail = '&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
+      const playlists = [
+        { title: 'Kizomba – N°1',      url: base + encodeURIComponent('https://api.soundcloud.com/playlists/152611885') + tail },
+        { title: "Kiz'Bourges N°2",    url: base + encodeURIComponent('https://api.soundcloud.com/playlists/879844930') + tail },
+        { title: 'Kizomba - Tarraxa',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/124156830') + tail },
+        { title: 'Kizomba - Urban',    url: base + encodeURIComponent('https://api.soundcloud.com/playlists/323224243') + tail },
+        { title: 'Kizomba - Douceur',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/266791296') + tail },
+        { title: 'Kizomba - Authentik',url: base + encodeURIComponent('https://api.soundcloud.com/playlists/237162467') + tail },
+        { title: 'Semba Kiz’Bourges',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/153330518') + tail }
+      ];
+      let idx = 0;
+      const titleEl = document.getElementById('sc-title');
+      const frameEl = document.getElementById('sc-player');
+      const prevBtn = document.getElementById('sc-prev');
+      const nextBtn = document.getElementById('sc-next');
+
+      const carousel = document.querySelector('.soundcloud-carousel');
+      const indicators = document.createElement('div');
+      indicators.style.textAlign = 'center';
+      indicators.style.marginTop = '10px';
+      playlists.forEach((pl,i)=>{
+        const dot = document.createElement('span');
+        dot.textContent = '●';
+        dot.style.cursor = 'pointer';
+        dot.style.margin = '0 6px';
+        dot.style.fontSize = '16px';
+        dot.style.transition = 'transform 0.2s, color 0.2s';
+        dot.addEventListener('click', ()=>{ idx=i; render(); });
+        indicators.appendChild(dot);
+      });
+      carousel.appendChild(indicators);
+
+      function updateDots(){
+        [...indicators.children].forEach((dot,i)=>{
+          if(i===idx){ dot.style.color = '#000'; dot.style.transform = 'scale(1.3)'; }
+          else { dot.style.color = '#ccc'; dot.style.transform = 'scale(1)'; }
+        });
+      }
+      function render(){
+        titleEl.textContent = playlists[idx].title;
+        if (frameEl && frameEl.src !== playlists[idx].url) frameEl.src = playlists[idx].url;
+        updateDots();
+      }
+      function prev(){ idx = (idx - 1 + playlists.length) % playlists.length; render(); }
+      function next(){ idx = (idx + 1) % playlists.length; render(); }
+
+      prevBtn.addEventListener('click', prev);
+      nextBtn.addEventListener('click', next);
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'ArrowLeft') prev();
+        if (e.key === 'ArrowRight') next();
+      });
+
+      render();
+    })();
+
+    /* ===== Auto play/pause promo video when visible ===== */
+    (function(){
+      const v = document.getElementById('courseAdVideo');
+      if (!('IntersectionObserver' in window) || !v) return;
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            v.play().catch(()=>{});
+          } else {
+            v.pause();
+          }
+        }
+      }, { threshold: 0.5 });
+      io.observe(v);
+    })();
+
+    /* ===== HelloAsso auto-resize (single, global) ===== */
     window.addEventListener('message', function(e){
       try{
         if (!e || !e.data || typeof e.data.height === 'undefined') return;
-        var origin = e.origin || '';
-        var host = origin ? new URL(origin).hostname : '';
-        if (!/helloasso\.com$/.test(host)) return;  // trust only HelloAsso
-        var f = document.getElementById('haWidget');
+        const originHost = new URL(e.origin).hostname;
+        if (!/helloasso\.com$/.test(originHost)) return; // trust only HelloAsso
+        const f = document.getElementById('haWidget');
         if (f) f.style.height = e.data.height + 'px';
       }catch(_){}
     }, false);
-  })();
   </script>
-  <script>
-  // Auto-resize the HelloAsso widget via postMessage (desktop + mobile)
-  window.addEventListener('message', function (e) {
-    try {
-      if (!e || !e.data || typeof e.data.height === 'undefined') return;
-      // Accept messages only from HelloAsso
-      var host = new URL(e.origin).hostname;
-      if (!/helloasso\.com$/.test(host)) return;
-
-      var f = document.getElementById('haWidget');
-      if (f) f.style.height = e.data.height + 'px';
-    } catch (_) {}
-  }, false);
-</script>
-
-
 </body>
 </html>
