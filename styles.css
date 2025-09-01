@@ -54,7 +54,11 @@ p{ margin: 0 0 12px; }
 }
 
 /* Smaller logo */
-.logo-img{ height: 32px; }
+.logo-img{
+  height:auto;
+  max-height:56px;   /* adjust 48–64px to taste */
+  width:auto;
+}
 
 /* Menu button */
 #menu{ font-size: 24px; background: transparent; color: #fff; border: 0; display: none; }
