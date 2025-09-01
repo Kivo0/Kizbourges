@@ -216,14 +216,7 @@
 
         <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
           <!-- Your exact iframe snippet preserved -->
-          <iframe id="haWidget" allowtransparency="true"
-                  src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
-                  style="width: 100%; border: none;"
-                  onload="window.addEventListener('message', e => {
-                    const dataHeight = e.data && e.data.height;
-                    const el = document.getElementById('haWidget');
-                    if (dataHeight && el) el.height = dataHeight + 'px';
-                  })"></iframe>
+<iframe id="haWidget" allowtransparency="true" src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )" ></iframe>
         </div>
 
         <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
