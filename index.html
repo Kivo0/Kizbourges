@@ -15,7 +15,7 @@
   <link rel="icon" href="Images/logo2.jpeg">
   <link rel="stylesheet" href="styles.css">
 
-  <!-- Small responsive tweaks just for the nav & the close button -->
+  <!-- Small responsive tweaks + scroll offset for sticky header -->
   <style>
     @media (max-width: 768px){
       .nav{ display:none; }
@@ -28,7 +28,25 @@
       background:#eee; border:1px solid #ccc; border-radius:6px;
       cursor:pointer; font-size:14px;
     }
+    /* prevent anchor jumps from hiding content under sticky header */
+    .section{ scroll-margin-top: 80px; }
   </style>
+
+  <!-- Make toggleAdhesion available immediately (so inline onclick works) -->
+  <script>
+    window.toggleAdhesion = function(e){
+      if(e && e.preventDefault) e.preventDefault();
+      var section = document.getElementById("adhesion");
+      if(!section) return;
+      var show = (section.style.display === "none" || !section.style.display);
+      section.style.display = show ? "block" : "none";
+      if (show) {
+        section.scrollIntoView({ behavior:"smooth" });
+      } else {
+        window.scrollTo({ top:0, behavior:"smooth" });
+      }
+    };
+  </script>
 </head>
 <body>
 
@@ -197,8 +215,15 @@
         <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
 
         <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
-        <iframe id="haWidget" allowtransparency="true" src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
-
+          <!-- Your exact iframe snippet preserved -->
+          <iframe id="haWidget" allowtransparency="true"
+                  src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
+                  style="width: 100%; border: none;"
+                  onload="window.addEventListener('message', e => {
+                    const dataHeight = e.data && e.data.height;
+                    const el = document.getElementById('haWidget');
+                    if (dataHeight && el) el.height = dataHeight + 'px';
+                  })"></iframe>
         </div>
 
         <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
@@ -247,28 +272,14 @@
       });
     })();
 
-    /* ===== Toggle adhesion section ===== */
-    function toggleAdhesion(e){
-      if(e && e.preventDefault) e.preventDefault();
-      const section = document.getElementById("adhesion");
-      if(!section) return;
-      const show = (section.style.display === "none" || !section.style.display);
-      section.style.display = show ? "block" : "none";
-      if (show) {
-        section.scrollIntoView({ behavior:"smooth" });
-      } else {
-        window.scrollTo({ top:0, behavior:"smooth" });
-      }
-    }
-
-    // Make every <a href="#adhesion"> open/close the section
+    /* Also open/close from any plain <a href="#adhesion"> (in case some links lack onclick) */
     document.querySelectorAll('a[href="#adhesion"]').forEach(a=>{
-      a.addEventListener('click', toggleAdhesion);
+      a.addEventListener('click', function(e){ window.toggleAdhesion(e); });
     });
 
-    // Open automatically if loading with #adhesion
+    /* Open automatically if loading with #adhesion */
     if (location.hash === '#adhesion') {
-      window.addEventListener('load', () => toggleAdhesion());
+      window.addEventListener('load', () => window.toggleAdhesion());
     }
 
     /* ===== Footer year ===== */
@@ -426,12 +437,12 @@
       const tail = '&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
       const playlists = [
         { title: 'Kizomba – N°1',      url: base + encodeURIComponent('https://api.soundcloud.com/playlists/152611885') + tail },
-        { title: "Kizomba –  N°2",    url: base + encodeURIComponent('https://api.soundcloud.com/playlists/879844930') + tail },
+        { title: 'Kizomba –  N°2',     url: base + encodeURIComponent('https://api.soundcloud.com/playlists/879844930') + tail },
         { title: 'Kizomba – Tarraxa',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/124156830') + tail },
         { title: 'Kizomba – Urban',    url: base + encodeURIComponent('https://api.soundcloud.com/playlists/323224243') + tail },
         { title: 'Kizomba – Douceur',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/266791296') + tail },
         { title: 'Kizomba – Authentik',url: base + encodeURIComponent('https://api.soundcloud.com/playlists/237162467') + tail },
-        { title: 'Kizomba – Semba',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/153330518') + tail }
+        { title: 'Kizomba – Semba',    url: base + encodeURIComponent('https://api.soundcloud.com/playlists/153330518') + tail }
       ];
       let idx = 0;
       const titleEl = document.getElementById('sc-title');
@@ -494,8 +505,6 @@
       }, { threshold: 0.5 });
       io.observe(v);
     })();
-
- 
   </script>
 </body>
 </html>
