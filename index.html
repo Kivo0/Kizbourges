@@ -197,14 +197,8 @@
         <p>Rejoins l’association pour soutenir nos activités et profiter de tarifs membres.</p>
 
         <div class="ha-wrap" style="max-width:900px;margin:0 auto;">
-          <iframe
-            id="haWidget"
-            title="Adhésion KizBourges sur HelloAsso"
-            allowtransparency="true"
-            loading="lazy"
-            src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"
-            style="width:100%;border:0;height:600px;">
-          </iframe>
+        <iframe id="haWidget" allowtransparency="true" src="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
+
         </div>
 
         <button class="adhesion-close" onclick="toggleAdhesion(event)">Fermer ✕</button>
@@ -501,16 +495,7 @@
       io.observe(v);
     })();
 
-    /* ===== HelloAsso auto-resize (single, global) ===== */
-    window.addEventListener('message', function(e){
-      try{
-        if (!e || !e.data || typeof e.data.height === 'undefined') return;
-        const originHost = new URL(e.origin).hostname;
-        if (!/helloasso\.com$/.test(originHost)) return; // trust only HelloAsso
-        const f = document.getElementById('haWidget');
-        if (f) f.style.height = e.data.height + 'px';
-      }catch(_){}
-    }, false);
+ 
   </script>
 </body>
 </html>
