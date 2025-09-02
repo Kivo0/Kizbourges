@@ -7,42 +7,49 @@
 
   <meta name="description" content="Site officiel de KizBourges : cours, événements, covoiturage et adhésion à Bourges.">
   <meta name="keywords" content="Kizomba Bourges, danse Bourges, cours kizomba, soirées kizomba, KizBourges">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+
   <meta property="og:title" content="KizBourges — Association de danse">
   <meta property="og:description" content="Cours, soirées & covoiturage à Bourges. Rejoins la communauté Kizomba !">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="Images/cover.jpeg">
+  <meta property="og:image" content="https://kizbourges.fr/Images/cover.jpeg">
+  <meta property="og:url" content="https://kizbourges.fr/">
+  <meta property="og:locale" content="fr_FR">
+
+  <!-- Optional but safe: improves link previews even without a Twitter account -->
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="Images/logo2.jpeg">
   <link rel="stylesheet" href="styles.css">
+
+  <!-- Canonical & alternates: apex domain is the source of truth -->
   <link rel="canonical" href="https://kizbourges.fr/">
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+  <link rel="alternate" hreflang="fr-FR" href="https://kizbourges.fr/">
+  <link rel="alternate" hreflang="x-default" href="https://kizbourges.fr/">
 
- 
-<link rel="alternate" hreflang="fr-FR" href="https://www.kizbourges.fr/">
-<link rel="alternate" hreflang="x-default" href="https://www.kizbourges.fr/">
-<meta property="og:url" content="https://www.kizbourges.fr/">
-
-
+  <!-- Structured data -->
   <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "KizBourges",
-  "url": "https://www.kizbourges.fr/",
-  "logo": "https://www.kizbourges.fr/Images/logo2.jpeg",
-  "email": "mailto:kizbourges@gmail.com",
-  "telephone": "+33 6 17 23 84 00",
-  "sameAs": [
-    "https://www.facebook.com/KizBourges",
-    "https://www.instagram.com/kizbourges"
-  ],
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Bourges",
-    "addressCountry": "FR"
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "KizBourges",
+    "url": "https://kizbourges.fr/",
+    "logo": "https://kizbourges.fr/Images/logo2.jpeg",
+    "image": "https://kizbourges.fr/Images/cover.jpeg",
+    "email": "mailto:kizbourges@gmail.com",
+    "telephone": "+33617238400",
+    "sameAs": [
+      "https://www.facebook.com/KizBourges",
+      "https://www.instagram.com/kizbourges"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bourges",
+      "addressCountry": "FR"
+    }
   }
-}
-</script>
+  </script>
 
   <!-- Small responsive tweak for mobile nav button -->
   <style>
@@ -54,9 +61,10 @@
     }
   </style>
 
+  <!-- Force mixed content to upgrade to HTTPS -->
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-
 </head>
+
 <body>
 
   <div id="fb-root"></div>
