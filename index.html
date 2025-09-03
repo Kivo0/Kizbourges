@@ -29,7 +29,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
-  <!-- Your site CSS (kept) -->
+  <!-- Your CSS -->
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="Images/logo2.jpeg">
 
@@ -38,100 +38,87 @@
       --elev-2: 0 12px 28px rgba(0,0,0,.11);
       --elev-3: 0 18px 40px rgba(0,0,0,.14);
       --ease: cubic-bezier(.2,.8,.2,1);
-      --brand: #111;
-      --nav-bg: #fff;      /* header stays white to match logo bg */
-      --nav-border: #eaeaea;
+      --brand:#111; --nav-bg:#fff; --nav-border:#eaeaea;
     }
 
-    /* ===== HEADER / NAV ===== */
-    .site-header{
-      position: sticky; top: 0; z-index: 50;
-      background: var(--nav-bg);
-      transition: box-shadow .25s ease, backdrop-filter .25s ease;
-      backdrop-filter: saturate(1) blur(0px);
-    }
-    .site-header.scrolled{ box-shadow: 0 6px 18px rgba(0,0,0,.06); backdrop-filter: saturate(1.05) blur(6px); }
-    .site-header .container{
-      position: relative; display:flex; align-items:center; justify-content:space-between;
-      padding: 10px 16px;
-    }
-    .logo-img{ height: 44px; width:auto; display:block; }
+    /* ===== HEADER / NAV (mobile menu already solid) ===== */
+    .site-header{ position:sticky; top:0; z-index:50; background:var(--nav-bg);
+      transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);}
+    .site-header.scrolled{ box-shadow:0 6px 18px rgba(0,0,0,.06); backdrop-filter:saturate(1.05) blur(6px); }
+    .site-header .container{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; }
+    .logo-img{ height:44px; width:auto; display:block; }
 
-    /* Desktop nav (horizontal) */
     .nav{ display:flex; gap:18px; align-items:center; }
-    .nav a{
-      position:relative; display:inline-block; color: var(--brand);
-      text-decoration:none; padding: 6px 2px;
-      transition: color .2s ease, letter-spacing .2s ease;
-    }
-    .nav a::after{
-      content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
-      background: currentColor; opacity:.28; transition: width .32s ease;
-    }
-    .nav a:hover{ letter-spacing: .2px; }
-    .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
+    .nav a{ position:relative; display:inline-block; color:var(--brand); text-decoration:none; padding:6px 2px;
+      transition: color .2s ease, letter-spacing .2s ease; }
+    .nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0; background:currentColor; opacity:.28;
+      transition: width .32s ease; }
+    .nav a:hover{ letter-spacing:.2px; } .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
 
-    /* Hamburger */
-    #menu{
-      --bar-w: 22px; --bar-h: 2px; --gap: 5px;
-      width: 40px; height: 34px; border: 1px solid #ddd; border-radius: 10px;
-      background: #fff; cursor: pointer; display:none; align-items:center; justify-content:center;
-    }
-    #menu .bars{ position:relative; width: var(--bar-w); height: calc(var(--bar-h)*3 + var(--gap)*2); }
-    #menu .bar{
-      position:absolute; left:0; right:0; height: var(--bar-h); background:#222; border-radius: 2px;
-      transition: transform .25s ease, top .25s ease, opacity .2s ease;
-    }
-    #menu .bar:nth-child(1){ top:0; }
-    #menu .bar:nth-child(2){ top: calc(var(--bar-h) + var(--gap)); }
-    #menu .bar:nth-child(3){ top: calc(var(--bar-h)*2 + var(--gap)*2); }
-    #menu.open .bar:nth-child(1){ top: calc(var(--bar-h) + var(--gap)); transform: rotate(45deg); }
+    #menu{ --bar-w:22px; --bar-h:2px; --gap:5px; width:40px; height:34px; border:1px solid #ddd; border-radius:10px; background:#fff;
+      cursor:pointer; display:none; align-items:center; justify-content:center; }
+    #menu .bars{ position:relative; width:var(--bar-w); height:calc(var(--bar-h)*3 + var(--gap)*2); }
+    #menu .bar{ position:absolute; left:0; right:0; height:var(--bar-h); background:#222; border-radius:2px;
+      transition: transform .25s ease, top .25s ease, opacity .2s ease; }
+    #menu .bar:nth-child(1){ top:0; } #menu .bar:nth-child(2){ top:calc(var(--bar-h)+var(--gap)); }
+    #menu .bar:nth-child(3){ top:calc(var(--bar-h)*2 + var(--gap)*2); }
+    #menu.open .bar:nth-child(1){ top:calc(var(--bar-h)+var(--gap)); transform:rotate(45deg); }
     #menu.open .bar:nth-child(2){ opacity:0; }
-    #menu.open .bar:nth-child(3){ top: calc(var(--bar-h) + var(--gap)); transform: rotate(-45deg); }
+    #menu.open .bar:nth-child(3){ top:calc(var(--bar-h)+var(--gap)); transform:rotate(-45deg); }
 
-    /* ===== Mobile menu (CLOSED by default, independent from styles.css) ===== */
-    @media (max-width: 768px){
+    @media (max-width:768px){
       #menu{ display:flex; }
-      /* Force block so external CSS can't keep it open/closed incorrectly */
       #header .nav{
-        position:absolute; left:0; right:0; top:100%;
-        background: var(--nav-bg); border-top: 1px solid var(--nav-border);
-        display:block !important; padding: 10px 16px;
-        /* hidden state */
-        max-height: 0; overflow: hidden;
-        opacity: 0; transform: translateY(-12px);
-        visibility: hidden; pointer-events: none;
-        transition: max-height .32s var(--ease), opacity .28s var(--ease), transform .28s var(--ease), visibility 0s linear .28s;
-        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+        position:absolute; left:0; right:0; top:100%; background:var(--nav-bg); border-top:1px solid var(--nav-border);
+        display:block !important; padding:10px 16px; max-height:0; overflow:hidden;
+        opacity:0; transform:translateY(-12px); visibility:hidden; pointer-events:none;
+        transition:max-height .32s var(--ease), opacity .28s var(--ease), transform .28s var(--ease), visibility 0s linear .28s;
+        box-shadow:0 10px 30px rgba(0,0,0,.06);
       }
-      /* open state driven by data attribute on header (not a class → avoids conflicts) */
       #header[data-menu="open"] .nav{
-        max-height: 80vh; opacity: 1; transform: translateY(0);
-        visibility: visible; pointer-events: auto;
-        transition: max-height .38s var(--ease), opacity .32s var(--ease), transform .32s var(--ease);
+        max-height:80vh; opacity:1; transform:translateY(0); visibility:visible; pointer-events:auto;
+        transition:max-height .38s var(--ease), opacity .32s var(--ease), transform .32s var(--ease);
       }
-      #header .nav a{ display:block; padding: 10px 0; }
+      #header .nav a{ display:block; padding:10px 0; }
     }
 
-    /* ===== Gentle motion (kept) ===== */
-    @media (prefers-reduced-motion: no-preference) {
-      .reveal { opacity: 0; transform: translateY(26px) scale(.955); }
-      .reveal.in { opacity: 1; transform: none; transition: opacity .95s var(--ease), transform .95s var(--ease); transition-delay: var(--d,0ms); }
-      .btn { transition: transform .32s ease, box-shadow .32s ease; }
-      .btn:hover { transform: translateY(-4px); box-shadow: var(--elev-2); }
-      .card { transition: transform .34s ease, box-shadow .34s ease; }
-      .card:hover { transform: translateY(-6px); box-shadow: var(--elev-3); }
-      .hero .hero-inner { will-change: transform; transition: transform .32s ease; }
-      /* swipe timings you liked */
-      .events-carousel, .soundcloud-carousel { touch-action: pan-y; }
-      .ev-card { transition: transform .48s ease, opacity .48s ease; }
-      .ev-card.swipe-left  { transform: translateX(-30px); opacity:.86; }
-      .ev-card.swipe-right { transform: translateX(30px);  opacity:.86; }
-      #ev-img { transition: opacity .70s ease, transform .90s ease; }
-      .sc-player.swipe-left  { transform: translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
-      .sc-player.swipe-right { transform: translateX(26px);  opacity:.9; transition: transform .42s ease, opacity .42s ease; }
+    /* ===== Gentle motion / swipe timings (kept) ===== */
+    @media (prefers-reduced-motion:no-preference){
+      .btn{ transition: transform .32s ease, box-shadow .32s ease; }
+      .btn:hover{ transform:translateY(-4px); box-shadow:var(--elev-2); }
+      .card{ transition: transform .34s ease, box-shadow .34s ease; }
+      .card:hover{ transform:translateY(-6px); box-shadow:var(--elev-3); }
+      .events-carousel, .soundcloud-carousel{ touch-action: pan-y; }
+      .ev-card{ transition: transform .48s ease, opacity .48s ease; }
+      .ev-card.swipe-left{ transform:translateX(-30px); opacity:.86; }
+      .ev-card.swipe-right{ transform:translateX(30px); opacity:.86; }
+      #ev-img{ transition: opacity .70s ease, transform .90s ease; }
+      .sc-player.swipe-left{ transform:translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
+      .sc-player.swipe-right{ transform:translateX(26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
     }
-    @media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important;} }
+    @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
+
+    /* ===== HelloAsso modal ===== */
+    .ha-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:999; opacity:0; pointer-events:none;
+      transition:opacity .25s ease; }
+    .ha-dialog{ position:fixed; inset:auto 0 0 0; margin:auto; width:min(960px, 96vw); height:min(88vh, 900px);
+      top:50%; transform:translateY(8%) scale(.98); background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(0,0,0,.25);
+      z-index:1000; opacity:0; pointer-events:none; transition: transform .28s ease, opacity .28s ease; display:flex; flex-direction:column; }
+    .ha-open .ha-overlay{ opacity:1; pointer-events:auto; }
+    .ha-open .ha-dialog{ opacity:1; transform:translateY(-50%) scale(1); pointer-events:auto; }
+    .ha-header{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #eee; }
+    .ha-title{ font-size:1.05rem; font-weight:600; margin:0; }
+    .ha-close{ border:1px solid #ddd; background:#fff; border-radius:10px; padding:6px 10px; cursor:pointer; }
+    .ha-body{ position:relative; flex:1; }
+    .ha-iframe{ width:100%; height:100%; border:0; }
+    .ha-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.95rem; color:#555; }
+    .ha-fallback{ position:absolute; right:12px; bottom:12px; font-size:.9rem; }
+    .ha-fallback a{ text-decoration:none; }
+
+    @media (max-width:520px){
+      .ha-dialog{ width:96vw; height:86vh; }
+      .ha-title{ font-size:1rem; }
+    }
   </style>
 </head>
 
@@ -160,7 +147,8 @@
         <a href="#events">Événements</a>
         <a href="#covoit">Covoiturage</a>
         <a href="#son">Ambiance</a>
-        <a href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" target="_blank" rel="noopener">Adhésion</a>
+        <!-- ADHÉSION opens modal in-page (fallback: opens HelloAsso in a new tab) -->
+        <a class="ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" data-embed="helloasso">Adhésion</a>
         <a href="#contact">Contact</a>
       </nav>
     </div>
@@ -172,7 +160,8 @@
       <h1>Bienvenue chez KizBourges</h1>
       <p>Kizomba, urban kiz & good vibes à Bourges ✨</p>
       <div class="cta-row">
-        <a class="btn" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" target="_blank" rel="noopener">Adhérer</a>
+        <!-- open modal -->
+        <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" data-embed="helloasso">Adhérer</a>
         <a class="btn alt" href="#events">Prochaines soirées</a>
       </div>
     </div>
@@ -204,16 +193,20 @@
             <p><strong>Où :</strong> Salle Baptiste Marcel, 2 Rue Parmentier, 18000 Bourges</p>
             <p>Inclus dans l’adhésion — selon planning.</p>
           </li>
+
+          <!-- Video promo card -->
           <li class="card course-ad">
             <div class="video-grid">
               <div class="copy">
                 <h3>Découvre la Kizomba en 60 secondes</h3>
                 <p>Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours ✨</p>
                 <div class="cta-row" style="margin-top:8px;">
-                  <a class="btn" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" target="_blank" rel="noopener">S’inscrire / Adhérer</a>
+                  <!-- open modal -->
+                  <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" data-embed="helloasso">S’inscrire / Adhérer</a>
                   <a class="btn alt" href="#events">Voir les prochaines dates</a>
                 </div>
               </div>
+
               <div class="media">
                 <video id="courseAdVideo" class="course-video" title="KizBourges — Promo cours"
                   playsinline muted loop controls preload="metadata" poster="Images/course-poster.jpg">
@@ -263,9 +256,7 @@
         <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
         <div class="cta-row" style="gap:10px; flex-wrap:wrap;">
           <a class="btn" href="https://forms.gle/SpdXLDX815FWxpan6" target="_blank" rel="noopener">Remplir le formulaire</a>
-          <a class="btn" href="#" aria-disabled="true" onclick="return false;" style="opacity:.55; cursor:not-allowed;" title="Lien WhatsApp bientôt disponible">
-            Groupe WhatsApp (bientôt)
-          </a>
+          <a class="btn" href="#" aria-disabled="true" onclick="return false;" style="opacity:.55; cursor:not-allowed;" title="Lien WhatsApp bientôt disponible">Groupe WhatsApp (bientôt)</a>
         </div>
       </div>
     </section>
@@ -315,57 +306,54 @@
     <div class="container">© <span id="year"></span> KizBourges — Tous droits réservés</div>
   </footer>
 
+  <!-- HelloAsso modal (overlay + dialog) -->
+  <div class="ha-overlay" id="haOverlay" aria-hidden="true"></div>
+  <div class="ha-dialog" id="haDialog" role="dialog" aria-modal="true" aria-labelledby="haTitle" aria-describedby="haDesc" aria-hidden="true">
+    <div class="ha-header">
+      <h3 id="haTitle" class="ha-title">Adhésion KizBourges</h3>
+      <button class="ha-close" id="haClose" aria-label="Fermer la fenêtre">✕</button>
+    </div>
+    <div class="ha-body">
+      <div class="ha-loader" id="haLoader">Chargement du module d’adhésion…</div>
+      <iframe id="haFrame" class="ha-iframe" title="Formulaire d’adhésion HelloAsso" loading="eager" referrerpolicy="no-referrer-when-downgrade" allow="payment *; fullscreen *"></iframe>
+      <div class="ha-fallback" id="haFallback">Problème d’affichage ? <a id="haNewTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a></div>
+    </div>
+  </div>
+
   <!-- Libraries -->
   <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <!-- Scripts -->
   <script>
+    /* Constants */
+    const HELLOASSO_URL = "https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026";
+
     /* Sticky header shadow */
     (function(){
       const h = document.getElementById('header');
       if(!h) return;
-      function onScroll(){ h.classList.toggle('scrolled', window.scrollY > 6); }
+      const onScroll = () => h.classList.toggle('scrolled', window.scrollY > 6);
       onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
     })();
 
-    /* Mobile menu — data-attribute driven, no class conflicts */
+    /* Mobile menu (already working; keep it) */
     (function(){
       const header = document.getElementById('header');
       const btn = document.getElementById('menu');
       const nav = document.getElementById('nav');
       if(!header || !btn || !nav) return;
-
-      // ensure closed on load, regardless of external CSS
-      header.setAttribute('data-menu', 'closed');
-      btn.classList.remove('open');
-      btn.setAttribute('aria-expanded','false');
-
-      function isOpen(){ return header.getAttribute('data-menu') === 'open'; }
-      function toggle(force){
+      header.setAttribute('data-menu','closed'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+      const isOpen = () => header.getAttribute('data-menu') === 'open';
+      const toggle = (force) => {
         const open = (typeof force === 'boolean') ? force : !isOpen();
         header.setAttribute('data-menu', open ? 'open' : 'closed');
-        btn.classList.toggle('open', open);
-        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      }
-
+        btn.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      };
       btn.addEventListener('click', () => toggle());
-
-      // close when clicking a link (mobile)
       nav.addEventListener('click', (e)=>{ if (e.target.closest('a')) toggle(false); });
-
-      // close on outside click
-      document.addEventListener('click', (e)=>{
-        if (!isOpen()) return;
-        if (!e.target.closest('#header')) toggle(false);
-      });
-
-      // close on ESC
+      document.addEventListener('click', (e)=>{ if (isOpen() && !e.target.closest('#header')) toggle(false); });
       document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') toggle(false); });
-
-      // reset state on resize going desktop
-      window.addEventListener('resize', ()=>{
-        if (window.innerWidth > 768) { header.setAttribute('data-menu','closed'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
-      });
+      window.addEventListener('resize', ()=>{ if (window.innerWidth > 768) toggle(false); });
     })();
 
     /* Footer year */
@@ -374,7 +362,120 @@
       if (y && !y.textContent) y.textContent = new Date().getFullYear();
     })();
 
-    /* === Events CSV loader + swipe (timings you liked) === */
+    /* ===== HelloAsso Modal (in-page) ===== */
+    (function(){
+      const overlay = document.getElementById('haOverlay');
+      const dialog  = document.getElementById('haDialog');
+      const frame   = document.getElementById('haFrame');
+      const loader  = document.getElementById('haLoader');
+      const closeB  = document.getElementById('haClose');
+      const newTab  = document.getElementById('haNewTab');
+
+      let lastFocus = null;
+      let loadTimer = null;
+
+      function openHA(url){
+        // lock scroll
+        document.documentElement.classList.add('ha-open');
+        document.body.classList.add('ha-open');
+        overlay.setAttribute('aria-hidden','false');
+        dialog.setAttribute('aria-hidden','false');
+
+        overlay.style.display = 'block';
+        dialog.style.display = 'flex';
+
+        // focus handling
+        lastFocus = document.activeElement;
+        closeB.focus();
+
+        // set URL + loader + fallback
+        const target = url || HELLOASSO_URL;
+        newTab.href = target;
+        loader.style.display = 'flex';
+        frame.removeAttribute('src'); // reset
+        // give the browser a tick to render modal, then set src
+        setTimeout(()=>{ frame.src = target; }, 0);
+
+        // if it doesn't finish quickly, the fallback link is visible anyway
+        clearTimeout(loadTimer);
+        loadTimer = setTimeout(()=> { loader.textContent = "Toujours en chargement…"; }, 6000);
+
+        // ESC close
+        document.addEventListener('keydown', onKeydown);
+        overlay.addEventListener('click', onOverlayClick);
+        trapFocus(true);
+      }
+
+      function closeHA(){
+        document.documentElement.classList.remove('ha-open');
+        document.body.classList.remove('ha-open');
+        overlay.setAttribute('aria-hidden','true');
+        dialog.setAttribute('aria-hidden','true');
+
+        overlay.style.display = '';
+        dialog.style.display = '';
+
+        // stop loading / reset iframe to release resources
+        frame.removeAttribute('src');
+        loader.style.display = 'none';
+        clearTimeout(loadTimer);
+
+        document.removeEventListener('keydown', onKeydown);
+        overlay.removeEventListener('click', onOverlayClick);
+        trapFocus(false);
+
+        if (lastFocus) { try{ lastFocus.focus(); }catch(_){} lastFocus = null; }
+      }
+
+      function onKeydown(e){
+        if (e.key === 'Escape'){ e.preventDefault(); closeHA(); }
+        if (e.key === 'Tab'){ handleTabTrap(e); }
+      }
+      function onOverlayClick(e){
+        if (e.target === overlay) closeHA();
+      }
+
+      // Basic focus-trap
+      function focusables(){
+        return dialog.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+      }
+      function handleTabTrap(e){
+        const list = Array.from(focusables());
+        if (!list.length) return;
+        const first = list[0], last = list[list.length - 1];
+        if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+      }
+      function trapFocus(enable){
+        if (enable){ dialog.setAttribute('tabindex','-1'); }
+        else { dialog.removeAttribute('tabindex'); }
+      }
+
+      // Show modal when clicking any .ha-open link
+      document.addEventListener('click', (e)=>{
+        const a = e.target.closest('a.ha-open');
+        if (!a) return;
+        // Only intercept on same-page usage; let middle-click etc. go through
+        if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey){
+          e.preventDefault();
+          openHA(a.getAttribute('href') || HELLOASSO_URL);
+        }
+      });
+
+      // Close button
+      closeB.addEventListener('click', closeHA);
+
+      // When iframe loads, hide loader
+      frame.addEventListener('load', ()=>{ loader.style.display = 'none'; });
+
+      // Deep-link support: https://site/#adhesion
+      if (location.hash === '#adhesion'){ openHA(HELLOASSO_URL); }
+      // Also allow programmatic open via ?adhesion=1
+      const params = new URLSearchParams(location.search);
+      if (params.get('adhesion') === '1'){ openHA(HELLOASSO_URL); }
+    })();
+
+    /* === Events CSV loader + swipe (kept) === */
     (function(){
       const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
@@ -411,8 +512,7 @@
         if(!iso) return '';
         const d = new Date(iso);
         return isNaN(d) ? '' : d.toLocaleString('fr-FR', {
-          timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short',
-          hour:'2-digit', minute:'2-digit'
+          timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
         });
       }
 
@@ -500,14 +600,13 @@
           const delimiter = detectDelimiter(text);
           const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
           const rows = parsed.data.map(row => {
-            const o = {}; for (const k in row) if (Object.hasOwn(row, k)) {
-              const key = (k||'').trim(); const val = typeof row[k]==='string' ? row[k].trim() : row[k]; o[key] = val;
-            } return o;
+            const o={}; for (const k in row) if (Object.hasOwn(row,k)){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; }
+            return o;
           });
           events = rows.map(r => ({
-            id: r.id || r.name, name: r.name, start_time: r.start_time,
-            place: r.place ? { name: r.place } : { name: '' },
-            cover: normalizeCover(r.cover || ''), event_url: r.event_url, ticket_url: r.ticket_url
+            id:r.id || r.name, name:r.name, start_time:r.start_time,
+            place:r.place ? {name:r.place} : {name:''},
+            cover:normalizeCover(r.cover || ''), event_url:r.event_url, ticket_url:r.ticket_url
           }))
           .filter(ev => ev.name)
           .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
@@ -518,51 +617,36 @@
         })
         .catch(err => console.error('CSV load error:', err));
 
-      /* Touch/Pointer swipe (timing you liked) */
+      /* Swipe (kept timing) */
       function enableEventSwipe(goPrev, goNext){
         const card = document.getElementById('ev-card');
         const anchor = document.getElementById('ev-link');
         if (!card) return;
+        const TH=36, RS=90, FOLLOW=0.16, MAXT=0.5;
+        let sx=0, sy=0, dx=0, dy=0, active=false, id=null, lock=null, moved=false;
 
-        const THRESHOLD = 36, RESTRAINT = 90, FOLLOW = 0.16, MAX_TILT = 0.5;
-
-        let startX=0, startY=0, dx=0, dy=0; let active=false, id=null, lockedAxis=null, moved=false;
-
-        function suppressClick(e){ if (moved) { e.preventDefault(); e.stopPropagation(); } }
-        anchor.addEventListener('click', suppressClick);
+        function stopClick(e){ if (moved){ e.preventDefault(); e.stopPropagation(); } }
+        anchor.addEventListener('click', stopClick);
 
         function start(e){
-          if (e.pointerType === 'mouse' && e.button !== 0) return;
-          active = true; id = e.pointerId; startX = e.clientX; startY = e.clientY;
-          dx = dy = 0; lockedAxis = null; moved=false;
-          card.classList.add('dragging'); card.setPointerCapture(id);
-          document.body.style.userSelect = 'none';
+          if (e.pointerType==='mouse' && e.button!==0) return;
+          active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; moved=false;
+          card.classList.add('dragging'); card.setPointerCapture(id); document.body.style.userSelect='none';
         }
         function move(e){
-          if (!active || e.pointerId !== id) return;
-          const x = e.clientX, y = e.clientY; dx = x - startX; dy = y - startY;
-
-          if (!lockedAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-          if (lockedAxis === 'x') {
-            e.preventDefault(); moved = true;
-            const tx = dx * FOLLOW; const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, dx * 0.02));
-            card.style.transform = `translateX(${tx}px) rotate(${tilt}deg)`;
-          }
+          if (!active || e.pointerId!==id) return;
+          dx=e.clientX-sx; dy=e.clientY-sy;
+          if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y';
+          if (lock==='x'){ e.preventDefault(); moved=true; const tx=dx*FOLLOW; const tilt=Math.max(-MAXT, Math.min(MAXT, dx*0.02)); card.style.transform=`translateX(${tx}px) rotate(${tilt}deg)`; }
         }
         function end(e){
-          if (!active || e.pointerId !== id) return;
-          active = false; card.classList.remove('dragging'); document.body.style.userSelect = '';
-          const absX = Math.abs(dx), absY = Math.abs(dy);
-          if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
-            if (dx < 0) { goNext(); card.classList.add('swipe-left'); }
-            else       { goPrev(); card.classList.add('swipe-right'); }
-            setTimeout(()=> card.classList.remove('swipe-left','swipe-right'), 460);
-          }
-          card.style.transition = 'transform .38s ease'; card.style.transform = '';
-          setTimeout(()=> card.style.transition = '', 380);
-          id = null; lockedAxis = null; moved=false;
+          if (!active || e.pointerId!==id) return;
+          active=false; card.classList.remove('dragging'); document.body.style.userSelect='';
+          const ax=Math.abs(dx), ay=Math.abs(dy);
+          if (lock==='x' && ax>TH && ay<RS){ if (dx<0){ goNext(); card.classList.add('swipe-left'); } else { goPrev(); card.classList.add('swipe-right'); } setTimeout(()=>card.classList.remove('swipe-left','swipe-right'), 460); }
+          card.style.transition='transform .38s ease'; card.style.transform=''; setTimeout(()=> card.style.transition='', 380);
+          id=null; lock=null; moved=false;
         }
-
         card.addEventListener('pointerdown', start, {passive:false});
         card.addEventListener('pointermove',  move,  {passive:false});
         card.addEventListener('pointerup',    end,   {passive:false});
@@ -571,90 +655,48 @@
       }
     })();
 
-    /* SoundCloud carousel + swipe (timing you liked) */
+    /* SoundCloud swipe (kept timing) */
     (function(){
-      const base = 'https://w.soundcloud.com/player/?url=';
-      const tail = '&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
-      const playlists = [
-        { title: 'Kizomba – N°1',      url: base + encodeURIComponent('https://api.soundcloud.com/playlists/152611885') + tail },
-        { title: "Kiz'Bourges N°2",    url: base + encodeURIComponent('https://api.soundcloud.com/playlists/879844930') + tail },
-        { title: 'Kizomba - Tarraxa',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/124156830') + tail },
-        { title: 'Kizomba - Urban',    url: base + encodeURIComponent('https://api.soundcloud.com/playlists/323224243') + tail },
-        { title: 'Kizomba - Douceur',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/266791296') + tail },
-        { title: 'Kizomba - Authentik',url: base + encodeURIComponent('https://api.soundcloud.com/playlists/237162467') + tail },
-        { title: 'Semba Kiz’Bourges',  url: base + encodeURIComponent('https://api.soundcloud.com/playlists/153330518') + tail }
+      const base='https://w.soundcloud.com/player/?url=', tail='&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
+      const playlists=[
+        {title:'Kizomba – N°1', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/152611885')+tail},
+        {title:"Kiz'Bourges N°2", url:base+encodeURIComponent('https://api.soundcloud.com/playlists/879844930')+tail},
+        {title:'Kizomba - Tarraxa', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/124156830')+tail},
+        {title:'Kizomba - Urban', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/323224243')+tail},
+        {title:'Kizomba - Douceur', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/266791296')+tail},
+        {title:'Kizomba - Authentik', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/237162467')+tail},
+        {title:'Semba Kiz’Bourges', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/153330518')+tail}
       ];
-      let idx = 0;
-      const titleEl = document.getElementById('sc-title');
-      const frameEl = document.getElementById('sc-player');
-      const prevBtn = document.getElementById('sc-prev');
-      const nextBtn = document.getElementById('sc-next');
+      let idx=0;
+      const titleEl=document.getElementById('sc-title');
+      const frameEl=document.getElementById('sc-player');
+      const prevBtn=document.getElementById('sc-prev');
+      const nextBtn=document.getElementById('sc-next');
+      const carousel=document.querySelector('.soundcloud-carousel');
+      const playerWrap=document.querySelector('.sc-player');
 
-      const carousel = document.querySelector('.soundcloud-carousel');
-      const playerWrap = document.querySelector('.sc-player');
-
-      const indicators = document.createElement('div');
-      indicators.style.textAlign = 'center'; indicators.style.marginTop = '10px';
-      playlists.forEach((pl,i)=>{
-        const dot = document.createElement('span');
-        dot.textContent = '●'; dot.style.cursor = 'pointer'; dot.style.margin = '0 6px'; dot.style.fontSize = '16px';
-        dot.style.transition = 'transform 0.2s, color 0.2s';
-        dot.addEventListener('click', ()=>{ idx=i; render(); });
-        indicators.appendChild(dot);
-      });
+      const indicators=document.createElement('div');
+      indicators.style.textAlign='center'; indicators.style.marginTop='10px';
+      playlists.forEach((pl,i)=>{ const dot=document.createElement('span'); dot.textContent='●'; dot.style.cursor='pointer'; dot.style.margin='0 6px'; dot.style.fontSize='16px'; dot.style.transition='transform .2s, color .2s'; dot.addEventListener('click', ()=>{ idx=i; render(); }); indicators.appendChild(dot); });
       carousel.appendChild(indicators);
 
-      function updateDots(){
-        [...indicators.children].forEach((dot,i)=>{
-          if(i===idx){ dot.style.color = '#000'; dot.style.transform = 'scale(1.3)'; }
-          else { dot.style.color = '#ccc'; dot.style.transform = 'scale(1)'; }
-        });
-      }
-      function render(){
-        titleEl.textContent = playlists[idx].title;
-        if (frameEl && frameEl.src !== playlists[idx].url) frameEl.src = playlists[idx].url;
-        updateDots();
-      }
-      function goPrev(){ idx = (idx - 1 + playlists.length) % playlists.length; render(); }
-      function goNext(){ idx = (idx + 1) % playlists.length; render(); }
+      function updateDots(){ [...indicators.children].forEach((dot,i)=>{ if(i===idx){ dot.style.color='#000'; dot.style.transform='scale(1.3)'; } else { dot.style.color='#ccc'; dot.style.transform='scale(1)'; } }); }
+      function render(){ titleEl.textContent=playlists[idx].title; if (frameEl && frameEl.src!==playlists[idx].url) frameEl.src=playlists[idx].url; updateDots(); }
+      function goPrev(){ idx=(idx-1+playlists.length)%playlists.length; render(); }
+      function goNext(){ idx=(idx+1)%playlists.length; render(); }
 
       prevBtn.addEventListener('click', goPrev);
       nextBtn.addEventListener('click', goNext);
-      document.addEventListener('keydown', (e)=>{ if (e.key === 'ArrowLeft') goPrev(); if (e.key === 'ArrowRight') goNext(); });
+      document.addEventListener('keydown', (e)=>{ if (e.key==='ArrowLeft') goPrev(); if (e.key==='ArrowRight') goNext(); });
 
-      /* Swipe */
       (function enableSoundSwipe(){
         if (!playerWrap) return;
-        const THRESHOLD = 32, RESTRAINT = 90, FOLLOW = 0.14;
-        let startX=0, startY=0, dx=0, dy=0; let active=false, id=null, lockedAxis=null, moved=false;
+        const TH=32, RS=90, FOLLOW=0.14;
+        let sx=0, sy=0, dx=0, dy=0, active=false, id=null, lock=null;
 
-        function start(e){
-          if (e.pointerType === 'mouse' && e.button !== 0) return;
-          active = true; id = e.pointerId; startX = e.clientX; startY = e.clientY;
-          dx = dy = 0; lockedAxis = null; moved=false;
-          playerWrap.classList.add('dragging'); playerWrap.setPointerCapture(id);
-          document.body.style.userSelect = 'none';
-        }
-        function move(e){
-          if (!active || e.pointerId !== id) return;
-          const x = e.clientX, y = e.clientY; dx = x - startX; dy = y - startY;
-          if (!lockedAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-          if (lockedAxis === 'x'){ e.preventDefault(); moved = true; playerWrap.style.transform = `translateX(${dx * FOLLOW}px)`; }
-        }
-        function end(e){
-          if (!active || e.pointerId !== id) return;
-          active = false; playerWrap.classList.remove('dragging'); document.body.style.userSelect = '';
-          const absX = Math.abs(dx), absY = Math.abs(dy);
-          if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
-            if (dx < 0) { goNext(); playerWrap.classList.add('swipe-left'); }
-            else       { goPrev(); playerWrap.classList.add('swipe-right'); }
-            setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 480);
-          }
-          playerWrap.style.transition = 'transform .36s ease'; playerWrap.style.transform = '';
-          setTimeout(()=> playerWrap.style.transition = '', 360);
-          id = null; lockedAxis = null; moved=false;
-        }
-
+        function start(e){ if (e.pointerType==='mouse' && e.button!==0) return; active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; playerWrap.classList.add('dragging'); playerWrap.setPointerCapture(id); document.body.style.userSelect='none'; }
+        function move(e){ if (!active || e.pointerId!==id) return; dx=e.clientX-sx; dy=e.clientY-sy; if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y'; if (lock==='x'){ e.preventDefault(); playerWrap.style.transform=`translateX(${dx*FOLLOW}px)`; } }
+        function end(e){ if (!active || e.pointerId!==id) return; active=false; playerWrap.classList.remove('dragging'); document.body.style.userSelect=''; const ax=Math.abs(dx), ay=Math.abs(dy); if (lock==='x' && ax>TH && ay<RS){ if (dx<0){ goNext(); playerWrap.classList.add('swipe-left'); } else { goPrev(); playerWrap.classList.add('swipe-right'); } setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 480); } playerWrap.style.transition='transform .36s ease'; playerWrap.style.transform=''; setTimeout(()=> playerWrap.style.transition='', 360); id=null; lock=null; }
         playerWrap.addEventListener('pointerdown', start, {passive:false});
         playerWrap.addEventListener('pointermove',  move,  {passive:false});
         playerWrap.addEventListener('pointerup',    end,   {passive:false});
@@ -669,37 +711,8 @@
     (function(){
       const v = document.getElementById('courseAdVideo');
       if (!('IntersectionObserver' in window) || !v) return;
-      const io = new IntersectionObserver((entries) => {
-        for (const e of entries) { if (e.isIntersecting) v.play().catch(()=>{}); else v.pause(); }
-      }, { threshold: 0.5 });
+      const io = new IntersectionObserver((entries) => { for (const e of entries) { if (e.isIntersecting) v.play().catch(()=>{}); else v.pause(); } }, { threshold: 0.5 });
       io.observe(v);
-    })();
-
-    /* Reveal on scroll */
-    (function(){
-      if (!('IntersectionObserver' in window)) return;
-      const containers = document.querySelectorAll('section, header .container, .hero, .site-footer .container, .events-carousel, .soundcloud-carousel, .cards');
-      containers.forEach(container => {
-        const kids = container.matches('.cards') ? container.querySelectorAll('.card') : container.querySelectorAll(':scope > *');
-        if (kids.length) {
-          let d = 0; kids.forEach(ch => { ch.classList.add('reveal'); ch.style.setProperty('--d', d + 'ms'); d += 110; });
-        } else { container.classList.add('reveal'); }
-      });
-      const io = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            if (e.target.classList.contains('section')) e.target.classList.add('revealed');
-            e.target.classList.add('in');
-            e.target.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
-            io.unobserve(e.target);
-          }
-        }
-      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
-      containers.forEach(el => io.observe(el));
-      const hero = document.querySelector('.hero');
-      if (hero) requestAnimationFrame(() => {
-        hero.classList.add('in','revealed'); hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
-      });
     })();
   </script>
 </body>
