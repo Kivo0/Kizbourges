@@ -9,10 +9,9 @@
   <meta name="description" content="Site officiel de KizBourges : cours, événements, covoiturage et adhésion à Bourges.">
   <meta name="keywords" content="Kizomba Bourges, danse Bourges, cours kizomba, soirées kizomba, KizBourges">
   <meta name="robots" content="index,follow,max-image-preview:large">
-  <!-- Single canonical to avoid 'Alternate page with proper canonical tag' bucket -->
   <link rel="canonical" href="https://kizbourges.fr/">
 
-  <!-- Open Graph -->
+  <!-- Social -->
   <meta property="og:title" content="KizBourges — Association de danse">
   <meta property="og:description" content="Cours, soirées & covoiturage à Bourges. Rejoins la communauté Kizomba !">
   <meta property="og:type" content="website">
@@ -30,38 +29,35 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
-  <!-- Styles -->
-  <link rel="icon" href="Images/logo2.jpeg">
+  <!-- Your site CSS (kept) -->
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="Images/logo2.jpeg">
 
   <style>
     :root{
-      --elev-1: 0 8px 22px rgba(0,0,0,.08);
       --elev-2: 0 12px 28px rgba(0,0,0,.11);
       --elev-3: 0 18px 40px rgba(0,0,0,.14);
       --ease: cubic-bezier(.2,.8,.2,1);
       --brand: #111;
-      --nav-bg: #fff;        /* keeps header white to match logo background */
+      --nav-bg: #fff;      /* header stays white to match logo bg */
       --nav-border: #eaeaea;
     }
 
-    /* ========== HEADER / NAV ========== */
+    /* ===== HEADER / NAV ===== */
     .site-header{
       position: sticky; top: 0; z-index: 50;
       background: var(--nav-bg);
-      box-shadow: 0 0 0 rgba(0,0,0,0);
       transition: box-shadow .25s ease, backdrop-filter .25s ease;
       backdrop-filter: saturate(1) blur(0px);
     }
     .site-header.scrolled{ box-shadow: 0 6px 18px rgba(0,0,0,.06); backdrop-filter: saturate(1.05) blur(6px); }
     .site-header .container{
-      position: relative;              /* anchors the dropdown panel */
-      display:flex; align-items:center; justify-content:space-between;
+      position: relative; display:flex; align-items:center; justify-content:space-between;
       padding: 10px 16px;
     }
     .logo-img{ height: 44px; width:auto; display:block; }
 
-    /* Desktop nav */
+    /* Desktop nav (horizontal) */
     .nav{ display:flex; gap:18px; align-items:center; }
     .nav a{
       position:relative; display:inline-block; color: var(--brand);
@@ -75,100 +71,83 @@
     .nav a:hover{ letter-spacing: .2px; }
     .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
 
-    /* Hamburger button */
+    /* Hamburger */
     #menu{
       --bar-w: 22px; --bar-h: 2px; --gap: 5px;
-      width: 40px; height: 34px; position: relative;
-      border: 1px solid #ddd; border-radius: 10px; background: #fff; cursor: pointer;
-      display:none; align-items:center; justify-content:center;
+      width: 40px; height: 34px; border: 1px solid #ddd; border-radius: 10px;
+      background: #fff; cursor: pointer; display:none; align-items:center; justify-content:center;
     }
     #menu .bars{ position:relative; width: var(--bar-w); height: calc(var(--bar-h)*3 + var(--gap)*2); }
     #menu .bar{
       position:absolute; left:0; right:0; height: var(--bar-h); background:#222; border-radius: 2px;
       transition: transform .25s ease, top .25s ease, opacity .2s ease;
     }
-    #menu .bar:nth-child(1){ top:0; } #menu .bar:nth-child(2){ top: calc(var(--bar-h) + var(--gap)); }
+    #menu .bar:nth-child(1){ top:0; }
+    #menu .bar:nth-child(2){ top: calc(var(--bar-h) + var(--gap)); }
     #menu .bar:nth-child(3){ top: calc(var(--bar-h)*2 + var(--gap)*2); }
     #menu.open .bar:nth-child(1){ top: calc(var(--bar-h) + var(--gap)); transform: rotate(45deg); }
     #menu.open .bar:nth-child(2){ opacity:0; }
     #menu.open .bar:nth-child(3){ top: calc(var(--bar-h) + var(--gap)); transform: rotate(-45deg); }
 
-    /* Mobile nav panel — CLOSED BY DEFAULT */
+    /* ===== Mobile menu (CLOSED by default, independent from styles.css) ===== */
     @media (max-width: 768px){
       #menu{ display:flex; }
-      .nav{
+      /* Force block so external CSS can't keep it open/closed incorrectly */
+      #header .nav{
         position:absolute; left:0; right:0; top:100%;
-        background: var(--nav-bg);
-        border-top: 1px solid var(--nav-border);
-        display:block; padding: 10px 16px;
-        transform: translateY(-12px); opacity: 0; pointer-events: none;  /* hidden */
-        transition: transform .28s ease, opacity .28s ease;
+        background: var(--nav-bg); border-top: 1px solid var(--nav-border);
+        display:block !important; padding: 10px 16px;
+        /* hidden state */
+        max-height: 0; overflow: hidden;
+        opacity: 0; transform: translateY(-12px);
+        visibility: hidden; pointer-events: none;
+        transition: max-height .32s var(--ease), opacity .28s var(--ease), transform .28s var(--ease), visibility 0s linear .28s;
         box-shadow: 0 10px 30px rgba(0,0,0,.06);
       }
-      .nav.open{ transform: translateY(0); opacity: 1; pointer-events: auto; } /* shown */
-      .nav a{ display:block; padding: 10px 0; }
+      /* open state driven by data attribute on header (not a class → avoids conflicts) */
+      #header[data-menu="open"] .nav{
+        max-height: 80vh; opacity: 1; transform: translateY(0);
+        visibility: visible; pointer-events: auto;
+        transition: max-height .38s var(--ease), opacity .32s var(--ease), transform .32s var(--ease);
+      }
+      #header .nav a{ display:block; padding: 10px 0; }
     }
 
-    /* ===== Page-wide motion ===== */
+    /* ===== Gentle motion (kept) ===== */
     @media (prefers-reduced-motion: no-preference) {
       .reveal { opacity: 0; transform: translateY(26px) scale(.955); }
-      .reveal.in {
-        opacity: 1; transform: none;
-        transition: opacity .95s var(--ease), transform .95s var(--ease);
-        transition-delay: var(--d, 0ms);
-        will-change: transform, opacity;
-      }
-      .section h2 { position: relative; display:inline-block; padding-bottom:4px; }
-      .section h2::after {
-        content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
-        background: currentColor; opacity:.22; transition: width .82s ease .18s;
-      }
-      .section.revealed h2::after { width:100%; }
-
+      .reveal.in { opacity: 1; transform: none; transition: opacity .95s var(--ease), transform .95s var(--ease); transition-delay: var(--d,0ms); }
       .btn { transition: transform .32s ease, box-shadow .32s ease; }
       .btn:hover { transform: translateY(-4px); box-shadow: var(--elev-2); }
       .card { transition: transform .34s ease, box-shadow .34s ease; }
       .card:hover { transform: translateY(-6px); box-shadow: var(--elev-3); }
-      .logo-img { transition: transform .4s ease; }
-      .logo-img:hover { transform: rotate(-1.2deg) scale(1.02); }
-
-      /* Hero parallax */
       .hero .hero-inner { will-change: transform; transition: transform .32s ease; }
-
-      /* Carousels — slowed down for natural feel */
+      /* swipe timings you liked */
       .events-carousel, .soundcloud-carousel { touch-action: pan-y; }
-      .ev-card, .sc-player { will-change: transform, opacity; }
-
-      .ev-card { transition: transform .48s ease, opacity .48s ease; }    /* was .36s */
+      .ev-card { transition: transform .48s ease, opacity .48s ease; }
       .ev-card.swipe-left  { transform: translateX(-30px); opacity:.86; }
       .ev-card.swipe-right { transform: translateX(30px);  opacity:.86; }
-      .ev-card.dragging { cursor: grabbing; }
-
-      #ev-img { transition: opacity .70s ease, transform .90s ease; }     /* slower cross-fade/settle */
-
+      #ev-img { transition: opacity .70s ease, transform .90s ease; }
       .sc-player.swipe-left  { transform: translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       .sc-player.swipe-right { transform: translateX(26px);  opacity:.9; transition: transform .42s ease, opacity .42s ease; }
-      .sc-player.dragging { cursor: grabbing; }
     }
-    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+    @media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important;} }
   </style>
 </head>
 
 <body>
 
   <div id="fb-root"></div>
-  <script async defer crossorigin="anonymous"
-    src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v19.0"
-    nonce="kizbourges"></script>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v19.0" nonce="kizbourges"></script>
 
   <!-- Header -->
-  <header class="site-header" id="header">
+  <header class="site-header" id="header" data-menu="closed">
     <div class="container">
       <a class="logo" href="/" aria-label="KizBourges">
         <img src="Images/logo2.jpeg" alt="Logo KizBourges" class="logo-img">
       </a>
 
-      <!-- Animated Hamburger -->
+      <!-- Hamburger -->
       <button id="menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav">
         <span class="bars" aria-hidden="true">
           <span class="bar"></span><span class="bar"></span><span class="bar"></span>
@@ -319,9 +298,7 @@
     <section id="contact" class="section alt">
       <div class="container">
         <h2>Contact</h2>
-        <p>Téléphone :
-          <a href="tel:+33617238400" aria-label="Appeler le 06 17 23 84 00">06&nbsp;17&nbsp;23&nbsp;84&nbsp;00</a>
-        </p>
+        <p>Téléphone : <a href="tel:+33617238400" aria-label="Appeler le 06 17 23 84 00">06&nbsp;17&nbsp;23&nbsp;84&nbsp;00</a></p>
         <p>Email : <a href="mailto:kizbourges@gmail.com">kizbourges@gmail.com</a></p>
         <p>Instagram : <a href="https://www.instagram.com/kizbourges?igsh=MTQyNW9udjh6Ym5raw==" target="_blank" rel="noopener">@kizbourges</a></p>
         <p>Facebook : <a href="https://www.facebook.com/KizBourges" target="_blank" rel="noopener">KizBourges</a></p>
@@ -341,53 +318,53 @@
   <!-- Libraries -->
   <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  <!-- Page scripts -->
+  <!-- Scripts -->
   <script>
-    /* Sticky header shadow on scroll */
+    /* Sticky header shadow */
     (function(){
       const h = document.getElementById('header');
       if(!h) return;
-      function onScroll(){
-        if (window.scrollY > 6) h.classList.add('scrolled'); else h.classList.remove('scrolled');
-      }
-      onScroll();
-      window.addEventListener('scroll', onScroll, {passive:true});
+      function onScroll(){ h.classList.toggle('scrolled', window.scrollY > 6); }
+      onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
     })();
 
-    /* Mobile menu toggle — CLOSED BY DEFAULT, closes on link/outside/Escape */
+    /* Mobile menu — data-attribute driven, no class conflicts */
     (function(){
+      const header = document.getElementById('header');
       const btn = document.getElementById('menu');
       const nav = document.getElementById('nav');
-      if(!btn || !nav) return;
+      if(!header || !btn || !nav) return;
 
-      // ensure closed on load
-      nav.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+      // ensure closed on load, regardless of external CSS
+      header.setAttribute('data-menu', 'closed');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
 
-      function toggle(open){
-        const willOpen = open ?? !nav.classList.contains('open');
-        nav.classList.toggle('open', willOpen);
-        btn.classList.toggle('open', willOpen);
-        btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      function isOpen(){ return header.getAttribute('data-menu') === 'open'; }
+      function toggle(force){
+        const open = (typeof force === 'boolean') ? force : !isOpen();
+        header.setAttribute('data-menu', open ? 'open' : 'closed');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       }
-      btn.addEventListener('click', ()=> toggle());
 
-      // close when clicking a nav link (mobile)
-      nav.addEventListener('click', (e)=>{
-        if (e.target.closest('a')) toggle(false);
-      });
+      btn.addEventListener('click', () => toggle());
 
-      // close when clicking outside header
+      // close when clicking a link (mobile)
+      nav.addEventListener('click', (e)=>{ if (e.target.closest('a')) toggle(false); });
+
+      // close on outside click
       document.addEventListener('click', (e)=>{
-        if (!nav.classList.contains('open')) return;
+        if (!isOpen()) return;
         if (!e.target.closest('#header')) toggle(false);
       });
 
-      // close on Escape
+      // close on ESC
       document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') toggle(false); });
 
-      // reset state on resize (to avoid stuck states)
+      // reset state on resize going desktop
       window.addEventListener('resize', ()=>{
-        if (window.innerWidth > 768){ nav.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+        if (window.innerWidth > 768) { header.setAttribute('data-menu','closed'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
       });
     })();
 
@@ -397,7 +374,7 @@
       if (y && !y.textContent) y.textContent = new Date().getFullYear();
     })();
 
-    /* === Events CSV loader === */
+    /* === Events CSV loader + swipe (timings you liked) === */
     (function(){
       const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
@@ -443,25 +420,12 @@
         if(!events.length) return;
         const ev = events[idx];
 
-        /* Slower cross-fade + micro zoom on poster change */
         img.style.opacity = '0';
         img.style.transform = 'scale(1.015)';
         const nextSrc = ev.cover || 'Images/cover.jpeg';
         const tmp = new Image();
-        tmp.onload = () => {
-          img.src = nextSrc;
-          requestAnimationFrame(()=>{
-            img.style.opacity = '1';
-            img.style.transform = 'scale(1)';
-          });
-        };
-        tmp.onerror = () => {
-          img.src = 'Images/cover.jpeg';
-          requestAnimationFrame(()=>{
-            img.style.opacity = '1';
-            img.style.transform = 'scale(1)';
-          });
-        };
+        tmp.onload = () => { img.src = nextSrc; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
+        tmp.onerror = () => { img.src = 'Images/cover.jpeg'; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
         tmp.src  = nextSrc;
 
         img.alt  = `Affiche : ${ev.name || 'Événement'}`;
@@ -526,8 +490,8 @@
       function goPrev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
       function goNext(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
 
-      prevB.addEventListener('click', goPrev);
-      nextB.addEventListener('click', goNext);
+      document.getElementById('ev-prev').addEventListener('click', goPrev);
+      document.getElementById('ev-next').addEventListener('click', goNext);
       document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')goPrev(); if(e.key==='ArrowRight')goNext(); });
 
       fetch(CSV_URL)
@@ -536,22 +500,14 @@
           const delimiter = detectDelimiter(text);
           const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
           const rows = parsed.data.map(row => {
-            const o = {};
-            for (const k in row) if (Object.hasOwn(row, k)) {
-              const key = (k||'').trim();
-              const val = typeof row[k]==='string' ? row[k].trim() : row[k];
-              o[key] = val;
-            }
-            return o;
+            const o = {}; for (const k in row) if (Object.hasOwn(row, k)) {
+              const key = (k||'').trim(); const val = typeof row[k]==='string' ? row[k].trim() : row[k]; o[key] = val;
+            } return o;
           });
           events = rows.map(r => ({
-            id: r.id || r.name,
-            name: r.name,
-            start_time: r.start_time,
+            id: r.id || r.name, name: r.name, start_time: r.start_time,
             place: r.place ? { name: r.place } : { name: '' },
-            cover: normalizeCover(r.cover || ''),
-            event_url: r.event_url,
-            ticket_url: r.ticket_url
+            cover: normalizeCover(r.cover || ''), event_url: r.event_url, ticket_url: r.ticket_url
           }))
           .filter(ev => ev.name)
           .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
@@ -562,66 +518,48 @@
         })
         .catch(err => console.error('CSV load error:', err));
 
-      /* Touch/Pointer swipe for Events — slowed & axis-locked */
+      /* Touch/Pointer swipe (timing you liked) */
       function enableEventSwipe(goPrev, goNext){
         const card = document.getElementById('ev-card');
         const anchor = document.getElementById('ev-link');
         if (!card) return;
 
-        const THRESHOLD = 36;
-        const RESTRAINT = 90;
-        const FOLLOW = 0.16;       // a tad less snappy (was 0.18)
-        const MAX_TILT = 0.5;
+        const THRESHOLD = 36, RESTRAINT = 90, FOLLOW = 0.16, MAX_TILT = 0.5;
 
-        let startX=0, startY=0, dx=0, dy=0;
-        let active=false, id=null, lockedAxis=null, moved=false;
+        let startX=0, startY=0, dx=0, dy=0; let active=false, id=null, lockedAxis=null, moved=false;
 
         function suppressClick(e){ if (moved) { e.preventDefault(); e.stopPropagation(); } }
         anchor.addEventListener('click', suppressClick);
 
         function start(e){
           if (e.pointerType === 'mouse' && e.button !== 0) return;
-          active = true; id = e.pointerId;
-          startX = e.clientX; startY = e.clientY;
+          active = true; id = e.pointerId; startX = e.clientX; startY = e.clientY;
           dx = dy = 0; lockedAxis = null; moved=false;
-          card.classList.add('dragging');
-          card.setPointerCapture(id);
+          card.classList.add('dragging'); card.setPointerCapture(id);
           document.body.style.userSelect = 'none';
         }
         function move(e){
           if (!active || e.pointerId !== id) return;
-          const x = e.clientX, y = e.clientY;
-          dx = x - startX; dy = y - startY;
+          const x = e.clientX, y = e.clientY; dx = x - startX; dy = y - startY;
 
-          if (!lockedAxis) {
-            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-          }
+          if (!lockedAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
           if (lockedAxis === 'x') {
-            e.preventDefault();
-            moved = true;
-            const tx = dx * FOLLOW;
-            const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, dx * 0.02));
+            e.preventDefault(); moved = true;
+            const tx = dx * FOLLOW; const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, dx * 0.02));
             card.style.transform = `translateX(${tx}px) rotate(${tilt}deg)`;
           }
         }
         function end(e){
           if (!active || e.pointerId !== id) return;
-          active = false;
-          card.classList.remove('dragging');
-          document.body.style.userSelect = '';
-
+          active = false; card.classList.remove('dragging'); document.body.style.userSelect = '';
           const absX = Math.abs(dx), absY = Math.abs(dy);
           if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
             if (dx < 0) { goNext(); card.classList.add('swipe-left'); }
             else       { goPrev(); card.classList.add('swipe-right'); }
-            setTimeout(()=> card.classList.remove('swipe-left','swipe-right'), 460);  // longer hint
+            setTimeout(()=> card.classList.remove('swipe-left','swipe-right'), 460);
           }
-
-          // slower settle-back
-          card.style.transition = 'transform .38s ease';
-          card.style.transform = '';
+          card.style.transition = 'transform .38s ease'; card.style.transform = '';
           setTimeout(()=> card.style.transition = '', 380);
-
           id = null; lockedAxis = null; moved=false;
         }
 
@@ -629,14 +567,11 @@
         card.addEventListener('pointermove',  move,  {passive:false});
         card.addEventListener('pointerup',    end,   {passive:false});
         card.addEventListener('pointercancel',end,   {passive:false});
-
-        card.querySelectorAll('img,a').forEach(el=>{
-          el.addEventListener('dragstart', ev => ev.preventDefault());
-        });
+        card.querySelectorAll('img,a').forEach(el=> el.addEventListener('dragstart', ev => ev.preventDefault()));
       }
     })();
 
-    /* SoundCloud carousel + swipe (slowed) */
+    /* SoundCloud carousel + swipe (timing you liked) */
     (function(){
       const base = 'https://w.soundcloud.com/player/?url=';
       const tail = '&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
@@ -659,14 +594,10 @@
       const playerWrap = document.querySelector('.sc-player');
 
       const indicators = document.createElement('div');
-      indicators.style.textAlign = 'center';
-      indicators.style.marginTop = '10px';
+      indicators.style.textAlign = 'center'; indicators.style.marginTop = '10px';
       playlists.forEach((pl,i)=>{
         const dot = document.createElement('span');
-        dot.textContent = '●';
-        dot.style.cursor = 'pointer';
-        dot.style.margin = '0 6px';
-        dot.style.fontSize = '16px';
+        dot.textContent = '●'; dot.style.cursor = 'pointer'; dot.style.margin = '0 6px'; dot.style.fontSize = '16px';
         dot.style.transition = 'transform 0.2s, color 0.2s';
         dot.addEventListener('click', ()=>{ idx=i; render(); });
         indicators.appendChild(dot);
@@ -691,54 +622,35 @@
       nextBtn.addEventListener('click', goNext);
       document.addEventListener('keydown', (e)=>{ if (e.key === 'ArrowLeft') goPrev(); if (e.key === 'ArrowRight') goNext(); });
 
-      /* Touch/Pointer swipe with slower settle */
+      /* Swipe */
       (function enableSoundSwipe(){
         if (!playerWrap) return;
-
-        const THRESHOLD = 32;
-        const RESTRAINT = 90;
-        const FOLLOW = 0.14;    // slightly slower follow
-        let startX=0, startY=0, dx=0, dy=0;
-        let active=false, id=null, lockedAxis=null, moved=false;
+        const THRESHOLD = 32, RESTRAINT = 90, FOLLOW = 0.14;
+        let startX=0, startY=0, dx=0, dy=0; let active=false, id=null, lockedAxis=null, moved=false;
 
         function start(e){
           if (e.pointerType === 'mouse' && e.button !== 0) return;
-          active = true; id = e.pointerId;
-          startX = e.clientX; startY = e.clientY;
+          active = true; id = e.pointerId; startX = e.clientX; startY = e.clientY;
           dx = dy = 0; lockedAxis = null; moved=false;
-          playerWrap.classList.add('dragging');
-          playerWrap.setPointerCapture(id);
+          playerWrap.classList.add('dragging'); playerWrap.setPointerCapture(id);
           document.body.style.userSelect = 'none';
         }
         function move(e){
           if (!active || e.pointerId !== id) return;
-          const x = e.clientX, y = e.clientY;
-          dx = x - startX; dy = y - startY;
-
-          if (!lockedAxis) {
-            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-          }
-          if (lockedAxis === 'x') {
-            e.preventDefault();
-            moved = true;
-            const tx = dx * FOLLOW;
-            playerWrap.style.transform = `translateX(${tx}px)`;
-          }
+          const x = e.clientX, y = e.clientY; dx = x - startX; dy = y - startY;
+          if (!lockedAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
+          if (lockedAxis === 'x'){ e.preventDefault(); moved = true; playerWrap.style.transform = `translateX(${dx * FOLLOW}px)`; }
         }
         function end(e){
           if (!active || e.pointerId !== id) return;
-          active = false;
-          playerWrap.classList.remove('dragging');
-          document.body.style.userSelect = '';
-
+          active = false; playerWrap.classList.remove('dragging'); document.body.style.userSelect = '';
           const absX = Math.abs(dx), absY = Math.abs(dy);
           if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
             if (dx < 0) { goNext(); playerWrap.classList.add('swipe-left'); }
             else       { goPrev(); playerWrap.classList.add('swipe-right'); }
             setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 480);
           }
-          playerWrap.style.transition = 'transform .36s ease';
-          playerWrap.style.transform = '';
+          playerWrap.style.transition = 'transform .36s ease'; playerWrap.style.transform = '';
           setTimeout(()=> playerWrap.style.transition = '', 360);
           id = null; lockedAxis = null; moved=false;
         }
@@ -747,14 +659,13 @@
         playerWrap.addEventListener('pointermove',  move,  {passive:false});
         playerWrap.addEventListener('pointerup',    end,   {passive:false});
         playerWrap.addEventListener('pointercancel',end,   {passive:false});
-
         frameEl.addEventListener('dragstart', ev => ev.preventDefault());
       })();
 
       render();
     })();
 
-    /* Auto play/pause promo video when visible */
+    /* Promo video: play/pause on view */
     (function(){
       const v = document.getElementById('courseAdVideo');
       if (!('IntersectionObserver' in window) || !v) return;
@@ -764,25 +675,16 @@
       io.observe(v);
     })();
 
-    /* ===== Scroll reveal ===== */
+    /* Reveal on scroll */
     (function(){
       if (!('IntersectionObserver' in window)) return;
-
-      const containers = document.querySelectorAll(
-        'section, header .container, .hero, .site-footer .container, .events-carousel, .soundcloud-carousel, .cards'
-      );
-
+      const containers = document.querySelectorAll('section, header .container, .hero, .site-footer .container, .events-carousel, .soundcloud-carousel, .cards');
       containers.forEach(container => {
-        const kids = container.matches('.cards') ? container.querySelectorAll('.card')
-                   : container.querySelectorAll(':scope > *');
+        const kids = container.matches('.cards') ? container.querySelectorAll('.card') : container.querySelectorAll(':scope > *');
         if (kids.length) {
-          let d = 0;
-          kids.forEach(ch => { ch.classList.add('reveal'); ch.style.setProperty('--d', d + 'ms'); d += 110; });
-        } else {
-          container.classList.add('reveal');
-        }
+          let d = 0; kids.forEach(ch => { ch.classList.add('reveal'); ch.style.setProperty('--d', d + 'ms'); d += 110; });
+        } else { container.classList.add('reveal'); }
       });
-
       const io = new IntersectionObserver((entries) => {
         for (const e of entries) {
           if (e.isIntersecting) {
@@ -793,33 +695,11 @@
           }
         }
       }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
-
       containers.forEach(el => io.observe(el));
-
       const hero = document.querySelector('.hero');
-      if (hero) { requestAnimationFrame(() => {
-        hero.classList.add('in','revealed');
-        hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
-      });}
-    })();
-
-    /* ===== Gentle hero parallax ===== */
-    (function(){
-      const inner = document.querySelector('.hero .hero-inner');
-      if (!inner || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-      let ticking = false;
-      function onScroll(){
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(()=>{
-          const y = window.scrollY || 0;
-          const t = Math.max(0, Math.min(14, y * 0.0175));
-          inner.style.transform = `translateY(${t}px)`;
-          ticking = false;
-        });
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
+      if (hero) requestAnimationFrame(() => {
+        hero.classList.add('in','revealed'); hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
+      });
     })();
   </script>
 </body>
