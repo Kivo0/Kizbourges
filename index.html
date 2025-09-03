@@ -40,8 +40,9 @@
       --ease: cubic-bezier(.2,.8,.2,1);
       --brand:#111; --nav-bg:#fff; --nav-border:#eaeaea;
     }
+    html.ha-open, body.ha-open{ overflow:hidden; } /* lock scroll when modal open */
 
-    /* ===== HEADER / NAV (mobile menu already solid) ===== */
+    /* ===== HEADER / NAV (mobile menu you liked) ===== */
     .site-header{ position:sticky; top:0; z-index:50; background:var(--nav-bg);
       transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);}
     .site-header.scrolled{ box-shadow:0 6px 18px rgba(0,0,0,.06); backdrop-filter:saturate(1.05) blur(6px); }
@@ -82,7 +83,7 @@
       #header .nav a{ display:block; padding:10px 0; }
     }
 
-    /* ===== Gentle motion / swipe timings (kept) ===== */
+    /* ===== Gentle motion / swipe timings you liked ===== */
     @media (prefers-reduced-motion:no-preference){
       .btn{ transition: transform .32s ease, box-shadow .32s ease; }
       .btn:hover{ transform:translateY(-4px); box-shadow:var(--elev-2); }
@@ -147,8 +148,8 @@
         <a href="#events">Événements</a>
         <a href="#covoit">Covoiturage</a>
         <a href="#son">Ambiance</a>
-        <!-- ADHÉSION opens modal in-page (fallback: opens HelloAsso in a new tab) -->
-        <a class="ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" data-embed="helloasso">Adhésion</a>
+        <!-- These open the modal; fallback works if JS off -->
+        <a class="ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">Adhésion</a>
         <a href="#contact">Contact</a>
       </nav>
     </div>
@@ -160,8 +161,7 @@
       <h1>Bienvenue chez KizBourges</h1>
       <p>Kizomba, urban kiz & good vibes à Bourges ✨</p>
       <div class="cta-row">
-        <!-- open modal -->
-        <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" data-embed="helloasso">Adhérer</a>
+        <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">Adhérer</a>
         <a class="btn alt" href="#events">Prochaines soirées</a>
       </div>
     </div>
@@ -201,12 +201,10 @@
                 <h3>Découvre la Kizomba en 60 secondes</h3>
                 <p>Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours ✨</p>
                 <div class="cta-row" style="margin-top:8px;">
-                  <!-- open modal -->
-                  <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" data-embed="helloasso">S’inscrire / Adhérer</a>
+                  <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">S’inscrire / Adhérer</a>
                   <a class="btn alt" href="#events">Voir les prochaines dates</a>
                 </div>
               </div>
-
               <div class="media">
                 <video id="courseAdVideo" class="course-video" title="KizBourges — Promo cours"
                   playsinline muted loop controls preload="metadata" poster="Images/course-poster.jpg">
@@ -313,10 +311,16 @@
       <h3 id="haTitle" class="ha-title">Adhésion KizBourges</h3>
       <button class="ha-close" id="haClose" aria-label="Fermer la fenêtre">✕</button>
     </div>
-    <div class="ha-body">
+    <div class="ha-body" id="haDesc">
       <div class="ha-loader" id="haLoader">Chargement du module d’adhésion…</div>
-      <iframe id="haFrame" class="ha-iframe" title="Formulaire d’adhésion HelloAsso" loading="eager" referrerpolicy="no-referrer-when-downgrade" allow="payment *; fullscreen *"></iframe>
-      <div class="ha-fallback" id="haFallback">Problème d’affichage ? <a id="haNewTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a></div>
+      <!-- IMPORTANT: use the WIDGET endpoint, not the public page -->
+      <iframe id="haFrame" class="ha-iframe" title="Formulaire d’adhésion HelloAsso"
+        loading="eager"
+        allow="payment *; fullscreen *"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="ha-fallback" id="haFallback">
+        Problème d’affichage ? <a id="haNewTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a>
+      </div>
     </div>
   </div>
 
@@ -325,8 +329,9 @@
 
   <!-- Scripts -->
   <script>
-    /* Constants */
-    const HELLOASSO_URL = "https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026";
+    /* ===== Constants ===== */
+    const HELLOASSO_PUBLIC = "https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026";
+    const HELLOASSO_WIDGET = HELLOASSO_PUBLIC + "/widget"; // <- widget endpoint fixes blank iframe
 
     /* Sticky header shadow */
     (function(){
@@ -336,7 +341,7 @@
       onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
     })();
 
-    /* Mobile menu (already working; keep it) */
+    /* Mobile menu */
     (function(){
       const header = document.getElementById('header');
       const btn = document.getElementById('menu');
@@ -362,7 +367,7 @@
       if (y && !y.textContent) y.textContent = new Date().getFullYear();
     })();
 
-    /* ===== HelloAsso Modal (in-page) ===== */
+    /* ===== HelloAsso Modal (using widget URL) ===== */
     (function(){
       const overlay = document.getElementById('haOverlay');
       const dialog  = document.getElementById('haDialog');
@@ -374,33 +379,27 @@
       let lastFocus = null;
       let loadTimer = null;
 
-      function openHA(url){
-        // lock scroll
+      function openHA(){
         document.documentElement.classList.add('ha-open');
         document.body.classList.add('ha-open');
         overlay.setAttribute('aria-hidden','false');
         dialog.setAttribute('aria-hidden','false');
-
         overlay.style.display = 'block';
         dialog.style.display = 'flex';
 
-        // focus handling
         lastFocus = document.activeElement;
         closeB.focus();
 
-        // set URL + loader + fallback
-        const target = url || HELLOASSO_URL;
-        newTab.href = target;
-        loader.style.display = 'flex';
-        frame.removeAttribute('src'); // reset
-        // give the browser a tick to render modal, then set src
-        setTimeout(()=>{ frame.src = target; }, 0);
+        // Fallback opens the full public page
+        newTab.href = HELLOASSO_PUBLIC;
 
-        // if it doesn't finish quickly, the fallback link is visible anyway
+        loader.style.display = 'flex';
+        frame.removeAttribute('src');
+        setTimeout(()=>{ frame.src = HELLOASSO_WIDGET; }, 0); // <- load widget endpoint
+
         clearTimeout(loadTimer);
         loadTimer = setTimeout(()=> { loader.textContent = "Toujours en chargement…"; }, 6000);
 
-        // ESC close
         document.addEventListener('keydown', onKeydown);
         overlay.addEventListener('click', onOverlayClick);
         trapFocus(true);
@@ -411,19 +410,14 @@
         document.body.classList.remove('ha-open');
         overlay.setAttribute('aria-hidden','true');
         dialog.setAttribute('aria-hidden','true');
-
         overlay.style.display = '';
-        dialog.style.display = '';
-
-        // stop loading / reset iframe to release resources
-        frame.removeAttribute('src');
+        dialog.style.display  = '';
+        frame.removeAttribute('src'); // free resources
         loader.style.display = 'none';
         clearTimeout(loadTimer);
-
         document.removeEventListener('keydown', onKeydown);
         overlay.removeEventListener('click', onOverlayClick);
         trapFocus(false);
-
         if (lastFocus) { try{ lastFocus.focus(); }catch(_){} lastFocus = null; }
       }
 
@@ -431,51 +425,39 @@
         if (e.key === 'Escape'){ e.preventDefault(); closeHA(); }
         if (e.key === 'Tab'){ handleTabTrap(e); }
       }
-      function onOverlayClick(e){
-        if (e.target === overlay) closeHA();
-      }
+      function onOverlayClick(e){ if (e.target === overlay) closeHA(); }
 
-      // Basic focus-trap
       function focusables(){
         return dialog.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
       }
       function handleTabTrap(e){
-        const list = Array.from(focusables());
-        if (!list.length) return;
+        const list = Array.from(focusables()); if (!list.length) return;
         const first = list[0], last = list[list.length - 1];
         if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
       }
-      function trapFocus(enable){
-        if (enable){ dialog.setAttribute('tabindex','-1'); }
-        else { dialog.removeAttribute('tabindex'); }
-      }
+      function trapFocus(enable){ if (enable){ dialog.setAttribute('tabindex','-1'); } else { dialog.removeAttribute('tabindex'); } }
 
-      // Show modal when clicking any .ha-open link
+      // Intercept clicks on any .ha-open link (left-click only)
       document.addEventListener('click', (e)=>{
         const a = e.target.closest('a.ha-open');
         if (!a) return;
-        // Only intercept on same-page usage; let middle-click etc. go through
         if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey){
           e.preventDefault();
-          openHA(a.getAttribute('href') || HELLOASSO_URL);
+          openHA();
         }
       });
 
-      // Close button
       closeB.addEventListener('click', closeHA);
-
-      // When iframe loads, hide loader
       frame.addEventListener('load', ()=>{ loader.style.display = 'none'; });
 
-      // Deep-link support: https://site/#adhesion
-      if (location.hash === '#adhesion'){ openHA(HELLOASSO_URL); }
-      // Also allow programmatic open via ?adhesion=1
+      // Deep links
+      if (location.hash === '#adhesion'){ openHA(); }
       const params = new URLSearchParams(location.search);
-      if (params.get('adhesion') === '1'){ openHA(HELLOASSO_URL); }
+      if (params.get('adhesion') === '1'){ openHA(); }
     })();
 
-    /* === Events CSV loader + swipe (kept) === */
+    /* === Events CSV loader + swipe (unchanged timing) === */
     (function(){
       const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
@@ -617,7 +599,7 @@
         })
         .catch(err => console.error('CSV load error:', err));
 
-      /* Swipe (kept timing) */
+      /* Swipe (timing you liked) */
       function enableEventSwipe(goPrev, goNext){
         const card = document.getElementById('ev-card');
         const anchor = document.getElementById('ev-link');
@@ -655,7 +637,7 @@
       }
     })();
 
-    /* SoundCloud swipe (kept timing) */
+    /* SoundCloud swipe (timing you liked) */
     (function(){
       const base='https://w.soundcloud.com/player/?url=', tail='&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
       const playlists=[
