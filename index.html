@@ -48,12 +48,10 @@
 
     @media (prefers-reduced-motion: no-preference) {
       /* Reveal with a bit more lift & scale */
-      .reveal { opacity: 0; transform: translateY(22px) scale(.965); }
+      .reveal { opacity: 0; transform: translateY(26px) scale(.955); }
       .reveal.in {
         opacity: 1; transform: none;
-        transition:
-          opacity .9s var(--ease),
-          transform .9s var(--ease);
+        transition: opacity .95s var(--ease), transform .95s var(--ease);
         transition-delay: var(--d, 0ms);
         will-change: transform, opacity;
       }
@@ -62,15 +60,15 @@
       .section h2 { position: relative; display:inline-block; padding-bottom:4px; }
       .section h2::after {
         content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
-        background: currentColor; opacity:.22; transition: width .8s ease .18s;
+        background: currentColor; opacity:.22; transition: width .82s ease .18s;
       }
       .section.revealed h2::after { width:100%; }
 
       /* Hover: refined float */
-      .btn { transition: transform .3s ease, box-shadow .3s ease; }
+      .btn { transition: transform .32s ease, box-shadow .32s ease; }
       .btn:hover { transform: translateY(-4px); box-shadow: var(--elev-2); }
 
-      .card { transition: transform .32s ease, box-shadow .32s ease; }
+      .card { transition: transform .34s ease, box-shadow .34s ease; }
       .card:hover { transform: translateY(-6px); box-shadow: var(--elev-3); }
 
       .logo-img { transition: transform .4s ease; }
@@ -85,7 +83,7 @@
       nav a:hover::after, nav a:focus-visible::after { width:100%; }
 
       /* Hero parallax target */
-      .hero .hero-inner { will-change: transform; transition: transform .3s ease; }
+      .hero .hero-inner { will-change: transform; transition: transform .32s ease; }
 
       /* Mobile nav slide */
       @media (max-width: 768px) {
@@ -93,21 +91,21 @@
         .nav.open { transform: translateY(0); opacity: 1; }
       }
 
-      /* Carousels */
+      /* Carousels: allow vertical page scroll while we capture horizontal swipes */
       .events-carousel, .soundcloud-carousel { touch-action: pan-y; }
       .ev-card, .sc-player { will-change: transform, opacity; }
 
       .ev-card { transition: transform .36s ease, opacity .36s ease; }
-      .ev-card.swipe-left  { transform: translateX(-28px); opacity:.86; }
-      .ev-card.swipe-right { transform: translateX(28px);  opacity:.86; }
+      .ev-card.swipe-left  { transform: translateX(-30px); opacity:.86; }
+      .ev-card.swipe-right { transform: translateX(30px);  opacity:.86; }
       .ev-card.dragging { cursor: grabbing; }
 
       /* Event poster cross-fade & micro-zoom */
-      #ev-img { transition: opacity .5s ease, transform .7s ease; }
+      #ev-img { transition: opacity .52s ease, transform .72s ease; }
 
       /* SoundCloud panel swipe nudge */
-      .sc-player.swipe-left  { transform: translateX(-24px); opacity:.9; transition: transform .32s ease, opacity .32s ease; }
-      .sc-player.swipe-right { transform: translateX(24px);  opacity:.9; transition: transform .32s ease, opacity .32s ease; }
+      .sc-player.swipe-left  { transform: translateX(-26px); opacity:.9; transition: transform .34s ease, opacity .34s ease; }
+      .sc-player.swipe-right { transform: translateX(26px);  opacity:.9; transition: transform .34s ease, opacity .34s ease; }
       .sc-player.dragging { cursor: grabbing; }
     }
 
@@ -391,6 +389,8 @@
           hour:'2-digit', minute:'2-digit'
         });
       }
+
+      /* Core renderers */
       function renderCarousel(){
         if(!events.length) return;
         const ev = events[idx];
@@ -421,6 +421,7 @@
         when.textContent  = fmtDate(ev.start_time);
         where.textContent = ev.place?.name || ev.place || '—';
         link.href         = ev.event_url || '#';
+
         cta.innerHTML = '';
         if (ev.ticket_url){
           const a = document.createElement('a');
@@ -474,13 +475,16 @@
           list.appendChild(card);
         });
       }
-      function prev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
-      function next(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
 
-      prevB.addEventListener('click', prev);
-      nextB.addEventListener('click', next);
-      document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')prev(); if(e.key==='ArrowRight')next(); });
+      /* Navigation helpers (exposed to swipe) */
+      function goPrev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
+      function goNext(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
 
+      prevB.addEventListener('click', goPrev);
+      nextB.addEventListener('click', goNext);
+      document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')goPrev(); if(e.key==='ArrowRight')goNext(); });
+
+      /* Load CSV, render, then enable swipe */
       fetch(CSV_URL)
         .then(r => r.text())
         .then(text => {
@@ -511,73 +515,95 @@
           renderDots(); renderCarousel(); renderList();
 
           /* Enable swipe after data is ready */
-          enableEventSwipe(prev, next);
+          enableEventSwipe(goPrev, goNext);
         })
         .catch(err => console.error('CSV load error:', err));
 
       /* === Touch/Pointer swipe for Events === */
-      function enableEventSwipe(prev, next){
+      function enableEventSwipe(goPrev, goNext){
         const card = document.getElementById('ev-card');
-        if (!card || !prev || !next) return;
+        const anchor = document.getElementById('ev-link');
+        if (!card) return;
 
-        const THRESHOLD = 48;   // px
-        const RESTRAINT = 80;   // max vertical px
-        const FOLLOW = 0.18;
-        const MAX_TILT = 0.6;
+        // Thresholds tuned for comfortable phone swipes
+        const THRESHOLD = 36;   // horizontal px to trigger
+        const RESTRAINT = 90;   // allow some vertical drift
+        const FOLLOW = 0.18;    // how much the card follows your finger
+        const MAX_TILT = 0.6;   // deg
 
-        let startX=0, startY=0, dx=0, dy=0, active=false, id=null;
+        let startX=0, startY=0, dx=0, dy=0;
+        let active=false, id=null, lockedAxis=null, moved=false, swiped=false;
 
-        function start(x, y, pointerId){
-          active = true; startX = x; startY = y; dx = 0; dy = 0; id = pointerId;
+        // prevent accidental navigation when swiping on the anchor
+        function suppressClick(e){
+          if (moved) { e.preventDefault(); e.stopPropagation(); }
+        }
+        anchor.addEventListener('click', suppressClick);
+
+        function start(e){
+          // only left-button mouse or touch/pen
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          active = true; id = e.pointerId;
+          startX = e.clientX; startY = e.clientY;
+          dx = dy = 0; lockedAxis = null; moved=false; swiped=false;
           card.classList.add('dragging');
-          // make sure we don't accidentally select text/images
+          card.setPointerCapture(id);
           document.body.style.userSelect = 'none';
         }
-        function move(x, y){
-          if (!active) return;
+
+        function move(e){
+          if (!active || e.pointerId !== id) return;
+
+          const x = e.clientX, y = e.clientY;
           dx = x - startX; dy = y - startY;
 
-          const tx = dx * FOLLOW;
-          const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, dx * 0.02));
-          card.style.transform = `translateX(${tx}px) rotate(${tilt}deg)`;
+          if (!lockedAxis) {
+            // lock when movement is clear enough
+            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+              lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
+            }
+          }
+
+          if (lockedAxis === 'x') {
+            // we own the gesture: stop native scrolling/click
+            e.preventDefault();
+            moved = true;
+
+            const tx = dx * FOLLOW;
+            const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, dx * 0.02));
+            card.style.transform = `translateX(${tx}px) rotate(${tilt}deg)`;
+          }
         }
-        function end(){
-          if (!active) return;
+
+        function end(e){
+          if (!active || e.pointerId !== id) return;
           active = false;
           card.classList.remove('dragging');
           document.body.style.userSelect = '';
 
           const absX = Math.abs(dx), absY = Math.abs(dy);
-          if (absX > THRESHOLD && absY < RESTRAINT) {
-            if (dx < 0) { next.click(); card.classList.add('swipe-left'); }
-            else       { prev.click(); card.classList.add('swipe-right'); }
+
+          if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
+            swiped = true;
+            if (dx < 0) { goNext(); card.classList.add('swipe-left'); }
+            else       { goPrev(); card.classList.add('swipe-right'); }
             setTimeout(()=> card.classList.remove('swipe-left','swipe-right'), 380);
           }
 
+          // reset visual
           card.style.transition = 'transform .25s ease';
           card.style.transform = '';
           setTimeout(()=> card.style.transition = '', 260);
-          id = null;
+
+          id = null; lockedAxis = null;
         }
 
-        card.addEventListener('pointerdown', (e)=>{
-          if (e.pointerType === 'mouse' && e.button !== 0) return;
-          card.setPointerCapture(e.pointerId);
-          start(e.clientX, e.clientY, e.pointerId);
-        });
+        card.addEventListener('pointerdown', start, {passive:false});
+        card.addEventListener('pointermove',  move,  {passive:false}); // we call preventDefault
+        card.addEventListener('pointerup',    end,   {passive:false});
+        card.addEventListener('pointercancel',end,   {passive:false});
 
-        card.addEventListener('pointermove', (e)=>{
-          if (!active || (id !== null && e.pointerId !== id)) return;
-          move(e.clientX, e.clientY);
-        });
-
-        function cancelIfNeeded(e){
-          if (!active || (id !== null && e.pointerId !== id)) return;
-          end();
-        }
-        card.addEventListener('pointerup', cancelIfNeeded);
-        card.addEventListener('pointercancel', cancelIfNeeded);
-        // Prevent image-drag ghosting
+        // prevent image drag ghosting
         card.querySelectorAll('img,a').forEach(el=>{
           el.addEventListener('dragstart', ev => ev.preventDefault());
         });
@@ -632,71 +658,78 @@
         if (frameEl && frameEl.src !== playlists[idx].url) frameEl.src = playlists[idx].url;
         updateDots();
       }
-      function prev(){ idx = (idx - 1 + playlists.length) % playlists.length; render(); }
-      function next(){ idx = (idx + 1) % playlists.length; render(); }
+      function goPrev(){ idx = (idx - 1 + playlists.length) % playlists.length; render(); }
+      function goNext(){ idx = (idx + 1) % playlists.length; render(); }
 
-      prevBtn.addEventListener('click', prev);
-      nextBtn.addEventListener('click', next);
+      prevBtn.addEventListener('click', goPrev);
+      nextBtn.addEventListener('click', goNext);
       document.addEventListener('keydown', (e)=>{
-        if (e.key === 'ArrowLeft') prev();
-        if (e.key === 'ArrowRight') next();
+        if (e.key === 'ArrowLeft') goPrev();
+        if (e.key === 'ArrowRight') goNext();
       });
 
-      /* Touch/Pointer swipe for SoundCloud */
+      /* Touch/Pointer swipe for SoundCloud (with axis lock & preventDefault) */
       (function enableSoundSwipe(){
         if (!playerWrap) return;
 
-        const THRESHOLD = 44;
-        const RESTRAINT = 80;
+        const THRESHOLD = 32;
+        const RESTRAINT = 90;
         const FOLLOW = 0.16;
-        let startX=0, startY=0, dx=0, dy=0, active=false, id=null;
 
-        function start(x, y, pointerId){
-          active = true; startX = x; startY = y; dx = 0; dy = 0; id = pointerId;
+        let startX=0, startY=0, dx=0, dy=0;
+        let active=false, id=null, lockedAxis=null, moved=false;
+
+        function start(e){
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          active = true; id = e.pointerId;
+          startX = e.clientX; startY = e.clientY;
+          dx = dy = 0; lockedAxis = null; moved=false;
           playerWrap.classList.add('dragging');
+          playerWrap.setPointerCapture(id);
           document.body.style.userSelect = 'none';
         }
-        function move(x, y){
-          if (!active) return;
+        function move(e){
+          if (!active || e.pointerId !== id) return;
+
+          const x = e.clientX, y = e.clientY;
           dx = x - startX; dy = y - startY;
-          const tx = dx * FOLLOW;
-          playerWrap.style.transform = `translateX(${tx}px)`;
+
+          if (!lockedAxis) {
+            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+              lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
+            }
+          }
+          if (lockedAxis === 'x') {
+            e.preventDefault();
+            moved = true;
+            const tx = dx * FOLLOW;
+            playerWrap.style.transform = `translateX(${tx}px)`;
+          }
         }
-        function end(){
-          if (!active) return;
+        function end(e){
+          if (!active || e.pointerId !== id) return;
           active = false;
           playerWrap.classList.remove('dragging');
           document.body.style.userSelect = '';
 
           const absX = Math.abs(dx), absY = Math.abs(dy);
-          if (absX > THRESHOLD && absY < RESTRAINT) {
-            if (dx < 0) { next(); playerWrap.classList.add('swipe-left'); }
-            else       { prev(); playerWrap.classList.add('swipe-right'); }
+          if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
+            if (dx < 0) { goNext(); playerWrap.classList.add('swipe-left'); }
+            else       { goPrev(); playerWrap.classList.add('swipe-right'); }
             setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 340);
           }
           playerWrap.style.transition = 'transform .24s ease';
           playerWrap.style.transform = '';
           setTimeout(()=> playerWrap.style.transition = '', 260);
-          id = null;
+          id = null; lockedAxis = null; moved=false;
         }
 
-        playerWrap.addEventListener('pointerdown', (e)=>{
-          if (e.pointerType === 'mouse' && e.button !== 0) return;
-          playerWrap.setPointerCapture(e.pointerId);
-          start(e.clientX, e.clientY, e.pointerId);
-        });
-        playerWrap.addEventListener('pointermove', (e)=>{
-          if (!active || (id !== null && e.pointerId !== id)) return;
-          move(e.clientX, e.clientY);
-        });
-        function cancelIfNeeded(e){
-          if (!active || (id !== null && e.pointerId !== id)) return;
-          end();
-        }
-        playerWrap.addEventListener('pointerup', cancelIfNeeded);
-        playerWrap.addEventListener('pointercancel', cancelIfNeeded);
+        playerWrap.addEventListener('pointerdown', start, {passive:false});
+        playerWrap.addEventListener('pointermove',  move,  {passive:false});
+        playerWrap.addEventListener('pointerup',    end,   {passive:false});
+        playerWrap.addEventListener('pointercancel',end,   {passive:false});
 
-        // Prevent iframe grabbing drag ghost
+        // Prevent iframe drag ghost
         frameEl.addEventListener('dragstart', ev => ev.preventDefault());
       })();
 
@@ -736,7 +769,7 @@
           kids.forEach(ch => {
             ch.classList.add('reveal');
             ch.style.setProperty('--d', d + 'ms');
-            d += 100;
+            d += 110;
           });
         } else {
           container.classList.add('reveal');
