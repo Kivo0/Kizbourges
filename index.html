@@ -107,6 +107,73 @@
     * { animation: none !important; transition: none !important; }
   }
 </style>
+  <style>
+  @media (prefers-reduced-motion: no-preference) {
+    /* More present reveal: a bit more lift + tiny scale */
+    .reveal { opacity: 0; transform: translateY(18px) scale(.975); }
+    .reveal.in {
+      opacity: 1; transform: none;
+      transition:
+        opacity .8s cubic-bezier(.2,.8,.2,1),
+        transform .8s cubic-bezier(.2,.8,.2,1);
+      transition-delay: var(--d, 0ms);
+      will-change: transform, opacity;
+    }
+
+    /* Section titles underline slides in once revealed */
+    .section h2 { position: relative; display:inline-block; padding-bottom:4px; }
+    .section h2::after {
+      content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+      background: currentColor; opacity:.18; transition: width .7s ease .15s;
+    }
+    .section.revealed h2::after { width:100%; }
+
+    /* Softer but clearer media motion */
+    .card img, .course-video, .events-carousel img {
+      transition: transform .6s ease, opacity .45s ease, box-shadow .6s ease;
+      will-change: transform, opacity;
+    }
+    .card:hover img { transform: scale(1.02); }
+    .events-carousel img:hover { transform: scale(1.015); }
+    .course-ad .media:hover .course-video { transform: scale(1.012); }
+
+    /* Nav underline grow */
+    nav a { position:relative; display:inline-block; padding-bottom:2px; transition: color .2s ease; }
+    nav a::after {
+      content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+      background: currentColor; opacity:.3; transition: width .28s ease;
+    }
+    nav a:hover::after, nav a:focus-visible::after { width:100%; }
+
+    /* Hero gentle parallax target */
+    .hero .hero-inner { will-change: transform; transition: transform .28s ease; }
+
+    /* Carousel slide nudge a bit stronger */
+    .ev-card { transition: transform .35s ease, opacity .35s ease; touch-action: pan-y; }
+    .ev-card.swipe-left  { transform: translateX(-26px); opacity:.85; }
+    .ev-card.swipe-right { transform: translateX(26px);  opacity:.85; }
+    .ev-card.dragging { cursor: grabbing; }
+
+    /* Buttons & cards float a touch more */
+    .btn { transition: transform .3s ease, box-shadow .3s ease; }
+    .btn:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(0,0,0,.12); }
+    .card { transition: transform .3s ease, box-shadow .3s ease; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 16px 36px rgba(0,0,0,.13); }
+
+    /* Event poster cross-fade helper */
+    #ev-img { transition: opacity .45s ease, transform .6s ease; }
+  }
+
+  @media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .nav { transform: translateY(-10px); opacity: 0; }
+    .nav.open { transform: translateY(0); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
 
 
   <!-- Force mixed content to upgrade to HTTPS -->
@@ -662,6 +729,55 @@
     });
   })();
 </script>
+  <script>
+/* === Scroll reveal (richer) === */
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+
+  const containers = document.querySelectorAll(
+    'section, header .container, .hero, .site-footer .container, .events-carousel, .soundcloud-carousel, .cards'
+  );
+
+  // Apply .reveal with bigger stagger for siblings
+  containers.forEach(container => {
+    const kids = container.matches('.cards') ? container.querySelectorAll('.card')
+               : container.querySelectorAll(':scope > *');
+    if (kids.length) {
+      let d = 0;
+      kids.forEach(ch => {
+        ch.classList.add('reveal');
+        ch.style.setProperty('--d', d + 'ms');
+        d += 100; // was 60 → 100ms for a more cinematic feel
+      });
+    } else {
+      container.classList.add('reveal');
+    }
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        if (e.target.classList.contains('section')) e.target.classList.add('revealed');
+        e.target.classList.add('in');
+        e.target.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
+        io.unobserve(e.target);
+      }
+    }
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+
+  containers.forEach(el => io.observe(el));
+
+  // Ensure hero animates on first paint
+  const hero = document.querySelector('.hero');
+  if (hero) {
+    requestAnimationFrame(() => {
+      hero.classList.add('in','revealed');
+      hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
+    });
+  }
+})();
+</script>
+
 
 </body>
 </html>
