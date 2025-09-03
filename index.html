@@ -99,25 +99,39 @@
     }
     @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
 
-    /* ===== HelloAsso modal ===== */
-    .ha-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:999; opacity:0; pointer-events:none;
-      transition:opacity .25s ease; }
-    .ha-dialog{ position:fixed; inset:auto 0 0 0; margin:auto; width:min(960px, 96vw); height:min(88vh, 900px);
-      top:50%; transform:translateY(8%) scale(.98); background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(0,0,0,.25);
-      z-index:1000; opacity:0; pointer-events:none; transition: transform .28s ease, opacity .28s ease; display:flex; flex-direction:column; }
+    /* ===== HelloAsso modal — centered + mobile full-screen ===== */
+    .ha-overlay{
+      position:fixed; inset:0; z-index:999; background:rgba(0,0,0,.5);
+      opacity:0; pointer-events:none;
+      display:flex; align-items:center; justify-content:center;   /* center dialog */
+      transition:opacity .25s ease;
+    }
+    .ha-dialog{
+      width:min(960px, 96vw);
+      height:min(88dvh, 900px);            /* dynamic viewport on mobile */
+      background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(0,0,0,.25);
+      opacity:0; transform:scale(.98);      /* no translate Y anymore */
+      transition: transform .28s ease, opacity .28s ease;
+      display:flex; flex-direction:column; overflow:hidden;
+    }
     .ha-open .ha-overlay{ opacity:1; pointer-events:auto; }
-    .ha-open .ha-dialog{ opacity:1; transform:translateY(-50%) scale(1); pointer-events:auto; }
-    .ha-header{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid #eee; }
+    .ha-open .ha-dialog{ opacity:1; transform:scale(1); }
+
+    .ha-header{
+      position:sticky; top:0; z-index:1;
+      display:flex; align-items:center; justify-content:space-between;
+      padding: calc(10px + env(safe-area-inset-top)) 14px 10px;   /* safe area for notches */
+      background:#fff; border-bottom:1px solid #eee;
+    }
     .ha-title{ font-size:1.05rem; font-weight:600; margin:0; }
     .ha-close{ border:1px solid #ddd; background:#fff; border-radius:10px; padding:6px 10px; cursor:pointer; }
-    .ha-body{ position:relative; flex:1; }
-    .ha-iframe{ width:100%; height:100%; border:0; }
-    .ha-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.95rem; color:#555; }
+    .ha-body{ position:relative; flex:1; padding-bottom: env(safe-area-inset-bottom); }
+    .ha-iframe{ width:100%; height:100%; border:0; display:block; }
+    .ha-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.95rem; color:#555; background:#fff; }
     .ha-fallback{ position:absolute; right:12px; bottom:12px; font-size:.9rem; }
-    .ha-fallback a{ text-decoration:none; }
 
     @media (max-width:520px){
-      .ha-dialog{ width:96vw; height:86vh; }
+      .ha-dialog{ width:100vw; height:100dvh; border-radius:0; }  /* full-screen on small phones */
       .ha-title{ font-size:1rem; }
     }
   </style>
@@ -148,7 +162,6 @@
         <a href="#events">Événements</a>
         <a href="#covoit">Covoiturage</a>
         <a href="#son">Ambiance</a>
-        <!-- These open the modal; fallback works if JS off -->
         <a class="ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">Adhésion</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -205,6 +218,7 @@
                   <a class="btn alt" href="#events">Voir les prochaines dates</a>
                 </div>
               </div>
+
               <div class="media">
                 <video id="courseAdVideo" class="course-video" title="KizBourges — Promo cours"
                   playsinline muted loop controls preload="metadata" poster="Images/course-poster.jpg">
@@ -305,21 +319,19 @@
   </footer>
 
   <!-- HelloAsso modal (overlay + dialog) -->
-  <div class="ha-overlay" id="haOverlay" aria-hidden="true"></div>
-  <div class="ha-dialog" id="haDialog" role="dialog" aria-modal="true" aria-labelledby="haTitle" aria-describedby="haDesc" aria-hidden="true">
-    <div class="ha-header">
-      <h3 id="haTitle" class="ha-title">Adhésion KizBourges</h3>
-      <button class="ha-close" id="haClose" aria-label="Fermer la fenêtre">✕</button>
-    </div>
-    <div class="ha-body" id="haDesc">
-      <div class="ha-loader" id="haLoader">Chargement du module d’adhésion…</div>
-      <!-- IMPORTANT: use the WIDGET endpoint, not the public page -->
-      <iframe id="haFrame" class="ha-iframe" title="Formulaire d’adhésion HelloAsso"
-        loading="eager"
-        allow="payment *; fullscreen *"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
-      <div class="ha-fallback" id="haFallback">
-        Problème d’affichage ? <a id="haNewTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a>
+  <div class="ha-overlay" id="haOverlay" aria-hidden="true">
+    <div class="ha-dialog" id="haDialog" role="dialog" aria-modal="true" aria-labelledby="haTitle" aria-describedby="haDesc" aria-hidden="true">
+      <div class="ha-header">
+        <h3 id="haTitle" class="ha-title">Adhésion KizBourges</h3>
+        <button class="ha-close" id="haClose" aria-label="Fermer la fenêtre">✕</button>
+      </div>
+      <div class="ha-body" id="haDesc">
+        <div class="ha-loader" id="haLoader">Chargement du module d’adhésion…</div>
+        <iframe id="haFrame" class="ha-iframe" title="Formulaire d’adhésion HelloAsso"
+          loading="eager" allow="payment *; fullscreen *" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="ha-fallback" id="haFallback">
+          Problème d’affichage ? <a id="haNewTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a>
+        </div>
       </div>
     </div>
   </div>
@@ -331,7 +343,7 @@
   <script>
     /* ===== Constants ===== */
     const HELLOASSO_PUBLIC = "https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026";
-    const HELLOASSO_WIDGET = HELLOASSO_PUBLIC + "/widget"; // <- widget endpoint fixes blank iframe
+    const HELLOASSO_WIDGET = HELLOASSO_PUBLIC + "/widget";
 
     /* Sticky header shadow */
     (function(){
@@ -367,7 +379,7 @@
       if (y && !y.textContent) y.textContent = new Date().getFullYear();
     })();
 
-    /* ===== HelloAsso Modal (using widget URL) ===== */
+    /* ===== HelloAsso Modal (widget URL) ===== */
     (function(){
       const overlay = document.getElementById('haOverlay');
       const dialog  = document.getElementById('haDialog');
@@ -382,20 +394,21 @@
       function openHA(){
         document.documentElement.classList.add('ha-open');
         document.body.classList.add('ha-open');
+
         overlay.setAttribute('aria-hidden','false');
         dialog.setAttribute('aria-hidden','false');
-        overlay.style.display = 'block';
-        dialog.style.display = 'flex';
 
+        // focus handling
         lastFocus = document.activeElement;
         closeB.focus();
 
         // Fallback opens the full public page
         newTab.href = HELLOASSO_PUBLIC;
 
+        // Loader + iframe
         loader.style.display = 'flex';
         frame.removeAttribute('src');
-        setTimeout(()=>{ frame.src = HELLOASSO_WIDGET; }, 0); // <- load widget endpoint
+        setTimeout(()=>{ frame.src = HELLOASSO_WIDGET; }, 0);
 
         clearTimeout(loadTimer);
         loadTimer = setTimeout(()=> { loader.textContent = "Toujours en chargement…"; }, 6000);
@@ -408,16 +421,18 @@
       function closeHA(){
         document.documentElement.classList.remove('ha-open');
         document.body.classList.remove('ha-open');
+
         overlay.setAttribute('aria-hidden','true');
         dialog.setAttribute('aria-hidden','true');
-        overlay.style.display = '';
-        dialog.style.display  = '';
+
         frame.removeAttribute('src'); // free resources
         loader.style.display = 'none';
         clearTimeout(loadTimer);
+
         document.removeEventListener('keydown', onKeydown);
         overlay.removeEventListener('click', onOverlayClick);
         trapFocus(false);
+
         if (lastFocus) { try{ lastFocus.focus(); }catch(_){} lastFocus = null; }
       }
 
@@ -425,20 +440,25 @@
         if (e.key === 'Escape'){ e.preventDefault(); closeHA(); }
         if (e.key === 'Tab'){ handleTabTrap(e); }
       }
-      function onOverlayClick(e){ if (e.target === overlay) closeHA(); }
+      function onOverlayClick(e){
+        // close when clicking outside the dialog
+        if (e.target === overlay) closeHA();
+      }
 
+      // Focus-trap
       function focusables(){
         return dialog.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
       }
       function handleTabTrap(e){
-        const list = Array.from(focusables()); if (!list.length) return;
+        const list = Array.from(focusables());
+        if (!list.length) return;
         const first = list[0], last = list[list.length - 1];
         if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
       }
       function trapFocus(enable){ if (enable){ dialog.setAttribute('tabindex','-1'); } else { dialog.removeAttribute('tabindex'); } }
 
-      // Intercept clicks on any .ha-open link (left-click only)
+      // Open via any .ha-open link (left-click only)
       document.addEventListener('click', (e)=>{
         const a = e.target.closest('a.ha-open');
         if (!a) return;
