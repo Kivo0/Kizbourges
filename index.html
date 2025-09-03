@@ -9,10 +9,10 @@
   <meta name="description" content="Site officiel de KizBourges : cours, événements, covoiturage et adhésion à Bourges.">
   <meta name="keywords" content="Kizomba Bourges, danse Bourges, cours kizomba, soirées kizomba, KizBourges">
   <meta name="robots" content="index,follow,max-image-preview:large">
-  <!-- Canonical: single source of truth (no hreflang alternates to avoid Google 'alternate page' bucket) -->
+  <!-- Single canonical to avoid 'Alternate page with proper canonical tag' bucket -->
   <link rel="canonical" href="https://kizbourges.fr/">
 
-  <!-- Open Graph / Social -->
+  <!-- Open Graph -->
   <meta property="og:title" content="KizBourges — Association de danse">
   <meta property="og:description" content="Cours, soirées & covoiturage à Bourges. Rejoins la communauté Kizomba !">
   <meta property="og:type" content="website">
@@ -34,18 +34,14 @@
   <link rel="icon" href="Images/logo2.jpeg">
   <link rel="stylesheet" href="styles.css">
 
-  <!-- Optional sitemap hint (Google primarily discovers via robots.txt) -->
-  <!-- <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml"> -->
-
-  <!-- ===== Soft, classy animations + navbar improvements ===== -->
   <style>
     :root{
       --elev-1: 0 8px 22px rgba(0,0,0,.08);
       --elev-2: 0 12px 28px rgba(0,0,0,.11);
       --elev-3: 0 18px 40px rgba(0,0,0,.14);
       --ease: cubic-bezier(.2,.8,.2,1);
-      --brand: #111; /* nav link color uses currentColor; tweak if needed */
-      --nav-bg: #fff;
+      --brand: #111;
+      --nav-bg: #fff;        /* keeps header white to match logo background */
       --nav-border: #eaeaea;
     }
 
@@ -57,28 +53,24 @@
       transition: box-shadow .25s ease, backdrop-filter .25s ease;
       backdrop-filter: saturate(1) blur(0px);
     }
-    .site-header.scrolled{
-      box-shadow: 0 6px 18px rgba(0,0,0,.06);
-      backdrop-filter: saturate(1.1) blur(6px);
-    }
+    .site-header.scrolled{ box-shadow: 0 6px 18px rgba(0,0,0,.06); backdrop-filter: saturate(1.05) blur(6px); }
     .site-header .container{
+      position: relative;              /* anchors the dropdown panel */
       display:flex; align-items:center; justify-content:space-between;
       padding: 10px 16px;
     }
     .logo-img{ height: 44px; width:auto; display:block; }
 
     /* Desktop nav */
-    .nav{
-      display:flex; gap:18px; align-items:center;
-    }
+    .nav{ display:flex; gap:18px; align-items:center; }
     .nav a{
-      position:relative; display:inline-block;
-      color: var(--brand); text-decoration:none; padding: 6px 2px;
+      position:relative; display:inline-block; color: var(--brand);
+      text-decoration:none; padding: 6px 2px;
       transition: color .2s ease, letter-spacing .2s ease;
     }
     .nav a::after{
       content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
-      background: currentColor; opacity:.3; transition: width .28s ease;
+      background: currentColor; opacity:.28; transition: width .32s ease;
     }
     .nav a:hover{ letter-spacing: .2px; }
     .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
@@ -95,15 +87,13 @@
       position:absolute; left:0; right:0; height: var(--bar-h); background:#222; border-radius: 2px;
       transition: transform .25s ease, top .25s ease, opacity .2s ease;
     }
-    #menu .bar:nth-child(1){ top:0; }
-    #menu .bar:nth-child(2){ top: calc(var(--bar-h) + var(--gap)); }
+    #menu .bar:nth-child(1){ top:0; } #menu .bar:nth-child(2){ top: calc(var(--bar-h) + var(--gap)); }
     #menu .bar:nth-child(3){ top: calc(var(--bar-h)*2 + var(--gap)*2); }
-
     #menu.open .bar:nth-child(1){ top: calc(var(--bar-h) + var(--gap)); transform: rotate(45deg); }
     #menu.open .bar:nth-child(2){ opacity:0; }
     #menu.open .bar:nth-child(3){ top: calc(var(--bar-h) + var(--gap)); transform: rotate(-45deg); }
 
-    /* Mobile nav panel */
+    /* Mobile nav panel — CLOSED BY DEFAULT */
     @media (max-width: 768px){
       #menu{ display:flex; }
       .nav{
@@ -111,17 +101,16 @@
         background: var(--nav-bg);
         border-top: 1px solid var(--nav-border);
         display:block; padding: 10px 16px;
-        transform: translateY(-8px); opacity: 0; pointer-events: none;
-        transition: transform .24s ease, opacity .24s ease;
+        transform: translateY(-12px); opacity: 0; pointer-events: none;  /* hidden */
+        transition: transform .28s ease, opacity .28s ease;
         box-shadow: 0 10px 30px rgba(0,0,0,.06);
       }
-      .nav.open{ transform: translateY(0); opacity: 1; pointer-events: auto; }
+      .nav.open{ transform: translateY(0); opacity: 1; pointer-events: auto; } /* shown */
       .nav a{ display:block; padding: 10px 0; }
     }
 
     /* ===== Page-wide motion ===== */
     @media (prefers-reduced-motion: no-preference) {
-      /* Reveal (slightly stronger but still soft) */
       .reveal { opacity: 0; transform: translateY(26px) scale(.955); }
       .reveal.in {
         opacity: 1; transform: none;
@@ -129,7 +118,6 @@
         transition-delay: var(--d, 0ms);
         will-change: transform, opacity;
       }
-
       .section h2 { position: relative; display:inline-block; padding-bottom:4px; }
       .section h2::after {
         content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
@@ -147,22 +135,22 @@
       /* Hero parallax */
       .hero .hero-inner { will-change: transform; transition: transform .32s ease; }
 
-      /* Carousels gesture setup */
+      /* Carousels — slowed down for natural feel */
       .events-carousel, .soundcloud-carousel { touch-action: pan-y; }
       .ev-card, .sc-player { will-change: transform, opacity; }
-      .ev-card { transition: transform .36s ease, opacity .36s ease; }
+
+      .ev-card { transition: transform .48s ease, opacity .48s ease; }    /* was .36s */
       .ev-card.swipe-left  { transform: translateX(-30px); opacity:.86; }
       .ev-card.swipe-right { transform: translateX(30px);  opacity:.86; }
       .ev-card.dragging { cursor: grabbing; }
-      #ev-img { transition: opacity .52s ease, transform .72s ease; }
-      .sc-player.swipe-left  { transform: translateX(-26px); opacity:.9; transition: transform .34s ease, opacity .34s ease; }
-      .sc-player.swipe-right { transform: translateX(26px);  opacity:.9; transition: transform .34s ease, opacity .34s ease; }
+
+      #ev-img { transition: opacity .70s ease, transform .90s ease; }     /* slower cross-fade/settle */
+
+      .sc-player.swipe-left  { transform: translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
+      .sc-player.swipe-right { transform: translateX(26px);  opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       .sc-player.dragging { cursor: grabbing; }
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
-    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
   </style>
 </head>
 
@@ -183,9 +171,7 @@
       <!-- Animated Hamburger -->
       <button id="menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav">
         <span class="bars" aria-hidden="true">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
         </span>
       </button>
 
@@ -233,15 +219,12 @@
             <p><strong>Où :</strong> Salle Baptiste Marcel, 2 Rue Parmentier, 18000 Bourges</p>
             <p><strong>Tarif :</strong> 10€ / cours ou 150€ / année</p>
           </li>
-
           <li class="card">
             <h3>Pratique — Tous niveaux</h3>
             <p><strong>Quand :</strong> Mardi 21h15–22h15</p>
             <p><strong>Où :</strong> Salle Baptiste Marcel, 2 Rue Parmentier, 18000 Bourges</p>
             <p>Inclus dans l’adhésion — selon planning.</p>
           </li>
-
-          <!-- Video promo card -->
           <li class="card course-ad">
             <div class="video-grid">
               <div class="copy">
@@ -252,14 +235,9 @@
                   <a class="btn alt" href="#events">Voir les prochaines dates</a>
                 </div>
               </div>
-
               <div class="media">
-                <video
-                  id="courseAdVideo"
-                  class="course-video"
-                  title="KizBourges — Promo cours"
-                  playsinline muted loop controls preload="metadata"
-                  poster="Images/course-poster.jpg">
+                <video id="courseAdVideo" class="course-video" title="KizBourges — Promo cours"
+                  playsinline muted loop controls preload="metadata" poster="Images/course-poster.jpg">
                   <source src="Videos/course-ad.mp4" type="video/mp4">
                   Votre navigateur ne supporte pas la vidéo HTML5.
                 </video>
@@ -304,20 +282,9 @@
       <div class="container">
         <h2>Covoiturage</h2>
         <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
-
         <div class="cta-row" style="gap:10px; flex-wrap:wrap;">
-          <a class="btn"
-             href="https://forms.gle/SpdXLDX815FWxpan6"
-             target="_blank" rel="noopener">
-            Remplir le formulaire
-          </a>
-
-          <a class="btn"
-             href="#"
-             aria-disabled="true"
-             onclick="return false;"
-             style="opacity:.55; cursor:not-allowed;"
-             title="Lien WhatsApp bientôt disponible">
+          <a class="btn" href="https://forms.gle/SpdXLDX815FWxpan6" target="_blank" rel="noopener">Remplir le formulaire</a>
+          <a class="btn" href="#" aria-disabled="true" onclick="return false;" style="opacity:.55; cursor:not-allowed;" title="Lien WhatsApp bientôt disponible">
             Groupe WhatsApp (bientôt)
           </a>
         </div>
@@ -368,9 +335,7 @@
 
   <!-- Footer -->
   <footer class="site-footer">
-    <div class="container">
-      © <span id="year"></span> KizBourges — Tous droits réservés
-    </div>
+    <div class="container">© <span id="year"></span> KizBourges — Tous droits réservés</div>
   </footer>
 
   <!-- Libraries -->
@@ -389,11 +354,14 @@
       window.addEventListener('scroll', onScroll, {passive:true});
     })();
 
-    /* Mobile menu toggle */
+    /* Mobile menu toggle — CLOSED BY DEFAULT, closes on link/outside/Escape */
     (function(){
       const btn = document.getElementById('menu');
       const nav = document.getElementById('nav');
       if(!btn || !nav) return;
+
+      // ensure closed on load
+      nav.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false');
 
       function toggle(open){
         const willOpen = open ?? !nav.classList.contains('open');
@@ -403,14 +371,24 @@
       }
       btn.addEventListener('click', ()=> toggle());
 
-      // Close when clicking outside
+      // close when clicking a nav link (mobile)
+      nav.addEventListener('click', (e)=>{
+        if (e.target.closest('a')) toggle(false);
+      });
+
+      // close when clicking outside header
       document.addEventListener('click', (e)=>{
         if (!nav.classList.contains('open')) return;
-        const withinHeader = e.target.closest('#header');
-        if (!withinHeader) toggle(false);
+        if (!e.target.closest('#header')) toggle(false);
       });
-      // Close on Escape
+
+      // close on Escape
       document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') toggle(false); });
+
+      // reset state on resize (to avoid stuck states)
+      window.addEventListener('resize', ()=>{
+        if (window.innerWidth > 768){ nav.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+      });
     })();
 
     /* Footer year */
@@ -465,7 +443,7 @@
         if(!events.length) return;
         const ev = events[idx];
 
-        /* Cross-fade + micro zoom on poster change */
+        /* Slower cross-fade + micro zoom on poster change */
         img.style.opacity = '0';
         img.style.transform = 'scale(1.015)';
         const nextSrc = ev.cover || 'Images/cover.jpeg';
@@ -520,8 +498,7 @@
         events.forEach(ev=>{
           const card=document.createElement('div');
           card.className='card';
-          card.style.display='grid';
-          card.style.gridTemplateColumns='120px 1fr';
+          card.style.display='grid'; card.style.gridTemplateColumns='120px 1fr';
           card.style.gap='14px'; card.style.alignItems='center';
 
           const pic=document.createElement('img');
@@ -585,7 +562,7 @@
         })
         .catch(err => console.error('CSV load error:', err));
 
-      /* Touch/Pointer swipe for Events with axis lock + preventDefault */
+      /* Touch/Pointer swipe for Events — slowed & axis-locked */
       function enableEventSwipe(goPrev, goNext){
         const card = document.getElementById('ev-card');
         const anchor = document.getElementById('ev-link');
@@ -593,15 +570,13 @@
 
         const THRESHOLD = 36;
         const RESTRAINT = 90;
-        const FOLLOW = 0.18;
-        const MAX_TILT = 0.6;
+        const FOLLOW = 0.16;       // a tad less snappy (was 0.18)
+        const MAX_TILT = 0.5;
 
         let startX=0, startY=0, dx=0, dy=0;
         let active=false, id=null, lockedAxis=null, moved=false;
 
-        function suppressClick(e){
-          if (moved) { e.preventDefault(); e.stopPropagation(); }
-        }
+        function suppressClick(e){ if (moved) { e.preventDefault(); e.stopPropagation(); } }
         anchor.addEventListener('click', suppressClick);
 
         function start(e){
@@ -639,12 +614,13 @@
           if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
             if (dx < 0) { goNext(); card.classList.add('swipe-left'); }
             else       { goPrev(); card.classList.add('swipe-right'); }
-            setTimeout(()=> card.classList.remove('swipe-left','swipe-right'), 380);
+            setTimeout(()=> card.classList.remove('swipe-left','swipe-right'), 460);  // longer hint
           }
 
-          card.style.transition = 'transform .25s ease';
+          // slower settle-back
+          card.style.transition = 'transform .38s ease';
           card.style.transform = '';
-          setTimeout(()=> card.style.transition = '', 260);
+          setTimeout(()=> card.style.transition = '', 380);
 
           id = null; lockedAxis = null; moved=false;
         }
@@ -660,7 +636,7 @@
       }
     })();
 
-    /* SoundCloud carousel + swipe */
+    /* SoundCloud carousel + swipe (slowed) */
     (function(){
       const base = 'https://w.soundcloud.com/player/?url=';
       const tail = '&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
@@ -713,19 +689,15 @@
 
       prevBtn.addEventListener('click', goPrev);
       nextBtn.addEventListener('click', goNext);
-      document.addEventListener('keydown', (e)=>{
-        if (e.key === 'ArrowLeft') goPrev();
-        if (e.key === 'ArrowRight') goNext();
-      });
+      document.addEventListener('keydown', (e)=>{ if (e.key === 'ArrowLeft') goPrev(); if (e.key === 'ArrowRight') goNext(); });
 
-      /* Touch/Pointer swipe with axis lock */
+      /* Touch/Pointer swipe with slower settle */
       (function enableSoundSwipe(){
         if (!playerWrap) return;
 
         const THRESHOLD = 32;
         const RESTRAINT = 90;
-        const FOLLOW = 0.16;
-
+        const FOLLOW = 0.14;    // slightly slower follow
         let startX=0, startY=0, dx=0, dy=0;
         let active=false, id=null, lockedAxis=null, moved=false;
 
@@ -740,7 +712,6 @@
         }
         function move(e){
           if (!active || e.pointerId !== id) return;
-
           const x = e.clientX, y = e.clientY;
           dx = x - startX; dy = y - startY;
 
@@ -764,11 +735,11 @@
           if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
             if (dx < 0) { goNext(); playerWrap.classList.add('swipe-left'); }
             else       { goPrev(); playerWrap.classList.add('swipe-right'); }
-            setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 340);
+            setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 480);
           }
-          playerWrap.style.transition = 'transform .24s ease';
+          playerWrap.style.transition = 'transform .36s ease';
           playerWrap.style.transform = '';
-          setTimeout(()=> playerWrap.style.transition = '', 260);
+          setTimeout(()=> playerWrap.style.transition = '', 360);
           id = null; lockedAxis = null; moved=false;
         }
 
@@ -788,10 +759,7 @@
       const v = document.getElementById('courseAdVideo');
       if (!('IntersectionObserver' in window) || !v) return;
       const io = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) v.play().catch(()=>{});
-          else v.pause();
-        }
+        for (const e of entries) { if (e.isIntersecting) v.play().catch(()=>{}); else v.pause(); }
       }, { threshold: 0.5 });
       io.observe(v);
     })();
@@ -809,11 +777,7 @@
                    : container.querySelectorAll(':scope > *');
         if (kids.length) {
           let d = 0;
-          kids.forEach(ch => {
-            ch.classList.add('reveal');
-            ch.style.setProperty('--d', d + 'ms');
-            d += 110;
-          });
+          kids.forEach(ch => { ch.classList.add('reveal'); ch.style.setProperty('--d', d + 'ms'); d += 110; });
         } else {
           container.classList.add('reveal');
         }
@@ -833,12 +797,10 @@
       containers.forEach(el => io.observe(el));
 
       const hero = document.querySelector('.hero');
-      if (hero) {
-        requestAnimationFrame(() => {
-          hero.classList.add('in','revealed');
-          hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
-        });
-      }
+      if (hero) { requestAnimationFrame(() => {
+        hero.classList.add('in','revealed');
+        hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
+      });}
     })();
 
     /* ===== Gentle hero parallax ===== */
