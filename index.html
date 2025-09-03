@@ -19,40 +19,104 @@
   <!-- Optional but safe: improves link previews even without a Twitter account -->
   <meta name="twitter:card" content="summary_large_image">
 
+  <!-- Force mixed content to upgrade to HTTPS -->
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+  <!-- Icons / PWA -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+
   <link rel="icon" href="Images/logo2.jpeg">
   <link rel="stylesheet" href="styles.css">
 
-  <!-- Canonical & alternates: apex domain is the source of truth -->
+  <!-- Canonical & alternates -->
   <link rel="canonical" href="https://kizbourges.fr/">
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
   <link rel="alternate" hreflang="fr-FR" href="https://kizbourges.fr/">
   <link rel="alternate" hreflang="x-default" href="https://kizbourges.fr/">
 
-  <!-- Structured data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "KizBourges",
-    "url": "https://kizbourges.fr/",
-    "logo": "https://kizbourges.fr/Images/logo2.jpeg",
-    "image": "https://kizbourges.fr/Images/cover.jpeg",
-    "email": "mailto:kizbourges@gmail.com",
-    "telephone": "+33617238400",
-    "sameAs": [
-      "https://www.facebook.com/KizBourges",
-      "https://www.instagram.com/kizbourges"
-    ],
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Bourges",
-      "addressCountry": "FR"
-    }
-  }
-  </script>
-
-  <!-- Small responsive tweak for mobile nav button -->
+  <!-- ===== Soft, classy animations ===== -->
   <style>
+    :root{
+      --elev-1: 0 8px 22px rgba(0,0,0,.08);
+      --elev-2: 0 12px 28px rgba(0,0,0,.11);
+      --elev-3: 0 18px 40px rgba(0,0,0,.14);
+      --ease: cubic-bezier(.2,.8,.2,1);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      /* Reveal with a bit more lift & scale */
+      .reveal { opacity: 0; transform: translateY(22px) scale(.965); }
+      .reveal.in {
+        opacity: 1; transform: none;
+        transition:
+          opacity .9s var(--ease),
+          transform .9s var(--ease);
+        transition-delay: var(--d, 0ms);
+        will-change: transform, opacity;
+      }
+
+      /* Section titles: underline sweep when revealed */
+      .section h2 { position: relative; display:inline-block; padding-bottom:4px; }
+      .section h2::after {
+        content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+        background: currentColor; opacity:.22; transition: width .8s ease .18s;
+      }
+      .section.revealed h2::after { width:100%; }
+
+      /* Hover: refined float */
+      .btn { transition: transform .3s ease, box-shadow .3s ease; }
+      .btn:hover { transform: translateY(-4px); box-shadow: var(--elev-2); }
+
+      .card { transition: transform .32s ease, box-shadow .32s ease; }
+      .card:hover { transform: translateY(-6px); box-shadow: var(--elev-3); }
+
+      .logo-img { transition: transform .4s ease; }
+      .logo-img:hover { transform: rotate(-1.2deg) scale(1.02); }
+
+      /* Nav underline grow */
+      nav a { position:relative; display:inline-block; padding-bottom:2px; transition: color .2s ease; }
+      nav a::after {
+        content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+        background: currentColor; opacity:.3; transition: width .3s ease;
+      }
+      nav a:hover::after, nav a:focus-visible::after { width:100%; }
+
+      /* Hero parallax target */
+      .hero .hero-inner { will-change: transform; transition: transform .3s ease; }
+
+      /* Mobile nav slide */
+      @media (max-width: 768px) {
+        .nav { transform: translateY(-10px); opacity: 0; transition: transform .28s ease, opacity .28s ease; }
+        .nav.open { transform: translateY(0); opacity: 1; }
+      }
+
+      /* Carousels */
+      .events-carousel, .soundcloud-carousel { touch-action: pan-y; }
+      .ev-card, .sc-player { will-change: transform, opacity; }
+
+      .ev-card { transition: transform .36s ease, opacity .36s ease; }
+      .ev-card.swipe-left  { transform: translateX(-28px); opacity:.86; }
+      .ev-card.swipe-right { transform: translateX(28px);  opacity:.86; }
+      .ev-card.dragging { cursor: grabbing; }
+
+      /* Event poster cross-fade & micro-zoom */
+      #ev-img { transition: opacity .5s ease, transform .7s ease; }
+
+      /* SoundCloud panel swipe nudge */
+      .sc-player.swipe-left  { transform: translateX(-24px); opacity:.9; transition: transform .32s ease, opacity .32s ease; }
+      .sc-player.swipe-right { transform: translateX(24px);  opacity:.9; transition: transform .32s ease, opacity .32s ease; }
+      .sc-player.dragging { cursor: grabbing; }
+    }
+
+    /* Safety for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+
+    /* Mobile tweaks for nav (existing rules preserved) */
     @media (max-width: 768px){
       .nav{ display:none; }
       .nav.open{ display:block; }
@@ -60,130 +124,6 @@
       .nav a{ display:block; padding:10px 0; }
     }
   </style>
-
-  <style>
-  /* ===== Soft animations ===== */
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal { opacity: 0; transform: translateY(12px); }
-    .reveal.in { opacity: 1; transform: none; transition: opacity .6s ease, transform .6s ease; }
-
-    /* Gentle stagger: we’ll set CSS var --d in JS */
-    .reveal.in { transition-delay: var(--d, 0ms); }
-
-    /* Hover lifts */
-    .btn { transition: transform .25s ease, box-shadow .25s ease; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.08); }
-
-    .card { transition: transform .25s ease, box-shadow .25s ease; }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.10); }
-
-    .logo-img { transition: transform .35s ease; }
-    .logo-img:hover { transform: rotate(-2deg) scale(1.02); }
-
-    /* Mobile nav slide */
-    .nav { transition: transform .25s ease, opacity .25s ease; }
-    @media (max-width: 768px) {
-      .nav { transform: translateY(-6px); opacity: 0; }
-      .nav.open { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Events carousel slide swipe */
-    .ev-card { transition: transform .28s ease, opacity .28s ease; }
-    .ev-card.swipe-left { transform: translateX(-18px); opacity: .85; }
-    .ev-card.swipe-right { transform: translateX(18px);  opacity: .85; }
-
-    /* Hero text subtle entrance */
-    .hero h1, .hero p, .hero .cta-row { opacity: 0; transform: translateY(10px); }
-    .hero.in h1, .hero.in p, .hero.in .cta-row {
-      opacity: 1; transform: none; transition: opacity .7s ease, transform .7s ease;
-    }
-    .hero.in h1 { transition-delay: 60ms; }
-    .hero.in p  { transition-delay: 140ms; }
-    .hero.in .cta-row { transition-delay: 220ms; }
-  }
-
-  /* Safety for users who prefer reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; }
-  }
-</style>
-  <style>
-  @media (prefers-reduced-motion: no-preference) {
-    /* More present reveal: a bit more lift + tiny scale */
-    .reveal { opacity: 0; transform: translateY(18px) scale(.975); }
-    .reveal.in {
-      opacity: 1; transform: none;
-      transition:
-        opacity .8s cubic-bezier(.2,.8,.2,1),
-        transform .8s cubic-bezier(.2,.8,.2,1);
-      transition-delay: var(--d, 0ms);
-      will-change: transform, opacity;
-    }
-
-    /* Section titles underline slides in once revealed */
-    .section h2 { position: relative; display:inline-block; padding-bottom:4px; }
-    .section h2::after {
-      content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
-      background: currentColor; opacity:.18; transition: width .7s ease .15s;
-    }
-    .section.revealed h2::after { width:100%; }
-
-    /* Softer but clearer media motion */
-    .card img, .course-video, .events-carousel img {
-      transition: transform .6s ease, opacity .45s ease, box-shadow .6s ease;
-      will-change: transform, opacity;
-    }
-    .card:hover img { transform: scale(1.02); }
-    .events-carousel img:hover { transform: scale(1.015); }
-    .course-ad .media:hover .course-video { transform: scale(1.012); }
-
-    /* Nav underline grow */
-    nav a { position:relative; display:inline-block; padding-bottom:2px; transition: color .2s ease; }
-    nav a::after {
-      content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
-      background: currentColor; opacity:.3; transition: width .28s ease;
-    }
-    nav a:hover::after, nav a:focus-visible::after { width:100%; }
-
-    /* Hero gentle parallax target */
-    .hero .hero-inner { will-change: transform; transition: transform .28s ease; }
-
-    /* Carousel slide nudge a bit stronger */
-    .ev-card { transition: transform .35s ease, opacity .35s ease; touch-action: pan-y; }
-    .ev-card.swipe-left  { transform: translateX(-26px); opacity:.85; }
-    .ev-card.swipe-right { transform: translateX(26px);  opacity:.85; }
-    .ev-card.dragging { cursor: grabbing; }
-
-    /* Buttons & cards float a touch more */
-    .btn { transition: transform .3s ease, box-shadow .3s ease; }
-    .btn:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(0,0,0,.12); }
-    .card { transition: transform .3s ease, box-shadow .3s ease; }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 16px 36px rgba(0,0,0,.13); }
-
-    /* Event poster cross-fade helper */
-    #ev-img { transition: opacity .45s ease, transform .6s ease; }
-  }
-
-  @media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
-    .nav { transform: translateY(-10px); opacity: 0; }
-    .nav.open { transform: translateY(0); opacity: 1; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; }
-  }
-</style>
-
-
-
-  <!-- Force mixed content to upgrade to HTTPS -->
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
 </head>
 
 <body>
@@ -208,7 +148,6 @@
         <a href="#events">Événements</a>
         <a href="#covoit">Covoiturage</a>
         <a href="#son">Ambiance</a>
-        <!-- Simple external link to HelloAsso (opens new tab) -->
         <a href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026" target="_blank" rel="noopener">Adhésion</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -289,7 +228,7 @@
       <div class="container">
         <h2>Événements à venir</h2>
 
-        <!-- Slider UI (unchanged) -->
+        <!-- Slider UI -->
         <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
           <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
             style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
@@ -314,49 +253,36 @@
       </div>
     </section>
 
-<!-- Covoiturage -->
-<section id="covoit" class="section alt">
-  <div class="container">
-    <h2>Covoiturage</h2>
-    <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
+    <!-- Covoiturage -->
+    <section id="covoit" class="section alt">
+      <div class="container">
+        <h2>Covoiturage</h2>
+        <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
 
-    <div class="cta-row" style="gap:10px; flex-wrap:wrap;">
-      <!-- 1) Lien vers Google Forms -->
-      <a class="btn"
-         href="https://forms.gle/SpdXLDX815FWxpan6"
-         target="_blank" rel="noopener">
-        Remplir le formulaire
-      </a>
+        <div class="cta-row" style="gap:10px; flex-wrap:wrap;">
+          <a class="btn"
+             href="https://forms.gle/SpdXLDX815FWxpan6"
+             target="_blank" rel="noopener">
+            Remplir le formulaire
+          </a>
 
-      <!-- 2) Placeholder WhatsApp (désactivé pour l’instant) -->
-      <a class="btn"
-         href="#"
-         aria-disabled="true"
-         onclick="return false;"
-         style="opacity:.55; cursor:not-allowed;"
-         title="Lien WhatsApp bientôt disponible">
-        Groupe WhatsApp (bientôt)
-      </a>
-    </div>
-
-    <!-- (Optionnel) Affichage du formulaire directement sur la page -->
-    <!-- Remplacez FORM_ID ci-dessous par l’ID d’intégration fourni par Google Forms -->
-<!--     <div class="form-embed" style="margin-top:18px; max-width:900px; margin-left:auto; margin-right:auto;">
-      <iframe
-        src="https://docs.google.com/forms/d/e/1FAIpQLSeCyRhMI0_3T98cekYc4D2fcgG4bG8Mgqnaf2SDTEyQAVntrw/viewform?usp=dialog"
-        width="100%" height="1200" frameborder="0" marginheight="0" marginwidth="0" loading="lazy">
-        Chargement…
-      </iframe>
-    </div> -->
-  </div>
-</section>
-
+          <a class="btn"
+             href="#"
+             aria-disabled="true"
+             onclick="return false;"
+             style="opacity:.55; cursor:not-allowed;"
+             title="Lien WhatsApp bientôt disponible">
+            Groupe WhatsApp (bientôt)
+          </a>
+        </div>
+      </div>
+    </section>
 
     <!-- Ambiance / SoundCloud (carousel) -->
     <section id="son" class="section">
       <div class="container">
         <h2>Ambiance musicale</h2>
-        <p>Fais défiler nos playlists avec les flèches :</p>
+        <p>Fais défiler nos playlists avec les flèches ou un swipe :</p>
 
         <div class="soundcloud-carousel" style="max-width:820px;margin:auto;position:relative;">
           <button id="sc-prev" aria-label="Playlist précédente" class="sc-arrow"
@@ -424,7 +350,7 @@
       if (y && !y.textContent) y.textContent = new Date().getFullYear();
     })();
 
-    /* === Events CSV loader (restored) === */
+    /* === Events CSV loader === */
     (function(){
       const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
@@ -468,8 +394,28 @@
       function renderCarousel(){
         if(!events.length) return;
         const ev = events[idx];
-        img.onerror = () => { img.onerror = null; img.src = 'Images/cover.jpeg'; };
-        img.src  = ev.cover || 'Images/cover.jpeg';
+
+        /* Cross-fade + micro zoom on poster change */
+        img.style.opacity = '0';
+        img.style.transform = 'scale(1.015)';
+        const nextSrc = ev.cover || 'Images/cover.jpeg';
+        const tmp = new Image();
+        tmp.onload = () => {
+          img.src = nextSrc;
+          requestAnimationFrame(()=>{
+            img.style.opacity = '1';
+            img.style.transform = 'scale(1)';
+          });
+        };
+        tmp.onerror = () => {
+          img.src = 'Images/cover.jpeg';
+          requestAnimationFrame(()=>{
+            img.style.opacity = '1';
+            img.style.transform = 'scale(1)';
+          });
+        };
+        tmp.src  = nextSrc;
+
         img.alt  = `Affiche : ${ev.name || 'Événement'}`;
         title.textContent = ev.name || 'Événement';
         when.textContent  = fmtDate(ev.start_time);
@@ -563,11 +509,82 @@
 
           if (!events.length) return;
           renderDots(); renderCarousel(); renderList();
+
+          /* Enable swipe after data is ready */
+          enableEventSwipe(prev, next);
         })
         .catch(err => console.error('CSV load error:', err));
+
+      /* === Touch/Pointer swipe for Events === */
+      function enableEventSwipe(prev, next){
+        const card = document.getElementById('ev-card');
+        if (!card || !prev || !next) return;
+
+        const THRESHOLD = 48;   // px
+        const RESTRAINT = 80;   // max vertical px
+        const FOLLOW = 0.18;
+        const MAX_TILT = 0.6;
+
+        let startX=0, startY=0, dx=0, dy=0, active=false, id=null;
+
+        function start(x, y, pointerId){
+          active = true; startX = x; startY = y; dx = 0; dy = 0; id = pointerId;
+          card.classList.add('dragging');
+          // make sure we don't accidentally select text/images
+          document.body.style.userSelect = 'none';
+        }
+        function move(x, y){
+          if (!active) return;
+          dx = x - startX; dy = y - startY;
+
+          const tx = dx * FOLLOW;
+          const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, dx * 0.02));
+          card.style.transform = `translateX(${tx}px) rotate(${tilt}deg)`;
+        }
+        function end(){
+          if (!active) return;
+          active = false;
+          card.classList.remove('dragging');
+          document.body.style.userSelect = '';
+
+          const absX = Math.abs(dx), absY = Math.abs(dy);
+          if (absX > THRESHOLD && absY < RESTRAINT) {
+            if (dx < 0) { next.click(); card.classList.add('swipe-left'); }
+            else       { prev.click(); card.classList.add('swipe-right'); }
+            setTimeout(()=> card.classList.remove('swipe-left','swipe-right'), 380);
+          }
+
+          card.style.transition = 'transform .25s ease';
+          card.style.transform = '';
+          setTimeout(()=> card.style.transition = '', 260);
+          id = null;
+        }
+
+        card.addEventListener('pointerdown', (e)=>{
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          card.setPointerCapture(e.pointerId);
+          start(e.clientX, e.clientY, e.pointerId);
+        });
+
+        card.addEventListener('pointermove', (e)=>{
+          if (!active || (id !== null && e.pointerId !== id)) return;
+          move(e.clientX, e.clientY);
+        });
+
+        function cancelIfNeeded(e){
+          if (!active || (id !== null && e.pointerId !== id)) return;
+          end();
+        }
+        card.addEventListener('pointerup', cancelIfNeeded);
+        card.addEventListener('pointercancel', cancelIfNeeded);
+        // Prevent image-drag ghosting
+        card.querySelectorAll('img,a').forEach(el=>{
+          el.addEventListener('dragstart', ev => ev.preventDefault());
+        });
+      }
     })();
 
-    /* SoundCloud carousel (unchanged logic, your IDs) */
+    /* SoundCloud carousel (IDs unchanged) + swipe support */
     (function(){
       const base = 'https://w.soundcloud.com/player/?url=';
       const tail = '&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
@@ -587,6 +604,8 @@
       const nextBtn = document.getElementById('sc-next');
 
       const carousel = document.querySelector('.soundcloud-carousel');
+      const playerWrap = document.querySelector('.sc-player');
+
       const indicators = document.createElement('div');
       indicators.style.textAlign = 'center';
       indicators.style.marginTop = '10px';
@@ -623,6 +642,64 @@
         if (e.key === 'ArrowRight') next();
       });
 
+      /* Touch/Pointer swipe for SoundCloud */
+      (function enableSoundSwipe(){
+        if (!playerWrap) return;
+
+        const THRESHOLD = 44;
+        const RESTRAINT = 80;
+        const FOLLOW = 0.16;
+        let startX=0, startY=0, dx=0, dy=0, active=false, id=null;
+
+        function start(x, y, pointerId){
+          active = true; startX = x; startY = y; dx = 0; dy = 0; id = pointerId;
+          playerWrap.classList.add('dragging');
+          document.body.style.userSelect = 'none';
+        }
+        function move(x, y){
+          if (!active) return;
+          dx = x - startX; dy = y - startY;
+          const tx = dx * FOLLOW;
+          playerWrap.style.transform = `translateX(${tx}px)`;
+        }
+        function end(){
+          if (!active) return;
+          active = false;
+          playerWrap.classList.remove('dragging');
+          document.body.style.userSelect = '';
+
+          const absX = Math.abs(dx), absY = Math.abs(dy);
+          if (absX > THRESHOLD && absY < RESTRAINT) {
+            if (dx < 0) { next(); playerWrap.classList.add('swipe-left'); }
+            else       { prev(); playerWrap.classList.add('swipe-right'); }
+            setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 340);
+          }
+          playerWrap.style.transition = 'transform .24s ease';
+          playerWrap.style.transform = '';
+          setTimeout(()=> playerWrap.style.transition = '', 260);
+          id = null;
+        }
+
+        playerWrap.addEventListener('pointerdown', (e)=>{
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          playerWrap.setPointerCapture(e.pointerId);
+          start(e.clientX, e.clientY, e.pointerId);
+        });
+        playerWrap.addEventListener('pointermove', (e)=>{
+          if (!active || (id !== null && e.pointerId !== id)) return;
+          move(e.clientX, e.clientY);
+        });
+        function cancelIfNeeded(e){
+          if (!active || (id !== null && e.pointerId !== id)) return;
+          end();
+        }
+        playerWrap.addEventListener('pointerup', cancelIfNeeded);
+        playerWrap.addEventListener('pointercancel', cancelIfNeeded);
+
+        // Prevent iframe grabbing drag ghost
+        frameEl.addEventListener('dragstart', ev => ev.preventDefault());
+      })();
+
       render();
     })();
 
@@ -641,143 +718,73 @@
       }, { threshold: 0.5 });
       io.observe(v);
     })();
-  </script>
-  <script>
-  /* ===== Scroll reveal (soft fade-up + stagger) ===== */
-  (function(){
-    if (!('IntersectionObserver' in window)) return;
-    const revealables = [];
 
-    // Collect elements to reveal (sections, cards, headers, etc.)
-    document.querySelectorAll(
-      'section, .card, .cards .card, header .container, .hero .container, .site-footer .container, .events-carousel, .soundcloud-carousel'
-    ).forEach(el => revealables.push(el));
+    /* ===== Scroll reveal (classy, a bit stronger) ===== */
+    (function(){
+      if (!('IntersectionObserver' in window)) return;
 
-    // Add reveal class & stagger within common containers
-    revealables.forEach(container => {
-      // if container has multiple child cards, stagger them
-      const kids = container.matches('.cards') ? container.querySelectorAll('.card')
-                 : container.querySelectorAll(':scope > *');
-      let delay = 0;
-      if (kids.length) {
-        kids.forEach(ch => {
-          ch.classList.add('reveal');
-          ch.style.setProperty('--d', delay + 'ms');
-          delay += 60; // small incremental delay
-        });
-      } else {
-        container.classList.add('reveal');
-      }
-    });
+      const containers = document.querySelectorAll(
+        'section, header .container, .hero, .site-footer .container, .events-carousel, .soundcloud-carousel, .cards'
+      );
 
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          // mark container in
-          e.target.classList.add('in');
-          // if container is a .hero, animate its inner bits via .hero.in styles
-          if (e.target.classList.contains('hero')) e.target.classList.add('in');
-          // mark children (that have .reveal) in
-          e.target.classList.add('in');
-          e.target.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
-          io.unobserve(e.target);
+      // Apply .reveal with cinematic stagger
+      containers.forEach(container => {
+        const kids = container.matches('.cards') ? container.querySelectorAll('.card')
+                   : container.querySelectorAll(':scope > *');
+        if (kids.length) {
+          let d = 0;
+          kids.forEach(ch => {
+            ch.classList.add('reveal');
+            ch.style.setProperty('--d', d + 'ms');
+            d += 100;
+          });
+        } else {
+          container.classList.add('reveal');
         }
-      }
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
-
-    // Observe each top-level section and hero
-    document.querySelectorAll('section, header, .hero, .site-footer, .cards, .events-carousel, .soundcloud-carousel')
-      .forEach(el => io.observe(el));
-
-    // Ensure hero animates on first paint if visible
-    const hero = document.querySelector('.hero');
-    if (hero) {
-      requestAnimationFrame(() => {
-        hero.classList.add('in');
-        hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
       });
-    }
-  })();
 
-  /* ===== Tiny swipe hint on events carousel when changing slide ===== */
-  (function(){
-    const card = document.getElementById('ev-card');
-    const prev = document.getElementById('ev-prev');
-    const next = document.getElementById('ev-next');
-    if (!card || !prev || !next) return;
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            if (e.target.classList.contains('section')) e.target.classList.add('revealed');
+            e.target.classList.add('in');
+            e.target.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
+            io.unobserve(e.target);
+          }
+        }
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
 
-    function addSwipe(cls){
-      card.classList.add(cls);
-      // remove after transition
-      setTimeout(() => card.classList.remove(cls), 280);
-    }
+      containers.forEach(el => io.observe(el));
 
-    // Hook into your existing prev/next by wrapping their clicks
-    const origPrev = prev.onclick;
-    const origNext = next.onclick;
-
-    // If there were listeners via addEventListener, we’ll add *another* listener
-    prev.addEventListener('click', () => addSwipe('swipe-right'));
-    next.addEventListener('click', () => addSwipe('swipe-left'));
-  })();
-
-  /* ===== Subtle focus/hover animation for keyboard users on buttons ===== */
-  (function(){
-    document.querySelectorAll('.btn, nav a').forEach(el=>{
-      el.addEventListener('focus', () => el.classList.add('kb-focus'));
-      el.addEventListener('blur',  () => el.classList.remove('kb-focus'));
-    });
-  })();
-</script>
-  <script>
-/* === Scroll reveal (richer) === */
-(function(){
-  if (!('IntersectionObserver' in window)) return;
-
-  const containers = document.querySelectorAll(
-    'section, header .container, .hero, .site-footer .container, .events-carousel, .soundcloud-carousel, .cards'
-  );
-
-  // Apply .reveal with bigger stagger for siblings
-  containers.forEach(container => {
-    const kids = container.matches('.cards') ? container.querySelectorAll('.card')
-               : container.querySelectorAll(':scope > *');
-    if (kids.length) {
-      let d = 0;
-      kids.forEach(ch => {
-        ch.classList.add('reveal');
-        ch.style.setProperty('--d', d + 'ms');
-        d += 100; // was 60 → 100ms for a more cinematic feel
-      });
-    } else {
-      container.classList.add('reveal');
-    }
-  });
-
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) {
-        if (e.target.classList.contains('section')) e.target.classList.add('revealed');
-        e.target.classList.add('in');
-        e.target.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
-        io.unobserve(e.target);
+      // Kick the hero on first paint
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        requestAnimationFrame(() => {
+          hero.classList.add('in','revealed');
+          hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
+        });
       }
-    }
-  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+    })();
 
-  containers.forEach(el => io.observe(el));
+    /* ===== Gentle hero parallax (slightly more presence) ===== */
+    (function(){
+      const inner = document.querySelector('.hero .hero-inner');
+      if (!inner || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  // Ensure hero animates on first paint
-  const hero = document.querySelector('.hero');
-  if (hero) {
-    requestAnimationFrame(() => {
-      hero.classList.add('in','revealed');
-      hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
-    });
-  }
-})();
-</script>
-
-
+      let ticking = false;
+      function onScroll(){
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(()=>{
+          const y = window.scrollY || 0;
+          // up to ~14px over first ~800px
+          const t = Math.max(0, Math.min(14, y * 0.0175));
+          inner.style.transform = `translateY(${t}px)`;
+          ticking = false;
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+  </script>
 </body>
 </html>
