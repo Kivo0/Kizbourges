@@ -61,6 +61,54 @@
     }
   </style>
 
+  <style>
+  /* ===== Soft animations ===== */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(12px); }
+    .reveal.in { opacity: 1; transform: none; transition: opacity .6s ease, transform .6s ease; }
+
+    /* Gentle stagger: we’ll set CSS var --d in JS */
+    .reveal.in { transition-delay: var(--d, 0ms); }
+
+    /* Hover lifts */
+    .btn { transition: transform .25s ease, box-shadow .25s ease; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+
+    .card { transition: transform .25s ease, box-shadow .25s ease; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.10); }
+
+    .logo-img { transition: transform .35s ease; }
+    .logo-img:hover { transform: rotate(-2deg) scale(1.02); }
+
+    /* Mobile nav slide */
+    .nav { transition: transform .25s ease, opacity .25s ease; }
+    @media (max-width: 768px) {
+      .nav { transform: translateY(-6px); opacity: 0; }
+      .nav.open { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Events carousel slide swipe */
+    .ev-card { transition: transform .28s ease, opacity .28s ease; }
+    .ev-card.swipe-left { transform: translateX(-18px); opacity: .85; }
+    .ev-card.swipe-right { transform: translateX(18px);  opacity: .85; }
+
+    /* Hero text subtle entrance */
+    .hero h1, .hero p, .hero .cta-row { opacity: 0; transform: translateY(10px); }
+    .hero.in h1, .hero.in p, .hero.in .cta-row {
+      opacity: 1; transform: none; transition: opacity .7s ease, transform .7s ease;
+    }
+    .hero.in h1 { transition-delay: 60ms; }
+    .hero.in p  { transition-delay: 140ms; }
+    .hero.in .cta-row { transition-delay: 220ms; }
+  }
+
+  /* Safety for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+
   <!-- Force mixed content to upgrade to HTTPS -->
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
@@ -527,5 +575,93 @@
       io.observe(v);
     })();
   </script>
+  <script>
+  /* ===== Scroll reveal (soft fade-up + stagger) ===== */
+  (function(){
+    if (!('IntersectionObserver' in window)) return;
+    const revealables = [];
+
+    // Collect elements to reveal (sections, cards, headers, etc.)
+    document.querySelectorAll(
+      'section, .card, .cards .card, header .container, .hero .container, .site-footer .container, .events-carousel, .soundcloud-carousel'
+    ).forEach(el => revealables.push(el));
+
+    // Add reveal class & stagger within common containers
+    revealables.forEach(container => {
+      // if container has multiple child cards, stagger them
+      const kids = container.matches('.cards') ? container.querySelectorAll('.card')
+                 : container.querySelectorAll(':scope > *');
+      let delay = 0;
+      if (kids.length) {
+        kids.forEach(ch => {
+          ch.classList.add('reveal');
+          ch.style.setProperty('--d', delay + 'ms');
+          delay += 60; // small incremental delay
+        });
+      } else {
+        container.classList.add('reveal');
+      }
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          // mark container in
+          e.target.classList.add('in');
+          // if container is a .hero, animate its inner bits via .hero.in styles
+          if (e.target.classList.contains('hero')) e.target.classList.add('in');
+          // mark children (that have .reveal) in
+          e.target.classList.add('in');
+          e.target.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
+          io.unobserve(e.target);
+        }
+      }
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+
+    // Observe each top-level section and hero
+    document.querySelectorAll('section, header, .hero, .site-footer, .cards, .events-carousel, .soundcloud-carousel')
+      .forEach(el => io.observe(el));
+
+    // Ensure hero animates on first paint if visible
+    const hero = document.querySelector('.hero');
+    if (hero) {
+      requestAnimationFrame(() => {
+        hero.classList.add('in');
+        hero.querySelectorAll('.reveal').forEach(x => x.classList.add('in'));
+      });
+    }
+  })();
+
+  /* ===== Tiny swipe hint on events carousel when changing slide ===== */
+  (function(){
+    const card = document.getElementById('ev-card');
+    const prev = document.getElementById('ev-prev');
+    const next = document.getElementById('ev-next');
+    if (!card || !prev || !next) return;
+
+    function addSwipe(cls){
+      card.classList.add(cls);
+      // remove after transition
+      setTimeout(() => card.classList.remove(cls), 280);
+    }
+
+    // Hook into your existing prev/next by wrapping their clicks
+    const origPrev = prev.onclick;
+    const origNext = next.onclick;
+
+    // If there were listeners via addEventListener, we’ll add *another* listener
+    prev.addEventListener('click', () => addSwipe('swipe-right'));
+    next.addEventListener('click', () => addSwipe('swipe-left'));
+  })();
+
+  /* ===== Subtle focus/hover animation for keyboard users on buttons ===== */
+  (function(){
+    document.querySelectorAll('.btn, nav a').forEach(el=>{
+      el.addEventListener('focus', () => el.classList.add('kb-focus'));
+      el.addEventListener('blur',  () => el.classList.remove('kb-focus'));
+    });
+  })();
+</script>
+
 </body>
 </html>
