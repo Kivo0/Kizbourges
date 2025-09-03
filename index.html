@@ -5,21 +5,23 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>KizBourges — Association de danse</title>
 
+  <!-- SEO -->
   <meta name="description" content="Site officiel de KizBourges : cours, événements, covoiturage et adhésion à Bourges.">
   <meta name="keywords" content="Kizomba Bourges, danse Bourges, cours kizomba, soirées kizomba, KizBourges">
   <meta name="robots" content="index,follow,max-image-preview:large">
+  <!-- Canonical: single source of truth (no hreflang alternates to avoid Google 'alternate page' bucket) -->
+  <link rel="canonical" href="https://kizbourges.fr/">
 
+  <!-- Open Graph / Social -->
   <meta property="og:title" content="KizBourges — Association de danse">
   <meta property="og:description" content="Cours, soirées & covoiturage à Bourges. Rejoins la communauté Kizomba !">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://kizbourges.fr/Images/cover.jpeg">
   <meta property="og:url" content="https://kizbourges.fr/">
   <meta property="og:locale" content="fr_FR">
-
-  <!-- Optional but safe: improves link previews even without a Twitter account -->
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- Force mixed content to upgrade to HTTPS -->
+  <!-- Security -->
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
   <!-- Icons / PWA -->
@@ -28,26 +30,98 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
+  <!-- Styles -->
   <link rel="icon" href="Images/logo2.jpeg">
   <link rel="stylesheet" href="styles.css">
 
-  <!-- Canonical & alternates -->
-  <link rel="canonical" href="https://kizbourges.fr/">
-  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
-  <link rel="alternate" hreflang="fr-FR" href="https://kizbourges.fr/">
-  <link rel="alternate" hreflang="x-default" href="https://kizbourges.fr/">
+  <!-- Optional sitemap hint (Google primarily discovers via robots.txt) -->
+  <!-- <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml"> -->
 
-  <!-- ===== Soft, classy animations ===== -->
+  <!-- ===== Soft, classy animations + navbar improvements ===== -->
   <style>
     :root{
       --elev-1: 0 8px 22px rgba(0,0,0,.08);
       --elev-2: 0 12px 28px rgba(0,0,0,.11);
       --elev-3: 0 18px 40px rgba(0,0,0,.14);
       --ease: cubic-bezier(.2,.8,.2,1);
+      --brand: #111; /* nav link color uses currentColor; tweak if needed */
+      --nav-bg: #fff;
+      --nav-border: #eaeaea;
     }
 
+    /* ========== HEADER / NAV ========== */
+    .site-header{
+      position: sticky; top: 0; z-index: 50;
+      background: var(--nav-bg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      transition: box-shadow .25s ease, backdrop-filter .25s ease;
+      backdrop-filter: saturate(1) blur(0px);
+    }
+    .site-header.scrolled{
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      backdrop-filter: saturate(1.1) blur(6px);
+    }
+    .site-header .container{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 10px 16px;
+    }
+    .logo-img{ height: 44px; width:auto; display:block; }
+
+    /* Desktop nav */
+    .nav{
+      display:flex; gap:18px; align-items:center;
+    }
+    .nav a{
+      position:relative; display:inline-block;
+      color: var(--brand); text-decoration:none; padding: 6px 2px;
+      transition: color .2s ease, letter-spacing .2s ease;
+    }
+    .nav a::after{
+      content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+      background: currentColor; opacity:.3; transition: width .28s ease;
+    }
+    .nav a:hover{ letter-spacing: .2px; }
+    .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
+
+    /* Hamburger button */
+    #menu{
+      --bar-w: 22px; --bar-h: 2px; --gap: 5px;
+      width: 40px; height: 34px; position: relative;
+      border: 1px solid #ddd; border-radius: 10px; background: #fff; cursor: pointer;
+      display:none; align-items:center; justify-content:center;
+    }
+    #menu .bars{ position:relative; width: var(--bar-w); height: calc(var(--bar-h)*3 + var(--gap)*2); }
+    #menu .bar{
+      position:absolute; left:0; right:0; height: var(--bar-h); background:#222; border-radius: 2px;
+      transition: transform .25s ease, top .25s ease, opacity .2s ease;
+    }
+    #menu .bar:nth-child(1){ top:0; }
+    #menu .bar:nth-child(2){ top: calc(var(--bar-h) + var(--gap)); }
+    #menu .bar:nth-child(3){ top: calc(var(--bar-h)*2 + var(--gap)*2); }
+
+    #menu.open .bar:nth-child(1){ top: calc(var(--bar-h) + var(--gap)); transform: rotate(45deg); }
+    #menu.open .bar:nth-child(2){ opacity:0; }
+    #menu.open .bar:nth-child(3){ top: calc(var(--bar-h) + var(--gap)); transform: rotate(-45deg); }
+
+    /* Mobile nav panel */
+    @media (max-width: 768px){
+      #menu{ display:flex; }
+      .nav{
+        position:absolute; left:0; right:0; top:100%;
+        background: var(--nav-bg);
+        border-top: 1px solid var(--nav-border);
+        display:block; padding: 10px 16px;
+        transform: translateY(-8px); opacity: 0; pointer-events: none;
+        transition: transform .24s ease, opacity .24s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+      }
+      .nav.open{ transform: translateY(0); opacity: 1; pointer-events: auto; }
+      .nav a{ display:block; padding: 10px 0; }
+    }
+
+    /* ===== Page-wide motion ===== */
     @media (prefers-reduced-motion: no-preference) {
-      /* Reveal with a bit more lift & scale */
+      /* Reveal (slightly stronger but still soft) */
       .reveal { opacity: 0; transform: translateY(26px) scale(.955); }
       .reveal.in {
         opacity: 1; transform: none;
@@ -56,7 +130,6 @@
         will-change: transform, opacity;
       }
 
-      /* Section titles: underline sweep when revealed */
       .section h2 { position: relative; display:inline-block; padding-bottom:4px; }
       .section h2::after {
         content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
@@ -64,62 +137,31 @@
       }
       .section.revealed h2::after { width:100%; }
 
-      /* Hover: refined float */
       .btn { transition: transform .32s ease, box-shadow .32s ease; }
       .btn:hover { transform: translateY(-4px); box-shadow: var(--elev-2); }
-
       .card { transition: transform .34s ease, box-shadow .34s ease; }
       .card:hover { transform: translateY(-6px); box-shadow: var(--elev-3); }
-
       .logo-img { transition: transform .4s ease; }
       .logo-img:hover { transform: rotate(-1.2deg) scale(1.02); }
 
-      /* Nav underline grow */
-      nav a { position:relative; display:inline-block; padding-bottom:2px; transition: color .2s ease; }
-      nav a::after {
-        content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
-        background: currentColor; opacity:.3; transition: width .3s ease;
-      }
-      nav a:hover::after, nav a:focus-visible::after { width:100%; }
-
-      /* Hero parallax target */
+      /* Hero parallax */
       .hero .hero-inner { will-change: transform; transition: transform .32s ease; }
 
-      /* Mobile nav slide */
-      @media (max-width: 768px) {
-        .nav { transform: translateY(-10px); opacity: 0; transition: transform .28s ease, opacity .28s ease; }
-        .nav.open { transform: translateY(0); opacity: 1; }
-      }
-
-      /* Carousels: allow vertical page scroll while we capture horizontal swipes */
+      /* Carousels gesture setup */
       .events-carousel, .soundcloud-carousel { touch-action: pan-y; }
       .ev-card, .sc-player { will-change: transform, opacity; }
-
       .ev-card { transition: transform .36s ease, opacity .36s ease; }
       .ev-card.swipe-left  { transform: translateX(-30px); opacity:.86; }
       .ev-card.swipe-right { transform: translateX(30px);  opacity:.86; }
       .ev-card.dragging { cursor: grabbing; }
-
-      /* Event poster cross-fade & micro-zoom */
       #ev-img { transition: opacity .52s ease, transform .72s ease; }
-
-      /* SoundCloud panel swipe nudge */
       .sc-player.swipe-left  { transform: translateX(-26px); opacity:.9; transition: transform .34s ease, opacity .34s ease; }
       .sc-player.swipe-right { transform: translateX(26px);  opacity:.9; transition: transform .34s ease, opacity .34s ease; }
       .sc-player.dragging { cursor: grabbing; }
     }
 
-    /* Safety for users who prefer reduced motion */
     @media (prefers-reduced-motion: reduce) {
       * { animation: none !important; transition: none !important; }
-    }
-
-    /* Mobile tweaks for nav (existing rules preserved) */
-    @media (max-width: 768px){
-      .nav{ display:none; }
-      .nav.open{ display:block; }
-      #menu{ font-size:1.4rem; background:none; border:1px solid #ddd; padding:6px 10px; border-radius:8px; }
-      .nav a{ display:block; padding:10px 0; }
     }
   </style>
 </head>
@@ -132,13 +174,20 @@
     nonce="kizbourges"></script>
 
   <!-- Header -->
-  <header class="site-header">
+  <header class="site-header" id="header">
     <div class="container">
-      <a class="logo" href="./" aria-label="KizBourges">
+      <a class="logo" href="/" aria-label="KizBourges">
         <img src="Images/logo2.jpeg" alt="Logo KizBourges" class="logo-img">
       </a>
 
-      <button id="menu" aria-label="Ouvrir le menu">☰</button>
+      <!-- Animated Hamburger -->
+      <button id="menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav">
+        <span class="bars" aria-hidden="true">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </span>
+      </button>
 
       <nav id="nav" class="nav" aria-label="Navigation principale">
         <a href="#asso">L’asso</a>
@@ -226,7 +275,6 @@
       <div class="container">
         <h2>Événements à venir</h2>
 
-        <!-- Slider UI -->
         <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
           <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
             style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
@@ -276,7 +324,7 @@
       </div>
     </section>
 
-    <!-- Ambiance / SoundCloud (carousel) -->
+    <!-- Ambiance / SoundCloud -->
     <section id="son" class="section">
       <div class="container">
         <h2>Ambiance musicale</h2>
@@ -289,7 +337,7 @@
           <div class="sc-player" style="padding:0 28px;">
             <h3 id="sc-title" style="text-align:center;margin-bottom:8px;">Kizomba – N°1</h3>
             <iframe id="sc-player" title="Playlist SoundCloud KizBourges"
-              width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay"
+              width="100%" height="450" scrolling="no" frameborder="0" allow="autoplay"
               src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
             </iframe>
           </div>
@@ -330,16 +378,39 @@
 
   <!-- Page scripts -->
   <script>
+    /* Sticky header shadow on scroll */
+    (function(){
+      const h = document.getElementById('header');
+      if(!h) return;
+      function onScroll(){
+        if (window.scrollY > 6) h.classList.add('scrolled'); else h.classList.remove('scrolled');
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, {passive:true});
+    })();
+
     /* Mobile menu toggle */
     (function(){
       const btn = document.getElementById('menu');
       const nav = document.getElementById('nav');
       if(!btn || !nav) return;
-      btn.setAttribute('aria-expanded','false');
-      btn.addEventListener('click', function(){
-        const isOpen = nav.classList.toggle('open');
-        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+      function toggle(open){
+        const willOpen = open ?? !nav.classList.contains('open');
+        nav.classList.toggle('open', willOpen);
+        btn.classList.toggle('open', willOpen);
+        btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      }
+      btn.addEventListener('click', ()=> toggle());
+
+      // Close when clicking outside
+      document.addEventListener('click', (e)=>{
+        if (!nav.classList.contains('open')) return;
+        const withinHeader = e.target.closest('#header');
+        if (!withinHeader) toggle(false);
       });
+      // Close on Escape
+      document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') toggle(false); });
     })();
 
     /* Footer year */
@@ -390,7 +461,6 @@
         });
       }
 
-      /* Core renderers */
       function renderCarousel(){
         if(!events.length) return;
         const ev = events[idx];
@@ -476,7 +546,6 @@
         });
       }
 
-      /* Navigation helpers (exposed to swipe) */
       function goPrev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
       function goNext(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
 
@@ -484,7 +553,6 @@
       nextB.addEventListener('click', goNext);
       document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')goPrev(); if(e.key==='ArrowRight')goNext(); });
 
-      /* Load CSV, render, then enable swipe */
       fetch(CSV_URL)
         .then(r => r.text())
         .then(text => {
@@ -513,68 +581,54 @@
 
           if (!events.length) return;
           renderDots(); renderCarousel(); renderList();
-
-          /* Enable swipe after data is ready */
           enableEventSwipe(goPrev, goNext);
         })
         .catch(err => console.error('CSV load error:', err));
 
-      /* === Touch/Pointer swipe for Events === */
+      /* Touch/Pointer swipe for Events with axis lock + preventDefault */
       function enableEventSwipe(goPrev, goNext){
         const card = document.getElementById('ev-card');
         const anchor = document.getElementById('ev-link');
         if (!card) return;
 
-        // Thresholds tuned for comfortable phone swipes
-        const THRESHOLD = 36;   // horizontal px to trigger
-        const RESTRAINT = 90;   // allow some vertical drift
-        const FOLLOW = 0.18;    // how much the card follows your finger
-        const MAX_TILT = 0.6;   // deg
+        const THRESHOLD = 36;
+        const RESTRAINT = 90;
+        const FOLLOW = 0.18;
+        const MAX_TILT = 0.6;
 
         let startX=0, startY=0, dx=0, dy=0;
-        let active=false, id=null, lockedAxis=null, moved=false, swiped=false;
+        let active=false, id=null, lockedAxis=null, moved=false;
 
-        // prevent accidental navigation when swiping on the anchor
         function suppressClick(e){
           if (moved) { e.preventDefault(); e.stopPropagation(); }
         }
         anchor.addEventListener('click', suppressClick);
 
         function start(e){
-          // only left-button mouse or touch/pen
           if (e.pointerType === 'mouse' && e.button !== 0) return;
           active = true; id = e.pointerId;
           startX = e.clientX; startY = e.clientY;
-          dx = dy = 0; lockedAxis = null; moved=false; swiped=false;
+          dx = dy = 0; lockedAxis = null; moved=false;
           card.classList.add('dragging');
           card.setPointerCapture(id);
           document.body.style.userSelect = 'none';
         }
-
         function move(e){
           if (!active || e.pointerId !== id) return;
-
           const x = e.clientX, y = e.clientY;
           dx = x - startX; dy = y - startY;
 
           if (!lockedAxis) {
-            // lock when movement is clear enough
-            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-              lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-            }
+            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
           }
-
           if (lockedAxis === 'x') {
-            // we own the gesture: stop native scrolling/click
             e.preventDefault();
             moved = true;
-
             const tx = dx * FOLLOW;
             const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, dx * 0.02));
             card.style.transform = `translateX(${tx}px) rotate(${tilt}deg)`;
           }
         }
-
         function end(e){
           if (!active || e.pointerId !== id) return;
           active = false;
@@ -582,35 +636,31 @@
           document.body.style.userSelect = '';
 
           const absX = Math.abs(dx), absY = Math.abs(dy);
-
           if (lockedAxis === 'x' && absX > THRESHOLD && absY < RESTRAINT) {
-            swiped = true;
             if (dx < 0) { goNext(); card.classList.add('swipe-left'); }
             else       { goPrev(); card.classList.add('swipe-right'); }
             setTimeout(()=> card.classList.remove('swipe-left','swipe-right'), 380);
           }
 
-          // reset visual
           card.style.transition = 'transform .25s ease';
           card.style.transform = '';
           setTimeout(()=> card.style.transition = '', 260);
 
-          id = null; lockedAxis = null;
+          id = null; lockedAxis = null; moved=false;
         }
 
         card.addEventListener('pointerdown', start, {passive:false});
-        card.addEventListener('pointermove',  move,  {passive:false}); // we call preventDefault
+        card.addEventListener('pointermove',  move,  {passive:false});
         card.addEventListener('pointerup',    end,   {passive:false});
         card.addEventListener('pointercancel',end,   {passive:false});
 
-        // prevent image drag ghosting
         card.querySelectorAll('img,a').forEach(el=>{
           el.addEventListener('dragstart', ev => ev.preventDefault());
         });
       }
     })();
 
-    /* SoundCloud carousel (IDs unchanged) + swipe support */
+    /* SoundCloud carousel + swipe */
     (function(){
       const base = 'https://w.soundcloud.com/player/?url=';
       const tail = '&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
@@ -668,7 +718,7 @@
         if (e.key === 'ArrowRight') goNext();
       });
 
-      /* Touch/Pointer swipe for SoundCloud (with axis lock & preventDefault) */
+      /* Touch/Pointer swipe with axis lock */
       (function enableSoundSwipe(){
         if (!playerWrap) return;
 
@@ -695,9 +745,7 @@
           dx = x - startX; dy = y - startY;
 
           if (!lockedAxis) {
-            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-              lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-            }
+            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) lockedAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
           }
           if (lockedAxis === 'x') {
             e.preventDefault();
@@ -729,7 +777,6 @@
         playerWrap.addEventListener('pointerup',    end,   {passive:false});
         playerWrap.addEventListener('pointercancel',end,   {passive:false});
 
-        // Prevent iframe drag ghost
         frameEl.addEventListener('dragstart', ev => ev.preventDefault());
       })();
 
@@ -742,17 +789,14 @@
       if (!('IntersectionObserver' in window) || !v) return;
       const io = new IntersectionObserver((entries) => {
         for (const e of entries) {
-          if (e.isIntersecting) {
-            v.play().catch(()=>{});
-          } else {
-            v.pause();
-          }
+          if (e.isIntersecting) v.play().catch(()=>{});
+          else v.pause();
         }
       }, { threshold: 0.5 });
       io.observe(v);
     })();
 
-    /* ===== Scroll reveal (classy, a bit stronger) ===== */
+    /* ===== Scroll reveal ===== */
     (function(){
       if (!('IntersectionObserver' in window)) return;
 
@@ -760,7 +804,6 @@
         'section, header .container, .hero, .site-footer .container, .events-carousel, .soundcloud-carousel, .cards'
       );
 
-      // Apply .reveal with cinematic stagger
       containers.forEach(container => {
         const kids = container.matches('.cards') ? container.querySelectorAll('.card')
                    : container.querySelectorAll(':scope > *');
@@ -789,7 +832,6 @@
 
       containers.forEach(el => io.observe(el));
 
-      // Kick the hero on first paint
       const hero = document.querySelector('.hero');
       if (hero) {
         requestAnimationFrame(() => {
@@ -799,7 +841,7 @@
       }
     })();
 
-    /* ===== Gentle hero parallax (slightly more presence) ===== */
+    /* ===== Gentle hero parallax ===== */
     (function(){
       const inner = document.querySelector('.hero .hero-inner');
       if (!inner || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -810,7 +852,6 @@
         ticking = true;
         requestAnimationFrame(()=>{
           const y = window.scrollY || 0;
-          // up to ~14px over first ~800px
           const t = Math.max(0, Math.min(14, y * 0.0175));
           inner.style.transform = `translateY(${t}px)`;
           ticking = false;
