@@ -21,7 +21,17 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- Security -->
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://connect.facebook.net https://cdn.jsdelivr.net 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https://raw.githubusercontent.com https://i1.sndcdn.com https://i.scdn.co;
+  font-src 'self' data:;
+  frame-src https://w.soundcloud.com https://www.helloasso.com https://connect.facebook.net;
+  connect-src 'self' https://api.soundcloud.com;
+  media-src 'self' https://w.soundcloud.com;
+  upgrade-insecure-requests;
+">
 
   <!-- Icons / PWA -->
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -138,7 +148,13 @@
 </head>
 
 <body>
-
+  <a href="#main" class="skip-link">Aller au contenu</a>
+<style>
+  .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+  .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:9999;}
+  :focus-visible{ outline: 3px solid #222; outline-offset: 2px; }
+</style>
+<main id="main">
   <div id="fb-root"></div>
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v19.0" nonce="kizbourges"></script>
 
@@ -717,5 +733,73 @@
       io.observe(v);
     })();
   </script>
+  <script>
+(function(){
+  // Reuse events loaded by your CSV loader by hooking into renderList()
+  const ldId = 'events-jsonld';
+  function upsertJSONLD(events){
+    const existing = document.getElementById(ldId);
+    if (existing) existing.remove();
+    const data = events.slice(0, 10).map(ev => ({
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": ev.name,
+      "startDate": ev.start_time,
+      "eventStatus": "https://schema.org/EventScheduled",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "location": {
+        "@type": "Place",
+        "name": (ev.place && ev.place.name) || "Bourges",
+        "address": { "@type": "PostalAddress", "addressLocality": "Bourges", "addressCountry":"FR" }
+      },
+      "image": ev.cover || "https://kizbourges.fr/Images/cover.jpeg",
+      "url": ev.event_url || "https://kizbourges.fr/#events",
+      "offers": ev.ticket_url ? [{
+        "@type":"Offer","url":ev.ticket_url,"priceCurrency":"EUR","availability":"https://schema.org/InStock"
+      }] : undefined
+    }));
+    const s = document.createElement('script');
+    s.type = 'application/ld+json'; s.id = ldId; s.textContent = JSON.stringify(data, null, 2);
+    document.head.appendChild(s);
+  }
+
+  // Patch your CSV loader to expose events (non-breaking)
+  const _fetch = window.fetch;
+  window.fetch = function(u,opts){
+    return _fetch(u,opts).then(async r=>{
+      if ((u||'').includes('kizbourges_events_template1.csv')) {
+        const text = await r.clone().text();
+        setTimeout(()=>{ try{
+          const delimiter = (text.split(/\r?\n/,1)[0]||'').includes(';')?';':',';
+          const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
+          const rows = parsed.data.map(row => {
+            const o={}; for (const k in row){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; }
+            return o;
+          });
+          const events = rows.map(r => ({
+            id:r.id || r.name, name:r.name, start_time:r.start_time,
+            place:r.place ? {name:r.place} : {name:''},
+            cover:(function(url){
+              if(!url) return '';
+              url = url.trim();
+              if (url.startsWith('/')) url = location.origin + url;
+              if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
+                url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
+              }
+              if (url.startsWith('images/')) url = location.origin + '/Images/' + url.slice(7);
+              return url;
+            })(r.cover || ''),
+            event_url:r.event_url, ticket_url:r.ticket_url
+          }))
+          .filter(ev => ev.name)
+          .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
+          if (events.length) upsertJSONLD(events);
+        }catch(e){} }, 0);
+      }
+      return r;
+    });
+  };
+})();
+</script>
 </body>
 </html>
