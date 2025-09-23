@@ -129,13 +129,20 @@
     .ha-fallback{ position:absolute; right:12px; bottom:12px; font-size:.9rem; }
     @media (max-width:520px){ .ha-dialog{ width:100vw; height:100dvh; border-radius:0; } .ha-title{ font-size:1rem; } }
 
-    /* Minor visual polish */
+    /* Minor visual polish + upgraded animations */
     .btn{ display:inline-block; background:#111; color:#fff; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 6px 16px rgba(0,0,0,.08); }
     .btn.alt{ background:#fff; color:#111; border:1px solid #eee; }
-    .section{ padding:48px 0; }
-    .section.alt{ background:#fafafa; }
-    .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
-    .card{ background:#fff; border:1px solid #eee; border-radius:14px; padding:16px; }
+    .btn:active{ transform:translateY(1px); }
+    .section{ padding:56px 0; }
+    .section.alt{ background:linear-gradient(180deg,#fafafa, #fff 60%); }
+    .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; position:relative; overflow:hidden; }
+    .card::after{ content:""; position:absolute; inset:0; background:linear-gradient(120deg, transparent 0%, rgba(17,17,17,.03) 40%, transparent 80%); transform:translateX(-120%); }
+    @media (prefers-reduced-motion:no-preference){
+      .card:hover::after{ animation: shine 1.2s forwards; }
+      .card:hover{ transform:translateY(-6px) rotate3d(1,1,0, .25deg); box-shadow:var(--elev-3); }
+    }
+    @keyframes shine{ to{ transform:translateX(120%);} }
   </style>
 </head>
 
@@ -498,12 +505,22 @@
         }
         function normalizeCover(url){
           if(!url) return '';
-          url = url.trim();
+          url = (url+"").trim().replace(/\?raw=1$/,'');
+          // Relative cases
+          if (url.startsWith('./')) url = url.slice(2);
           if (url.startsWith('/')) url = url.slice(1);
-          if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
-            url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
+          // Map common lowercase folder to your canonical folder
+          if (/^images\//i.test(url)) url = 'Images/' + url.replace(/^images\//i,'');
+          // Convert any github.com URL (blob/raw/tree) to raw.githubusercontent.com
+          const gh = url.match(/^https?:\/\/github\.com\/([^\/]+)\/([^\/]+)\/(blob|raw|tree)\/([^\/]+)\/(.+)$/i);
+          if (gh) {
+            const [, owner, repo, , branch, path] = gh;
+            url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
           }
-          if (url.startsWith('images/')) url = 'Images/' + url.slice(7);
+          // If it's still a github.com URL pointing to a file (fallback)
+          if (/^https?:\/\/github\.com\//i.test(url) && !/^https?:\/\/raw\.githubusercontent\.com\//i.test(url)){
+            url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace(/\/blob\//,'/').replace(/\/raw\//,'/').replace(/\/tree\//,'/');
+          }
           return url;
         }
         function fmtDate(iso){
@@ -523,6 +540,31 @@
           const nextSrc = ev.cover || 'Images/cover.jpeg';
           const tmp = new Image();
           tmp.onload = () => { img.src = nextSrc; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
+          tmp.onerror = () => {
+            console.warn('Image failed, fallback → cover.jpeg', nextSrc);
+            img.src = 'Images/cover.jpeg';
+            requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; });
+          };
+          tmp.src  = nextSrc;
+
+          img.alt  = `Affiche : ${ev.name || 'Événement'}`;
+          title.textContent = ev.name || 'Événement';
+          when.textContent  = fmtDate(ev.start_time);
+          where.textContent = ev.place?.name || ev.place || '—';
+          link.href         = ev.event_url || '#';
+
+          cta.innerHTML = '';
+          if (ev.ticket_url){
+            const a = document.createElement('a');
+            a.href = ev.ticket_url; a.target = '_blank'; a.rel = 'noopener';
+            a.className = 'btn'; a.textContent = 'Billetterie';
+            cta.appendChild(a);
+          }
+          dots.querySelectorAll('span').forEach((dot,i)=>{
+            dot.style.color = (i===idx)?'#000':'#ccc';
+            dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
+          });
+        }); };
           tmp.onerror = () => { img.src = 'Images/cover.jpeg'; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
           tmp.src  = nextSrc;
 
@@ -739,10 +781,10 @@
         };
       })();
 
-      /* === Reveal on scroll (added) === */
+      /* === Reveal on scroll (staggered) === */
       (function(){
         const els = () => Array.from(document.querySelectorAll('.reveal'));
-        function run(){ els().forEach(el=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) el.classList.add('in'); }); }
+        function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
         window.__reveal = run;
         run();
         window.addEventListener('scroll', run, {passive:true});
