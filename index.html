@@ -107,7 +107,7 @@
       .sc-player.swipe-left{ transform:translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       .sc-player.swipe-right{ transform:translateX(26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       /* New reveal-on-scroll */
-      .js .reveal{ opacity:0; transform:translateY(16px); }
+      .reveal{ opacity:0; transform:translateY(16px); }
       .reveal.in{ opacity:1; transform:none; transition: opacity .6s var(--ease), transform .6s var(--ease); }
       /* Subtle hero parallax */
       .hero-inner{ will-change: transform; transition: transform .6s ease; }
@@ -143,30 +143,10 @@
       .card:hover{ transform:translateY(-6px) rotate3d(1,1,0, .25deg); box-shadow:var(--elev-3); }
     }
     @keyframes shine{ to{ transform:translateX(120%);} }
-  /* ===== New UI extras: progress bar, hero entry, glow, FAB ===== */
-    #scrollbar{ position:fixed; inset:0 auto auto 0; height:3px; width:100%; transform-origin:left center; transform:scaleX(0); background:linear-gradient(90deg,#111,#f06,#0cf); z-index:1000; }
-    @media (prefers-reduced-motion:no-preference){ #scrollbar{ transition: transform .15s linear; } }
-
-    /* Hero entry */
-    .hero.enter h1,.hero.enter p,.hero.enter .cta-row{ opacity:0; animation: fadeUp .7s var(--ease) var(--d,0s) both; }
-    @keyframes fadeUp{ from{ opacity:0; transform:translateY(12px);} to{ opacity:1; transform:none; } }
-
-    /* Mouse-follow glow on buttons */
-    .btn{ position:relative; overflow:hidden; }
-    .btn::before{ content:""; position:absolute; left:0; top:0; right:0; bottom:0; background:radial-gradient(140px 140px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.35), transparent 60%); opacity:0; pointer-events:none; }
-    @media (prefers-reduced-motion:no-preference){ .btn:hover::before{ opacity:1; transition: opacity .28s ease; } }
-
-    /* Floating donate button */
-    #donate-fab{ position:fixed; right:18px; bottom:18px; z-index:999; display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; background:#111; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,.2); border:1px solid rgba(0,0,0,.2); text-decoration:none; transform:translateY(16px) scale(.98); opacity:0; }
-    #donate-fab svg{ width:18px; height:18px; }
-    @media (prefers-reduced-motion:no-preference){ #donate-fab.show{ opacity:1; transform:none; transition: transform .28s var(--ease), opacity .28s var(--ease); } }
-  .reveal{ opacity:1; transform:none; }
   </style>
 </head>
 
 <body>
-  <div id="scrollbar" aria-hidden="true"></div>
-  <script>try{document.documentElement.classList.add('js');}catch(e){}</script>
   <a href="#main" class="skip-link">Aller au contenu</a>
   <style>
     .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
@@ -801,78 +781,16 @@
         };
       })();
 
-      /* === Reveal on scroll (staggered, fail-safe) === */
+      /* === Reveal on scroll (staggered) === */
       (function(){
-        try{
-          const els = () => Array.from(document.querySelectorAll('.reveal'));
-          function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
-          window.__reveal = run;
-          run();
-          window.addEventListener('scroll', run, {passive:true});
-          window.addEventListener('resize', run);
-        }catch(e){
-          // If anything goes wrong, ensure content is visible
-          document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
-        }
+        const els = () => Array.from(document.querySelectorAll('.reveal'));
+        function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
+        window.__reveal = run;
+        run();
+        window.addEventListener('scroll', run, {passive:true});
+        window.addEventListener('resize', run);
       })();
     </script>
   </main>
-  <a id="donate-fab" class="ha-donate" href="https://www.helloasso.com/associations/amigos-latino/formulaires/1" aria-label="Faire un don">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.438-7-10a4 4 0 0 1 7-2.645A4 4 0 0 1 19 11c0 5.562-7 10-7 10z"/></svg>
-    Faire un don
-  </a>
-
-  <script>
-  // ===== Scroll progress bar =====
-  (function(){
-    const bar = document.getElementById('scrollbar');
-    if (!bar) return;
-    function update(){
-      const h = document.documentElement;
-      const max = (h.scrollHeight - window.innerHeight) || 1;
-      const p = Math.min(1, Math.max(0, window.scrollY / max));
-      bar.style.transform = 'scaleX(' + p + ')';
-    }
-    update();
-    window.addEventListener('scroll', update, {passive:true});
-    window.addEventListener('resize', update);
-  })();
-
-  // ===== Mouse-follow glow on buttons =====
-  (function(){
-    function onMove(e){
-      const t = e.target.closest && e.target.closest('.btn');
-      if (!t) return;
-      const r = t.getBoundingClientRect();
-      t.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      t.style.setProperty('--my', (e.clientY - r.top) + 'px');
-    }
-    document.addEventListener('pointermove', onMove, {passive:true});
-  })();
-
-  // ===== Floating donate button behavior =====
-  (function(){
-    const fab = document.getElementById('donate-fab');
-    if (!fab) return;
-    const showAt = 220; // px scrolled before showing
-    function toggle(){ fab.classList.toggle('show', window.scrollY > showAt); }
-    toggle();
-    window.addEventListener('scroll', toggle, {passive:true});
-  })();
-
-  // ===== Hero entry animation =====
-  (function(){
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-    // Stagger via CSS variable
-    const h1 = hero.querySelector('h1');
-    const p  = hero.querySelector('p');
-    const cta= hero.querySelector('.cta-row');
-    if (h1) h1.style.setProperty('--d','0s');
-    if (p)  p.style.setProperty('--d','.08s');
-    if (cta)cta.style.setProperty('--d','.16s');
-    requestAnimationFrame(()=> hero.classList.add('enter'));
-  })();
-  </script>
 </body>
 </html>
