@@ -25,7 +25,7 @@
     default-src 'self';
     script-src 'self' https://connect.facebook.net https://cdn.jsdelivr.net 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
-    img-src 'self' data: https://raw.githubusercontent.com https://i1.sndcdn.com https://i.scdn.co;
+    img-src 'self' data: https://raw.githubusercontent.com https://i1.sndcdn.com https://i.scdn.co https://kivo0.github.io https://*.github.io;
     font-src 'self' data:;
     frame-src https://w.soundcloud.com https://www.helloasso.com https://connect.facebook.net;
     connect-src 'self' https://api.soundcloud.com;
@@ -218,7 +218,7 @@
       </div>
     </section>
 
-    <main>
+    <div class="page" role="main">
       <!-- Association -->
       <section id="asso" class="section reveal">
         <div class="container">
@@ -349,7 +349,7 @@
           </div>
         </div>
       </section>
-    </main>
+    </div>
 
     <!-- Footer -->
     <footer class="site-footer">
@@ -872,6 +872,103 @@
     if (p)  p.style.setProperty('--d','.08s');
     if (cta)cta.style.setProperty('--d','.16s');
     requestAnimationFrame(()=> hero.classList.add('enter'));
+  })();
+  </script>
+  <script>
+  // ===== Robust Events loader (multi-source + graceful fallback) =====
+  (function(){
+    const img   = document.getElementById('ev-img');
+    const title = document.getElementById('ev-title');
+    const when  = document.getElementById('ev-when');
+    const where = document.getElementById('ev-where');
+    const link  = document.getElementById('ev-link');
+    const cta   = document.getElementById('ev-cta');
+    const dots  = document.getElementById('ev-dots');
+    const list  = document.getElementById('ev-list');
+
+    // If section not present, bail
+    if (!img || !list) return;
+
+    // Candidate CSV locations (same-origin only)
+    const sources = [
+      'kizbourges_events_template1.csv',
+      '/kizbourges_events_template1.csv',
+      'kizbourges_events.csv',
+      '/kizbourges_events.csv',
+      'data/kizbourges_events.csv',
+      '/data/kizbourges_events.csv',
+      'data/events.csv',
+      '/data/events.csv'
+    ].map(u => u + '?v=' + Date.now());
+      const nextSrc = ev.cover || 'Images/cover.jpeg';
+      const tmp = new Image();
+      tmp.onload = () => { img.src = nextSrc; img.alt = `Affiche : ${ev.name||'Événement'}`; };
+      tmp.onerror = () => { img.src = 'Images/cover.jpeg'; };
+      tmp.src = nextSrc;
+      title.textContent = ev.name || 'Événement';
+      when.textContent  = fmtDate(ev.start_time);
+      where.textContent = ev.place?.name || ev.place || '—';
+      link.href         = ev.event_url || '#';
+      cta.innerHTML='';
+      if (ev.ticket_url){ const a=document.createElement('a'); a.href=ev.ticket_url; a.target='_blank'; a.rel='noopener'; a.className='btn'; a.textContent='Billetterie'; cta.appendChild(a); }
+    }
+
+    function renderDots(events, idx, set){
+      dots.innerHTML='';
+      events.forEach((_,i)=>{ const s=document.createElement('span'); s.textContent='●'; s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px'; s.addEventListener('click',()=>set(i)); dots.appendChild(s); });
+      updateDots(idx);
+      function updateDots(current){ Array.from(dots.children).forEach((d,i)=>{ d.style.color = (i===current)?'#000':'#ccc'; d.style.transform=(i===current)?'scale(1.25)':'scale(1)'; }); }
+      return updateDots;
+    }
+
+    function renderList(events){
+      list.innerHTML='';
+      events.forEach(ev=>{
+        const card=document.createElement('div'); card.className='card'; card.style.display='grid'; card.style.gridTemplateColumns='120px 1fr'; card.style.gap='14px'; card.style.alignItems='center';
+        const pic=document.createElement('img'); pic.src=ev.cover||'Images/cover.jpeg'; pic.onerror=()=>{pic.onerror=null; pic.src='Images/cover.jpeg';}; pic.alt=`Affiche : ${ev.name||'Événement'}`; pic.loading='lazy'; pic.style.width='120px'; pic.style.height='80px'; pic.style.objectFit='cover'; pic.style.borderRadius='8px';
+        const meta=document.createElement('div'); const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement'; const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time); const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
+        const row=document.createElement('div'); row.style.marginTop='6px'; if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1);} if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2);} meta.append(h3,p1,p2,row);
+        card.append(pic,meta); list.appendChild(card);
+      });
+    }
+
+    async function loadCSV(url){
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('HTTP '+r.status);
+      const text = await r.text();
+      const delimiter = detectDelimiter(text);
+      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
+      const rows = parsed.data.map(row => { const o={}; for (const k in row){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; } return o; });
+      let events = rows.map(r => ({ id:r.id||r.name, name:r.name, start_time:r.start_time, place:r.place?{name:r.place}:{name:''}, cover:normalizeCover(r.cover||''), event_url:r.event_url, ticket_url:r.ticket_url }))
+        .filter(ev => ev.name);
+      events.sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
+      return events;
+    }
+
+    (async function init(){
+      let events = [];
+      for (const src of sources){
+        try{ events = await loadCSV(src); if (events.length) { console.log('[Events] Loaded:', src, events.length); break; } }catch(e){ console.warn('[Events] Failed', src, e); }
+      }
+      if (!events.length){
+        // Graceful placeholder
+        title.textContent = 'Prochains événements';
+        img.src = 'Images/cover.jpeg';
+        when.textContent = '—'; where.textContent = '';
+        list.innerHTML = '';
+        const empty=document.createElement('div'); empty.className='card'; empty.innerHTML = `<h3>Aucun événement chargé</h3><p>Ajoutez un fichier CSV à la racine :</p><pre style="white-space:pre-wrap;background:#f7f7f7;border:1px solid #eee;border-radius:8px;padding:10px;">name;start_time;place;cover;event_url;ticket_url
+KizBourges Social;2025-10-12T21:00:00;Le Rio, Bourges;Images/events/soiree_1210.jpg;https://facebook.com/...;</pre>`;
+        list.appendChild(empty);
+        return;
+      }
+
+      // Render UI
+      let idx = 0; renderCarousel(events, idx);
+      const updateDotColors = renderDots(events, idx, (i)=>{ idx=i; renderCarousel(events, idx); });
+      document.getElementById('ev-prev')?.addEventListener('click', ()=>{ idx=(idx-1+events.length)%events.length; renderCarousel(events, idx); updateDotColors(idx); });
+      document.getElementById('ev-next')?.addEventListener('click', ()=>{ idx=(idx+1)%events.length; renderCarousel(events, idx); updateDotColors(idx); });
+      renderList(events);
+    })();
   })();
   </script>
 </body>
