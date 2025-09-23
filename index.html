@@ -107,7 +107,7 @@
       .sc-player.swipe-left{ transform:translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       .sc-player.swipe-right{ transform:translateX(26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       /* New reveal-on-scroll */
-      .reveal{ opacity:0; transform:translateY(16px); }
+      .js .reveal{ opacity:0; transform:translateY(16px); }
       .reveal.in{ opacity:1; transform:none; transition: opacity .6s var(--ease), transform .6s var(--ease); }
       /* Subtle hero parallax */
       .hero-inner{ will-change: transform; transition: transform .6s ease; }
@@ -160,11 +160,13 @@
     #donate-fab{ position:fixed; right:18px; bottom:18px; z-index:999; display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; background:#111; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,.2); border:1px solid rgba(0,0,0,.2); text-decoration:none; transform:translateY(16px) scale(.98); opacity:0; }
     #donate-fab svg{ width:18px; height:18px; }
     @media (prefers-reduced-motion:no-preference){ #donate-fab.show{ opacity:1; transform:none; transition: transform .28s var(--ease), opacity .28s var(--ease); } }
+  .reveal{ opacity:1; transform:none; }
   </style>
 </head>
 
 <body>
   <div id="scrollbar" aria-hidden="true"></div>
+  <script>try{document.documentElement.classList.add('js');}catch(e){}</script>
   <a href="#main" class="skip-link">Aller au contenu</a>
   <style>
     .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
@@ -799,14 +801,19 @@
         };
       })();
 
-      /* === Reveal on scroll (staggered) === */
+      /* === Reveal on scroll (staggered, fail-safe) === */
       (function(){
-        const els = () => Array.from(document.querySelectorAll('.reveal'));
-        function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
-        window.__reveal = run;
-        run();
-        window.addEventListener('scroll', run, {passive:true});
-        window.addEventListener('resize', run);
+        try{
+          const els = () => Array.from(document.querySelectorAll('.reveal'));
+          function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
+          window.__reveal = run;
+          run();
+          window.addEventListener('scroll', run, {passive:true});
+          window.addEventListener('resize', run);
+        }catch(e){
+          // If anything goes wrong, ensure content is visible
+          document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
+        }
       })();
     </script>
   </main>
