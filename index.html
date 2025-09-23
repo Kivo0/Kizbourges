@@ -21,17 +21,17 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- Security -->
-<meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' https://connect.facebook.net https://cdn.jsdelivr.net 'unsafe-inline';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' data: https://raw.githubusercontent.com https://i1.sndcdn.com https://i.scdn.co;
-  font-src 'self' data:;
-  frame-src https://w.soundcloud.com https://www.helloasso.com https://connect.facebook.net;
-  connect-src 'self' https://api.soundcloud.com;
-  media-src 'self' https://w.soundcloud.com;
-  upgrade-insecure-requests;
-">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://connect.facebook.net https://cdn.jsdelivr.net 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https://raw.githubusercontent.com https://i1.sndcdn.com https://i.scdn.co;
+    font-src 'self' data:;
+    frame-src https://w.soundcloud.com https://www.helloasso.com https://connect.facebook.net;
+    connect-src 'self' https://api.soundcloud.com;
+    media-src 'self' https://w.soundcloud.com;
+    upgrade-insecure-requests;
+  ">
 
   <!-- Icons / PWA -->
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -39,7 +39,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
-  <!-- Your CSS -->
+  <!-- CSS -->
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="Images/logo2.jpeg">
 
@@ -50,11 +50,11 @@
       --ease: cubic-bezier(.2,.8,.2,1);
       --brand:#111; --nav-bg:#fff; --nav-border:#eaeaea;
     }
-    html.ha-open, body.ha-open{ overflow:hidden; } /* lock scroll when modal open */
+    html.ha-open, body.ha-open{ overflow:hidden; }
 
-    /* ===== HEADER / NAV (mobile menu you liked) ===== */
+    /* ===== HEADER / NAV ===== */
     .site-header{ position:sticky; top:0; z-index:50; background:var(--nav-bg);
-      transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);}
+      transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);} 
     .site-header.scrolled{ box-shadow:0 6px 18px rgba(0,0,0,.06); backdrop-filter:saturate(1.05) blur(6px); }
     .site-header .container{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; }
     .logo-img{ height:44px; width:auto; display:block; }
@@ -93,7 +93,7 @@
       #header .nav a{ display:block; padding:10px 0; }
     }
 
-    /* ===== Gentle motion / swipe timings you liked ===== */
+    /* ===== Motion ===== */
     @media (prefers-reduced-motion:no-preference){
       .btn{ transition: transform .32s ease, box-shadow .32s ease; }
       .btn:hover{ transform:translateY(-4px); box-shadow:var(--elev-2); }
@@ -106,700 +106,649 @@
       #ev-img{ transition: opacity .70s ease, transform .90s ease; }
       .sc-player.swipe-left{ transform:translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       .sc-player.swipe-right{ transform:translateX(26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
+      /* New reveal-on-scroll */
+      .reveal{ opacity:0; transform:translateY(16px); }
+      .reveal.in{ opacity:1; transform:none; transition: opacity .6s var(--ease), transform .6s var(--ease); }
+      /* Subtle hero parallax */
+      .hero-inner{ will-change: transform; transition: transform .6s ease; }
+      .hero:hover .hero-inner{ transform: translateY(-2px); }
     }
     @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
 
-    /* ===== HelloAsso modal — centered + mobile full-screen ===== */
-    .ha-overlay{
-      position:fixed; inset:0; z-index:999; background:rgba(0,0,0,.5);
-      opacity:0; pointer-events:none;
-      display:flex; align-items:center; justify-content:center;   /* center dialog */
-      transition:opacity .25s ease;
-    }
-    .ha-dialog{
-      width:min(960px, 96vw);
-      height:min(88dvh, 900px);            /* dynamic viewport on mobile */
-      background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(0,0,0,.25);
-      opacity:0; transform:scale(.98);      /* no translate Y anymore */
-      transition: transform .28s ease, opacity .28s ease;
-      display:flex; flex-direction:column; overflow:hidden;
-    }
+    /* ===== HelloAsso modal ===== */
+    .ha-overlay{ position:fixed; inset:0; z-index:999; background:rgba(0,0,0,.5); opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; transition:opacity .25s ease; }
+    .ha-dialog{ width:min(960px, 96vw); height:min(88dvh, 900px); background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(0,0,0,.25); opacity:0; transform:scale(.98); transition: transform .28s ease, opacity .28s ease; display:flex; flex-direction:column; overflow:hidden; }
     .ha-open .ha-overlay{ opacity:1; pointer-events:auto; }
     .ha-open .ha-dialog{ opacity:1; transform:scale(1); }
-
-    .ha-header{
-      position:sticky; top:0; z-index:1;
-      display:flex; align-items:center; justify-content:space-between;
-      padding: calc(10px + env(safe-area-inset-top)) 14px 10px;   /* safe area for notches */
-      background:#fff; border-bottom:1px solid #eee;
-    }
+    .ha-header{ position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; padding: calc(10px + env(safe-area-inset-top)) 14px 10px; background:#fff; border-bottom:1px solid #eee; }
     .ha-title{ font-size:1.05rem; font-weight:600; margin:0; }
     .ha-close{ border:1px solid #ddd; background:#fff; border-radius:10px; padding:6px 10px; cursor:pointer; }
     .ha-body{ position:relative; flex:1; padding-bottom: env(safe-area-inset-bottom); }
     .ha-iframe{ width:100%; height:100%; border:0; display:block; }
     .ha-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.95rem; color:#555; background:#fff; }
     .ha-fallback{ position:absolute; right:12px; bottom:12px; font-size:.9rem; }
+    @media (max-width:520px){ .ha-dialog{ width:100vw; height:100dvh; border-radius:0; } .ha-title{ font-size:1rem; } }
 
-    @media (max-width:520px){
-      .ha-dialog{ width:100vw; height:100dvh; border-radius:0; }  /* full-screen on small phones */
-      .ha-title{ font-size:1rem; }
-    }
+    /* Minor visual polish */
+    .btn{ display:inline-block; background:#111; color:#fff; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 6px 16px rgba(0,0,0,.08); }
+    .btn.alt{ background:#fff; color:#111; border:1px solid #eee; }
+    .section{ padding:48px 0; }
+    .section.alt{ background:#fafafa; }
+    .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+    .card{ background:#fff; border:1px solid #eee; border-radius:14px; padding:16px; }
   </style>
 </head>
 
 <body>
   <a href="#main" class="skip-link">Aller au contenu</a>
-<style>
-  .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
-  .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:9999;}
-  :focus-visible{ outline: 3px solid #222; outline-offset: 2px; }
-</style>
-<main id="main">
-  <div id="fb-root"></div>
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v19.0" nonce="kizbourges"></script>
+  <style>
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+    .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:9999;}
+    :focus-visible{ outline: 3px solid #222; outline-offset: 2px; }
+  </style>
 
-  <!-- Header -->
-  <header class="site-header" id="header" data-menu="closed">
-    <div class="container">
-      <a class="logo" href="/" aria-label="KizBourges">
-        <img src="Images/logo2.jpeg" alt="Logo KizBourges" class="logo-img">
-      </a>
+  <main id="main">
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v19.0" nonce="kizbourges"></script>
 
-      <!-- Hamburger -->
-      <button id="menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav">
-        <span class="bars" aria-hidden="true">
-          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-        </span>
-      </button>
-
-      <nav id="nav" class="nav" aria-label="Navigation principale">
-        <a href="#asso">L’asso</a>
-        <a href="#cours">Cours & tarifs</a>
-        <a href="#events">Événements</a>
-        <a href="#covoit">Covoiturage</a>
-        <a href="#son">Ambiance</a>
-        <a class="ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">Adhésion</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container hero-inner">
-      <h1>Bienvenue chez KizBourges</h1>
-      <p>Kizomba, urban kiz & good vibes à Bourges ✨</p>
-      <div class="cta-row">
-        <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">Adhérer</a>
-        <a class="btn alt" href="#events">Prochaines soirées</a>
-      </div>
-    </div>
-  </section>
-
-  <main>
-    <!-- Association -->
-    <section id="asso" class="section">
+    <!-- Header -->
+    <header class="site-header" id="header" data-menu="closed">
       <div class="container">
-        <h2>L’association</h2>
-        <p>KizBourges promeut la Kizomba à Bourges : cours hebdomadaires, stages et soirées sociales ouvertes à tous niveaux.</p>
+        <a class="logo" href="/" aria-label="KizBourges">
+          <img src="Images/logo2.jpeg" alt="Logo KizBourges" class="logo-img">
+        </a>
+
+        <!-- Hamburger -->
+        <button id="menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav">
+          <span class="bars" aria-hidden="true">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+          </span>
+        </button>
+
+        <nav id="nav" class="nav" aria-label="Navigation principale">
+          <a href="#asso">L’asso</a>
+          <a href="#cours">Cours & tarifs</a>
+          <a href="#events">Événements</a>
+          <a href="#covoit">Covoiturage</a>
+          <a href="#son">Ambiance</a>
+          <a class="ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">Adhésion</a>
+          <a class="ha-donate" href="https://www.helloasso.com/associations/amigos-latino/formulaires/1">Don</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero reveal">
+      <div class="container hero-inner">
+        <h1>Bienvenue chez KizBourges</h1>
+        <p>Kizomba, urban kiz & good vibes à Bourges ✨</p>
+        <div class="cta-row">
+          <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">Adhérer</a>
+          <a class="btn alt" href="#events">Prochaines soirées</a>
+          <a class="btn alt ha-donate" href="https://www.helloasso.com/associations/amigos-latino/formulaires/1">Faire un don</a>
+        </div>
       </div>
     </section>
 
-    <!-- Cours & tarifs -->
-    <section id="cours" class="section alt">
-      <div class="container">
-        <h2>Cours & tarifs</h2>
-        <ul class="cards" role="list">
-          <li class="card">
-            <h3>Tous niveaux</h3>
-            <p><strong>Quand :</strong> Mardi 20h–21h15</p>
-            <p><strong>Où :</strong> Salle Baptiste Marcel, 2 Rue Parmentier, 18000 Bourges</p>
-            <p><strong>Tarif :</strong> 10€ / cours ou 150€ / année</p>
-          </li>
-          <li class="card">
-            <h3>Pratique — Tous niveaux</h3>
-            <p><strong>Quand :</strong> Mardi 21h15–22h15</p>
-            <p><strong>Où :</strong> Salle Baptiste Marcel, 2 Rue Parmentier, 18000 Bourges</p>
-            <p>Inclus dans l’adhésion — selon planning.</p>
-          </li>
+    <main>
+      <!-- Association -->
+      <section id="asso" class="section reveal">
+        <div class="container">
+          <h2>L’association</h2>
+          <p>KizBourges promeut la Kizomba à Bourges : cours hebdomadaires, stages et soirées sociales ouvertes à tous niveaux.</p>
+        </div>
+      </section>
 
-          <!-- Video promo card -->
-          <li class="card course-ad">
-            <div class="video-grid">
-              <div class="copy">
-                <h3>Découvre la Kizomba en 60 secondes</h3>
-                <p>Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours ✨</p>
-                <div class="cta-row" style="margin-top:8px;">
-                  <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">S’inscrire / Adhérer</a>
-                  <a class="btn alt" href="#events">Voir les prochaines dates</a>
+      <!-- Cours & tarifs -->
+      <section id="cours" class="section alt reveal">
+        <div class="container">
+          <h2>Cours & tarifs</h2>
+          <ul class="cards" role="list">
+            <li class="card">
+              <h3>Tous niveaux</h3>
+              <p><strong>Quand :</strong> Mardi 20h–21h15</p>
+              <p><strong>Où :</strong> Salle Baptiste Marcet, 2 Rue Parmentier, 18000 Bourges</p>
+              <p><strong>Tarif :</strong> 10€ / cours ou 150€ / année</p>
+            </li>
+            <li class="card">
+              <h3>Pratique — Tous niveaux</h3>
+              <p><strong>Quand :</strong> Mardi 21h15–22h15</p>
+              <p><strong>Où :</strong> Salle Baptiste Marcet, 2 Rue Parmentier, 18000 Bourges</p>
+              <p>Inclus dans l’adhésion — selon planning.</p>
+            </li>
+
+            <!-- Video promo card -->
+            <li class="card course-ad">
+              <div class="video-grid">
+                <div class="copy">
+                  <h3>Découvre la Kizomba en 60 secondes</h3>
+                  <p>Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours ✨</p>
+                  <div class="cta-row" style="margin-top:8px;">
+                    <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">S’inscrire / Adhérer</a>
+                    <a class="btn alt" href="#events">Voir les prochaines dates</a>
+                  </div>
+                </div>
+
+                <div class="media">
+                  <video id="courseAdVideo" class="course-video" title="KizBourges — Promo cours"
+                    playsinline muted loop controls preload="metadata" poster="Images/course-poster.jpg">
+                    <source src="Videos/course-ad.mp4" type="video/mp4">
+                    Votre navigateur ne supporte pas la vidéo HTML5.
+                  </video>
                 </div>
               </div>
+            </li>
+          </ul>
+        </div>
+      </section>
 
-              <div class="media">
-                <video id="courseAdVideo" class="course-video" title="KizBourges — Promo cours"
-                  playsinline muted loop controls preload="metadata" poster="Images/course-poster.jpg">
-                  <source src="Videos/course-ad.mp4" type="video/mp4">
-                  Votre navigateur ne supporte pas la vidéo HTML5.
-                </video>
-              </div>
+      <!-- Événements -->
+      <section id="events" class="section reveal">
+        <div class="container">
+          <h2>Événements à venir</h2>
+
+          <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
+            <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
+              style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
+
+            <div class="ev-card" id="ev-card" style="padding:0 28px;text-align:center;">
+              <a id="ev-link" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-block;">
+                <img id="ev-img" src="" alt="Affiche de l’événement"
+                     loading="lazy"
+                     style="width:100%;max-height:460px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
+                <h3 id="ev-title" style="margin:10px 0 6px;"></h3>
+                <p id="ev-when" style="margin:0;color:#555;"></p>
+                <p id="ev-where" style="margin:2px 0 0;color:#777;font-size:14px;"></p>
+              </a>
+              <div id="ev-cta" style="margin-top:10px;"></div>
             </div>
-          </li>
-        </ul>
-      </div>
-    </section>
 
-    <!-- Événements -->
-    <section id="events" class="section">
-      <div class="container">
-        <h2>Événements à venir</h2>
-
-        <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
-          <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
-            style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
-
-          <div class="ev-card" id="ev-card" style="padding:0 28px;text-align:center;">
-            <a id="ev-link" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-block;">
-              <img id="ev-img" src="" alt="Affiche de l’événement"
-                   loading="lazy"
-                   style="width:100%;max-height:460px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
-              <h3 id="ev-title" style="margin:10px 0 6px;"></h3>
-              <p id="ev-when" style="margin:0;color:#555;"></p>
-              <p id="ev-where" style="margin:2px 0 0;color:#777;font-size:14px;"></p>
-            </a>
-            <div id="ev-cta" style="margin-top:10px;"></div>
+            <button id="ev-next" aria-label="Événement suivant" class="ev-arrow"
+              style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
           </div>
-
-          <button id="ev-next" aria-label="Événement suivant" class="ev-arrow"
-            style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+          <div id="ev-dots" style="text-align:center;margin-top:12px;"></div>
+          <div id="ev-list" class="cards" role="list" style="margin-top:22px;"></div>
         </div>
-        <div id="ev-dots" style="text-align:center;margin-top:12px;"></div>
-        <div id="ev-list" class="cards" role="list" style="margin-top:22px;"></div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Covoiturage -->
-    <section id="covoit" class="section alt">
-      <div class="container">
-        <h2>Covoiturage</h2>
-        <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
-        <div class="cta-row" style="gap:10px; flex-wrap:wrap;">
-          <a class="btn" href="https://forms.gle/SpdXLDX815FWxpan6" target="_blank" rel="noopener">Remplir le formulaire</a>
-          <a class="btn" href="#" aria-disabled="true" onclick="return false;" style="opacity:.55; cursor:not-allowed;" title="Lien WhatsApp bientôt disponible">Groupe WhatsApp (bientôt)</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Ambiance / SoundCloud -->
-    <section id="son" class="section">
-      <div class="container">
-        <h2>Ambiance musicale</h2>
-        <p>Fais défiler nos playlists avec les flèches ou un swipe :</p>
-
-        <div class="soundcloud-carousel" style="max-width:820px;margin:auto;position:relative;">
-          <button id="sc-prev" aria-label="Playlist précédente" class="sc-arrow"
-            style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
-
-          <div class="sc-player" style="padding:0 28px;">
-            <h3 id="sc-title" style="text-align:center;margin-bottom:8px;">Kizomba – N°1</h3>
-            <iframe id="sc-player" title="Playlist SoundCloud KizBourges"
-              width="100%" height="450" scrolling="no" frameborder="0" allow="autoplay"
-              src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
-            </iframe>
+      <!-- Covoiturage -->
+      <section id="covoit" class="section alt reveal">
+        <div class="container">
+          <h2>Covoiturage</h2>
+          <p>Tu vas à une soirée ou un stage ? Propose ou cherche une place :</p>
+          <div class="cta-row" style="gap:10px; flex-wrap:wrap;">
+            <a class="btn" href="https://forms.gle/SpdXLDX815FWxpan6" target="_blank" rel="noopener">Remplir le formulaire</a>
+            <a class="btn" href="#" aria-disabled="true" onclick="return false;" style="opacity:.55; cursor:not-allowed;" title="Lien WhatsApp bientôt disponible">Groupe WhatsApp (bientôt)</a>
           </div>
-
-          <button id="sc-next" aria-label="Playlist suivante" class="sc-arrow"
-            style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Contact -->
-    <section id="contact" class="section alt">
-      <div class="container">
-        <h2>Contact</h2>
-        <p>Téléphone : <a href="tel:+33617238400" aria-label="Appeler le 06 17 23 84 00">06&nbsp;17&nbsp;23&nbsp;84&nbsp;00</a></p>
-        <p>Email : <a href="mailto:kizbourges@gmail.com">kizbourges@gmail.com</a></p>
-        <p>Instagram : <a href="https://www.instagram.com/kizbourges?igsh=MTQyNW9udjh6Ym5raw==" target="_blank" rel="noopener">@kizbourges</a></p>
-        <p>Facebook : <a href="https://www.facebook.com/KizBourges" target="_blank" rel="noopener">KizBourges</a></p>
-        <div style="margin-top:24px;text-align:center;">
-          <img src="Images/logo2.jpeg" alt="Amigos Latino — Partenaire KizBourges" style="max-width:200px;display:inline-block;">
-          <div style="font-size:14px;color:#666;margin-top:6px;">Partenaire — Amigos Latino</div>
+      <!-- Ambiance / SoundCloud -->
+      <section id="son" class="section reveal">
+        <div class="container">
+          <h2>Ambiance musicale</h2>
+          <p>Fais défiler nos playlists avec les flèches ou un swipe :</p>
+
+          <div class="soundcloud-carousel" style="max-width:820px;margin:auto;position:relative;">
+            <button id="sc-prev" aria-label="Playlist précédente" class="sc-arrow"
+              style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
+
+            <div class="sc-player" style="padding:0 28px;">
+              <h3 id="sc-title" style="text-align:center;margin-bottom:8px;">Kizomba – N°1</h3>
+              <iframe id="sc-player" title="Playlist SoundCloud KizBourges"
+                width="100%" height="450" scrolling="no" frameborder="0" allow="autoplay"
+                src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/152611885&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
+              </iframe>
+            </div>
+
+            <button id="sc-next" aria-label="Playlist suivante" class="sc-arrow"
+              style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">© <span id="year"></span> KizBourges — Tous droits réservés</div>
-  </footer>
+      <!-- Contact -->
+      <section id="contact" class="section alt reveal">
+        <div class="container">
+          <h2>Contact</h2>
+          <p>Téléphone : <a href="tel:+33617238400" aria-label="Appeler le 06 17 23 84 00">06&nbsp;17&nbsp;23&nbsp;84&nbsp;00</a></p>
+          <p>Email : <a href="mailto:kizbourges@gmail.com">kizbourges@gmail.com</a></p>
+          <p>Instagram : <a href="https://www.instagram.com/kizbourges?igsh=MTQyNW9udjh6Ym5raw==" target="_blank" rel="noopener">@kizbourges</a></p>
+          <p>Facebook : <a href="https://www.facebook.com/KizBourges" target="_blank" rel="noopener">KizBourges</a></p>
+          <div style="margin-top:24px;text-align:center;">
+            <img src="Images/logo2.jpeg" alt="Amigos Latino — Partenaire KizBourges" style="max-width:200px;display:inline-block;">
+            <div style="font-size:14px;color:#666;margin-top:6px;">Partenaire — Amigos Latino</div>
+          </div>
+        </div>
+      </section>
+    </main>
 
-  <!-- HelloAsso modal (overlay + dialog) -->
-  <div class="ha-overlay" id="haOverlay" aria-hidden="true">
-    <div class="ha-dialog" id="haDialog" role="dialog" aria-modal="true" aria-labelledby="haTitle" aria-describedby="haDesc" aria-hidden="true">
-      <div class="ha-header">
-        <h3 id="haTitle" class="ha-title">Adhésion KizBourges</h3>
-        <button class="ha-close" id="haClose" aria-label="Fermer la fenêtre">✕</button>
-      </div>
-      <div class="ha-body" id="haDesc">
-        <div class="ha-loader" id="haLoader">Chargement du module d’adhésion…</div>
-        <iframe id="haFrame" class="ha-iframe" title="Formulaire d’adhésion HelloAsso"
-          loading="eager" allow="payment *; fullscreen *" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        <div class="ha-fallback" id="haFallback">
-          Problème d’affichage ? <a id="haNewTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a>
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">© <span id="year"></span> KizBourges — Tous droits réservés</div>
+    </footer>
+
+    <!-- HelloAsso modal (overlay + dialog) -->
+    <div class="ha-overlay" id="haOverlay" aria-hidden="true">
+      <div class="ha-dialog" id="haDialog" role="dialog" aria-modal="true" aria-labelledby="haTitle" aria-describedby="haDesc" aria-hidden="true">
+        <div class="ha-header">
+          <h3 id="haTitle" class="ha-title">Adhésion KizBourges</h3>
+          <button class="ha-close" id="haClose" aria-label="Fermer la fenêtre">✕</button>
+        </div>
+        <div class="ha-body" id="haDesc">
+          <div class="ha-loader" id="haLoader">Chargement du module…</div>
+          <iframe id="haFrame" class="ha-iframe" title="Formulaire HelloAsso"
+            loading="eager" allow="payment *; fullscreen *" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div class="ha-fallback" id="haFallback">
+            Problème d’affichage ? <a id="haNewTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Libraries -->
-  <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <!-- Libraries -->
+    <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  <!-- Scripts -->
-  <script>
-    /* ===== Constants ===== */
-    const HELLOASSO_PUBLIC = "https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026";
-    const HELLOASSO_WIDGET = HELLOASSO_PUBLIC + "/widget";
+    <!-- Scripts -->
+    <script>
+      /* ===== Constants ===== */
+      const HELLOASSO_PUBLIC = "https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026";
+      const HELLOASSO_WIDGET = HELLOASSO_PUBLIC + "/widget";
+      const HELLOASSO_DON_PUBLIC = "https://www.helloasso.com/associations/amigos-latino/formulaires/1";
+      const HELLOASSO_DON_WIDGET = HELLOASSO_DON_PUBLIC + "/widget";
 
-    /* Sticky header shadow */
-    (function(){
-      const h = document.getElementById('header');
-      if(!h) return;
-      const onScroll = () => h.classList.toggle('scrolled', window.scrollY > 6);
-      onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
-    })();
-
-    /* Mobile menu */
-    (function(){
-      const header = document.getElementById('header');
-      const btn = document.getElementById('menu');
-      const nav = document.getElementById('nav');
-      if(!header || !btn || !nav) return;
-      header.setAttribute('data-menu','closed'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false');
-      const isOpen = () => header.getAttribute('data-menu') === 'open';
-      const toggle = (force) => {
-        const open = (typeof force === 'boolean') ? force : !isOpen();
-        header.setAttribute('data-menu', open ? 'open' : 'closed');
-        btn.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      };
-      btn.addEventListener('click', () => toggle());
-      nav.addEventListener('click', (e)=>{ if (e.target.closest('a')) toggle(false); });
-      document.addEventListener('click', (e)=>{ if (isOpen() && !e.target.closest('#header')) toggle(false); });
-      document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') toggle(false); });
-      window.addEventListener('resize', ()=>{ if (window.innerWidth > 768) toggle(false); });
-    })();
-
-    /* Footer year */
-    (function(){
-      const y = document.getElementById('year');
-      if (y && !y.textContent) y.textContent = new Date().getFullYear();
-    })();
-
-    /* ===== HelloAsso Modal (widget URL) ===== */
-    (function(){
-      const overlay = document.getElementById('haOverlay');
-      const dialog  = document.getElementById('haDialog');
-      const frame   = document.getElementById('haFrame');
-      const loader  = document.getElementById('haLoader');
-      const closeB  = document.getElementById('haClose');
-      const newTab  = document.getElementById('haNewTab');
-
-      let lastFocus = null;
-      let loadTimer = null;
-
-      function openHA(){
-        document.documentElement.classList.add('ha-open');
-        document.body.classList.add('ha-open');
-
-        overlay.setAttribute('aria-hidden','false');
-        dialog.setAttribute('aria-hidden','false');
-
-        // focus handling
-        lastFocus = document.activeElement;
-        closeB.focus();
-
-        // Fallback opens the full public page
-        newTab.href = HELLOASSO_PUBLIC;
-
-        // Loader + iframe
-        loader.style.display = 'flex';
-        frame.removeAttribute('src');
-        setTimeout(()=>{ frame.src = HELLOASSO_WIDGET; }, 0);
-
-        clearTimeout(loadTimer);
-        loadTimer = setTimeout(()=> { loader.textContent = "Toujours en chargement…"; }, 6000);
-
-        document.addEventListener('keydown', onKeydown);
-        overlay.addEventListener('click', onOverlayClick);
-        trapFocus(true);
-      }
-
-      function closeHA(){
-        document.documentElement.classList.remove('ha-open');
-        document.body.classList.remove('ha-open');
-
-        overlay.setAttribute('aria-hidden','true');
-        dialog.setAttribute('aria-hidden','true');
-
-        frame.removeAttribute('src'); // free resources
-        loader.style.display = 'none';
-        clearTimeout(loadTimer);
-
-        document.removeEventListener('keydown', onKeydown);
-        overlay.removeEventListener('click', onOverlayClick);
-        trapFocus(false);
-
-        if (lastFocus) { try{ lastFocus.focus(); }catch(_){} lastFocus = null; }
-      }
-
-      function onKeydown(e){
-        if (e.key === 'Escape'){ e.preventDefault(); closeHA(); }
-        if (e.key === 'Tab'){ handleTabTrap(e); }
-      }
-      function onOverlayClick(e){
-        // close when clicking outside the dialog
-        if (e.target === overlay) closeHA();
-      }
-
-      // Focus-trap
-      function focusables(){
-        return dialog.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-      }
-      function handleTabTrap(e){
-        const list = Array.from(focusables());
-        if (!list.length) return;
-        const first = list[0], last = list[list.length - 1];
-        if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-      }
-      function trapFocus(enable){ if (enable){ dialog.setAttribute('tabindex','-1'); } else { dialog.removeAttribute('tabindex'); } }
-
-      // Open via any .ha-open link (left-click only)
-      document.addEventListener('click', (e)=>{
-        const a = e.target.closest('a.ha-open');
-        if (!a) return;
-        if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey){
-          e.preventDefault();
-          openHA();
-        }
-      });
-
-      closeB.addEventListener('click', closeHA);
-      frame.addEventListener('load', ()=>{ loader.style.display = 'none'; });
-
-      // Deep links
-      if (location.hash === '#adhesion'){ openHA(); }
-      const params = new URLSearchParams(location.search);
-      if (params.get('adhesion') === '1'){ openHA(); }
-    })();
-
-    /* === Events CSV loader + swipe (unchanged timing) === */
-    (function(){
-      const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
-
-      const img   = document.getElementById('ev-img');
-      const title = document.getElementById('ev-title');
-      const when  = document.getElementById('ev-when');
-      const where = document.getElementById('ev-where');
-      const link  = document.getElementById('ev-link');
-      const cta   = document.getElementById('ev-cta');
-      const prevB = document.getElementById('ev-prev');
-      const nextB = document.getElementById('ev-next');
-      const dots  = document.getElementById('ev-dots');
-      const list  = document.getElementById('ev-list');
-
-      let events = [], idx = 0;
-
-      function detectDelimiter(text){
-        const header = text.split(/\r?\n/,1)[0] || '';
-        const semis  = (header.match(/;/g)||[]).length;
-        const commas = (header.match(/,/g)||[]).length;
-        return semis > commas ? ';' : ',';
-      }
-      function normalizeCover(url){
-        if(!url) return '';
-        url = url.trim();
-        if (url.startsWith('/')) url = url.slice(1);
-        if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
-          url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
-        }
-        if (url.startsWith('images/')) url = 'Images/' + url.slice(7);
-        return url;
-      }
-      function fmtDate(iso){
-        if(!iso) return '';
-        const d = new Date(iso);
-        return isNaN(d) ? '' : d.toLocaleString('fr-FR', {
-          timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
-        });
-      }
-
-      function renderCarousel(){
-        if(!events.length) return;
-        const ev = events[idx];
-
-        img.style.opacity = '0';
-        img.style.transform = 'scale(1.015)';
-        const nextSrc = ev.cover || 'Images/cover.jpeg';
-        const tmp = new Image();
-        tmp.onload = () => { img.src = nextSrc; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
-        tmp.onerror = () => { img.src = 'Images/cover.jpeg'; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
-        tmp.src  = nextSrc;
-
-        img.alt  = `Affiche : ${ev.name || 'Événement'}`;
-        title.textContent = ev.name || 'Événement';
-        when.textContent  = fmtDate(ev.start_time);
-        where.textContent = ev.place?.name || ev.place || '—';
-        link.href         = ev.event_url || '#';
-
-        cta.innerHTML = '';
-        if (ev.ticket_url){
-          const a = document.createElement('a');
-          a.href = ev.ticket_url; a.target = '_blank'; a.rel = 'noopener';
-          a.className = 'btn'; a.textContent = 'Billetterie';
-          cta.appendChild(a);
-        }
-        dots.querySelectorAll('span').forEach((dot,i)=>{
-          dot.style.color = (i===idx)?'#000':'#ccc';
-          dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
-        });
-      }
-      function renderDots(){
-        dots.innerHTML = '';
-        events.forEach((_, i)=>{
-          const s = document.createElement('span');
-          s.textContent='●';
-          s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px';
-          s.style.transition='transform .2s, color .2s';
-          s.addEventListener('click', ()=>{ idx=i; renderCarousel(); });
-          dots.appendChild(s);
-        });
-      }
-      function renderList(){
-        list.innerHTML='';
-        events.forEach(ev=>{
-          const card=document.createElement('div');
-          card.className='card';
-          card.style.display='grid'; card.style.gridTemplateColumns='120px 1fr';
-          card.style.gap='14px'; card.style.alignItems='center';
-
-          const pic=document.createElement('img');
-          pic.onerror = () => { pic.onerror = null; pic.src = 'Images/cover.jpeg'; };
-          pic.src=ev.cover||'Images/cover.jpeg';
-          pic.alt=`Affiche : ${ev.name||'Événement'}`;
-          pic.loading='lazy'; pic.style.width='120px'; pic.style.height='80px';
-          pic.style.objectFit='cover'; pic.style.borderRadius='8px';
-
-          const meta=document.createElement('div');
-          const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement';
-          const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time);
-          const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
-
-          const row=document.createElement('div'); row.style.marginTop='6px';
-          if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
-          if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
-
-          meta.append(h3,p1,p2,row);
-          card.append(pic,meta);
-          list.appendChild(card);
-        });
-      }
-
-      function goPrev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
-      function goNext(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
-
-      document.getElementById('ev-prev').addEventListener('click', goPrev);
-      document.getElementById('ev-next').addEventListener('click', goNext);
-      document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')goPrev(); if(e.key==='ArrowRight')goNext(); });
-
-      fetch(CSV_URL)
-        .then(r => r.text())
-        .then(text => {
-          const delimiter = detectDelimiter(text);
-          const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
-          const rows = parsed.data.map(row => {
-            const o={}; for (const k in row) if (Object.hasOwn(row,k)){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; }
-            return o;
-          });
-          events = rows.map(r => ({
-            id:r.id || r.name, name:r.name, start_time:r.start_time,
-            place:r.place ? {name:r.place} : {name:''},
-            cover:normalizeCover(r.cover || ''), event_url:r.event_url, ticket_url:r.ticket_url
-          }))
-          .filter(ev => ev.name)
-          .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
-
-          if (!events.length) return;
-          renderDots(); renderCarousel(); renderList();
-          enableEventSwipe(goPrev, goNext);
-        })
-        .catch(err => console.error('CSV load error:', err));
-
-      /* Swipe (timing you liked) */
-      function enableEventSwipe(goPrev, goNext){
-        const card = document.getElementById('ev-card');
-        const anchor = document.getElementById('ev-link');
-        if (!card) return;
-        const TH=36, RS=90, FOLLOW=0.16, MAXT=0.5;
-        let sx=0, sy=0, dx=0, dy=0, active=false, id=null, lock=null, moved=false;
-
-        function stopClick(e){ if (moved){ e.preventDefault(); e.stopPropagation(); } }
-        anchor.addEventListener('click', stopClick);
-
-        function start(e){
-          if (e.pointerType==='mouse' && e.button!==0) return;
-          active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; moved=false;
-          card.classList.add('dragging'); card.setPointerCapture(id); document.body.style.userSelect='none';
-        }
-        function move(e){
-          if (!active || e.pointerId!==id) return;
-          dx=e.clientX-sx; dy=e.clientY-sy;
-          if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y';
-          if (lock==='x'){ e.preventDefault(); moved=true; const tx=dx*FOLLOW; const tilt=Math.max(-MAXT, Math.min(MAXT, dx*0.02)); card.style.transform=`translateX(${tx}px) rotate(${tilt}deg)`; }
-        }
-        function end(e){
-          if (!active || e.pointerId!==id) return;
-          active=false; card.classList.remove('dragging'); document.body.style.userSelect='';
-          const ax=Math.abs(dx), ay=Math.abs(dy);
-          if (lock==='x' && ax>TH && ay<RS){ if (dx<0){ goNext(); card.classList.add('swipe-left'); } else { goPrev(); card.classList.add('swipe-right'); } setTimeout(()=>card.classList.remove('swipe-left','swipe-right'), 460); }
-          card.style.transition='transform .38s ease'; card.style.transform=''; setTimeout(()=> card.style.transition='', 380);
-          id=null; lock=null; moved=false;
-        }
-        card.addEventListener('pointerdown', start, {passive:false});
-        card.addEventListener('pointermove',  move,  {passive:false});
-        card.addEventListener('pointerup',    end,   {passive:false});
-        card.addEventListener('pointercancel',end,   {passive:false});
-        card.querySelectorAll('img,a').forEach(el=> el.addEventListener('dragstart', ev => ev.preventDefault()));
-      }
-    })();
-
-    /* SoundCloud swipe (timing you liked) */
-    (function(){
-      const base='https://w.soundcloud.com/player/?url=', tail='&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
-      const playlists=[
-        {title:'Kizomba – N°1', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/152611885')+tail},
-        {title:"Kiz'Bourges N°2", url:base+encodeURIComponent('https://api.soundcloud.com/playlists/879844930')+tail},
-        {title:'Kizomba - Tarraxa', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/124156830')+tail},
-        {title:'Kizomba - Urban', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/323224243')+tail},
-        {title:'Kizomba - Douceur', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/266791296')+tail},
-        {title:'Kizomba - Authentik', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/237162467')+tail},
-        {title:'Semba Kiz’Bourges', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/153330518')+tail}
-      ];
-      let idx=0;
-      const titleEl=document.getElementById('sc-title');
-      const frameEl=document.getElementById('sc-player');
-      const prevBtn=document.getElementById('sc-prev');
-      const nextBtn=document.getElementById('sc-next');
-      const carousel=document.querySelector('.soundcloud-carousel');
-      const playerWrap=document.querySelector('.sc-player');
-
-      const indicators=document.createElement('div');
-      indicators.style.textAlign='center'; indicators.style.marginTop='10px';
-      playlists.forEach((pl,i)=>{ const dot=document.createElement('span'); dot.textContent='●'; dot.style.cursor='pointer'; dot.style.margin='0 6px'; dot.style.fontSize='16px'; dot.style.transition='transform .2s, color .2s'; dot.addEventListener('click', ()=>{ idx=i; render(); }); indicators.appendChild(dot); });
-      carousel.appendChild(indicators);
-
-      function updateDots(){ [...indicators.children].forEach((dot,i)=>{ if(i===idx){ dot.style.color='#000'; dot.style.transform='scale(1.3)'; } else { dot.style.color='#ccc'; dot.style.transform='scale(1)'; } }); }
-      function render(){ titleEl.textContent=playlists[idx].title; if (frameEl && frameEl.src!==playlists[idx].url) frameEl.src=playlists[idx].url; updateDots(); }
-      function goPrev(){ idx=(idx-1+playlists.length)%playlists.length; render(); }
-      function goNext(){ idx=(idx+1)%playlists.length; render(); }
-
-      prevBtn.addEventListener('click', goPrev);
-      nextBtn.addEventListener('click', goNext);
-      document.addEventListener('keydown', (e)=>{ if (e.key==='ArrowLeft') goPrev(); if (e.key==='ArrowRight') goNext(); });
-
-      (function enableSoundSwipe(){
-        if (!playerWrap) return;
-        const TH=32, RS=90, FOLLOW=0.14;
-        let sx=0, sy=0, dx=0, dy=0, active=false, id=null, lock=null;
-
-        function start(e){ if (e.pointerType==='mouse' && e.button!==0) return; active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; playerWrap.classList.add('dragging'); playerWrap.setPointerCapture(id); document.body.style.userSelect='none'; }
-        function move(e){ if (!active || e.pointerId!==id) return; dx=e.clientX-sx; dy=e.clientY-sy; if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y'; if (lock==='x'){ e.preventDefault(); playerWrap.style.transform=`translateX(${dx*FOLLOW}px)`; } }
-        function end(e){ if (!active || e.pointerId!==id) return; active=false; playerWrap.classList.remove('dragging'); document.body.style.userSelect=''; const ax=Math.abs(dx), ay=Math.abs(dy); if (lock==='x' && ax>TH && ay<RS){ if (dx<0){ goNext(); playerWrap.classList.add('swipe-left'); } else { goPrev(); playerWrap.classList.add('swipe-right'); } setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 480); } playerWrap.style.transition='transform .36s ease'; playerWrap.style.transform=''; setTimeout(()=> playerWrap.style.transition='', 360); id=null; lock=null; }
-        playerWrap.addEventListener('pointerdown', start, {passive:false});
-        playerWrap.addEventListener('pointermove',  move,  {passive:false});
-        playerWrap.addEventListener('pointerup',    end,   {passive:false});
-        playerWrap.addEventListener('pointercancel',end,   {passive:false});
-        frameEl.addEventListener('dragstart', ev => ev.preventDefault());
+      /* Sticky header shadow */
+      (function(){
+        const h = document.getElementById('header');
+        if(!h) return;
+        const onScroll = () => h.classList.toggle('scrolled', window.scrollY > 6);
+        onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
       })();
 
-      render();
-    })();
+      /* Mobile menu */
+      (function(){
+        const header = document.getElementById('header');
+        const btn = document.getElementById('menu');
+        const nav = document.getElementById('nav');
+        if(!header || !btn || !nav) return;
+        header.setAttribute('data-menu','closed'); btn.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+        const isOpen = () => header.getAttribute('data-menu') === 'open';
+        const toggle = (force) => {
+          const open = (typeof force === 'boolean') ? force : !isOpen();
+          header.setAttribute('data-menu', open ? 'open' : 'closed');
+          btn.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+        btn.addEventListener('click', () => toggle());
+        nav.addEventListener('click', (e)=>{ if (e.target.closest('a')) toggle(false); });
+        document.addEventListener('click', (e)=>{ if (isOpen() && !e.target.closest('#header')) toggle(false); });
+        document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') toggle(false); });
+        window.addEventListener('resize', ()=>{ if (window.innerWidth > 768) toggle(false); });
+      })();
 
-    /* Promo video: play/pause on view */
-    (function(){
-      const v = document.getElementById('courseAdVideo');
-      if (!('IntersectionObserver' in window) || !v) return;
-      const io = new IntersectionObserver((entries) => { for (const e of entries) { if (e.isIntersecting) v.play().catch(()=>{}); else v.pause(); } }, { threshold: 0.5 });
-      io.observe(v);
-    })();
-  </script>
-  <script>
-(function(){
-  // Reuse events loaded by your CSV loader by hooking into renderList()
-  const ldId = 'events-jsonld';
-  function upsertJSONLD(events){
-    const existing = document.getElementById(ldId);
-    if (existing) existing.remove();
-    const data = events.slice(0, 10).map(ev => ({
-      "@context": "https://schema.org",
-      "@type": "Event",
-      "name": ev.name,
-      "startDate": ev.start_time,
-      "eventStatus": "https://schema.org/EventScheduled",
-      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-      "location": {
-        "@type": "Place",
-        "name": (ev.place && ev.place.name) || "Bourges",
-        "address": { "@type": "PostalAddress", "addressLocality": "Bourges", "addressCountry":"FR" }
-      },
-      "image": ev.cover || "https://kizbourges.fr/Images/cover.jpeg",
-      "url": ev.event_url || "https://kizbourges.fr/#events",
-      "offers": ev.ticket_url ? [{
-        "@type":"Offer","url":ev.ticket_url,"priceCurrency":"EUR","availability":"https://schema.org/InStock"
-      }] : undefined
-    }));
-    const s = document.createElement('script');
-    s.type = 'application/ld+json'; s.id = ldId; s.textContent = JSON.stringify(data, null, 2);
-    document.head.appendChild(s);
-  }
+      /* Footer year */
+      (function(){
+        const y = document.getElementById('year');
+        if (y && !y.textContent) y.textContent = new Date().getFullYear();
+      })();
 
-  // Patch your CSV loader to expose events (non-breaking)
-  const _fetch = window.fetch;
-  window.fetch = function(u,opts){
-    return _fetch(u,opts).then(async r=>{
-      if ((u||'').includes('kizbourges_events_template1.csv')) {
-        const text = await r.clone().text();
-        setTimeout(()=>{ try{
-          const delimiter = (text.split(/\r?\n/,1)[0]||'').includes(';')?';':',';
-          const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
-          const rows = parsed.data.map(row => {
-            const o={}; for (const k in row){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; }
-            return o;
+      /* ===== HelloAsso Modal (supports Adhésion + Don) ===== */
+      (function(){
+        const overlay = document.getElementById('haOverlay');
+        const dialog  = document.getElementById('haDialog');
+        const frame   = document.getElementById('haFrame');
+        const loader  = document.getElementById('haLoader');
+        const closeB  = document.getElementById('haClose');
+        const newTab  = document.getElementById('haNewTab');
+        const titleEl = document.getElementById('haTitle');
+
+        let lastFocus = null;
+        let loadTimer = null;
+        let currentURL = HELLOASSO_WIDGET;
+
+        function openHA(url, title){
+          currentURL = url || HELLOASSO_WIDGET;
+          titleEl.textContent = title || 'Adhésion KizBourges';
+
+          document.documentElement.classList.add('ha-open');
+          document.body.classList.add('ha-open');
+          overlay.setAttribute('aria-hidden','false');
+          dialog.setAttribute('aria-hidden','false');
+
+          lastFocus = document.activeElement; closeB.focus();
+
+          newTab.href = currentURL.replace('/widget','');
+
+          loader.style.display = 'flex';
+          frame.removeAttribute('src');
+          setTimeout(()=>{ frame.src = currentURL; }, 0);
+
+          clearTimeout(loadTimer);
+          loadTimer = setTimeout(()=> { loader.textContent = "Toujours en chargement…"; }, 6000);
+
+          document.addEventListener('keydown', onKeydown);
+          overlay.addEventListener('click', onOverlayClick);
+          trapFocus(true);
+        }
+
+        function closeHA(){
+          document.documentElement.classList.remove('ha-open');
+          document.body.classList.remove('ha-open');
+          overlay.setAttribute('aria-hidden','true');
+          dialog.setAttribute('aria-hidden','true');
+          frame.removeAttribute('src');
+          loader.style.display = 'none';
+          clearTimeout(loadTimer);
+          document.removeEventListener('keydown', onKeydown);
+          overlay.removeEventListener('click', onOverlayClick);
+          trapFocus(false);
+          if (lastFocus) { try{ lastFocus.focus(); }catch(_){} lastFocus = null; }
+        }
+
+        function onKeydown(e){ if (e.key === 'Escape'){ e.preventDefault(); closeHA(); } if (e.key === 'Tab'){ handleTabTrap(e); } }
+        function onOverlayClick(e){ if (e.target === overlay) closeHA(); }
+        function focusables(){ return dialog.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'); }
+        function handleTabTrap(e){ const list = Array.from(focusables()); if (!list.length) return; const first = list[0], last = list[list.length - 1]; if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); } }
+        function trapFocus(enable){ if (enable){ dialog.setAttribute('tabindex','-1'); } else { dialog.removeAttribute('tabindex'); } }
+
+        // Openers
+        document.addEventListener('click', (e)=>{
+          const aOpen   = e.target.closest('a.ha-open');
+          const aDonate = e.target.closest('a.ha-donate');
+          if (!aOpen && !aDonate) return;
+          if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey){
+            e.preventDefault();
+            if (aDonate) return openHA(HELLOASSO_DON_WIDGET, 'Faire un don');
+            return openHA(HELLOASSO_WIDGET, 'Adhésion KizBourges');
+          }
+        });
+
+        closeB.addEventListener('click', closeHA);
+        frame.addEventListener('load', ()=>{ loader.style.display = 'none'; });
+
+        // Deep links
+        if (location.hash === '#adhesion'){ openHA(HELLOASSO_WIDGET, 'Adhésion KizBourges'); }
+        const params = new URLSearchParams(location.search);
+        if (params.get('adhesion') === '1'){ openHA(HELLOASSO_WIDGET, 'Adhésion KizBourges'); }
+        if (location.hash === '#don'){ openHA(HELLOASSO_DON_WIDGET, 'Faire un don'); }
+      })();
+
+      /* === Events CSV loader + swipe === */
+      (function(){
+        const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
+
+        const img   = document.getElementById('ev-img');
+        const title = document.getElementById('ev-title');
+        const when  = document.getElementById('ev-when');
+        const where = document.getElementById('ev-where');
+        const link  = document.getElementById('ev-link');
+        const cta   = document.getElementById('ev-cta');
+        const prevB = document.getElementById('ev-prev');
+        const nextB = document.getElementById('ev-next');
+        const dots  = document.getElementById('ev-dots');
+        const list  = document.getElementById('ev-list');
+
+        let events = [], idx = 0;
+
+        function detectDelimiter(text){
+          const header = text.split(/\r?\n/,1)[0] || '';
+          const semis  = (header.match(/;/g)||[]).length;
+          const commas = (header.match(/,/g)||[]).length;
+          return semis > commas ? ';' : ',';
+        }
+        function normalizeCover(url){
+          if(!url) return '';
+          url = url.trim();
+          if (url.startsWith('/')) url = url.slice(1);
+          if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
+            url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
+          }
+          if (url.startsWith('images/')) url = 'Images/' + url.slice(7);
+          return url;
+        }
+        function fmtDate(iso){
+          if(!iso) return '';
+          const d = new Date(iso);
+          return isNaN(d) ? '' : d.toLocaleString('fr-FR', {
+            timeZone:'Europe/Paris', weekday:'short', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
           });
-          const events = rows.map(r => ({
-            id:r.id || r.name, name:r.name, start_time:r.start_time,
-            place:r.place ? {name:r.place} : {name:''},
-            cover:(function(url){
-              if(!url) return '';
-              url = url.trim();
-              if (url.startsWith('/')) url = location.origin + url;
-              if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
-                url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
-              }
-              if (url.startsWith('images/')) url = location.origin + '/Images/' + url.slice(7);
-              return url;
-            })(r.cover || ''),
-            event_url:r.event_url, ticket_url:r.ticket_url
-          }))
-          .filter(ev => ev.name)
-          .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
-          if (events.length) upsertJSONLD(events);
-        }catch(e){} }, 0);
-      }
-      return r;
-    });
-  };
-})();
-</script>
+        }
+
+        function renderCarousel(){
+          if(!events.length) return;
+          const ev = events[idx];
+
+          img.style.opacity = '0';
+          img.style.transform = 'scale(1.015)';
+          const nextSrc = ev.cover || 'Images/cover.jpeg';
+          const tmp = new Image();
+          tmp.onload = () => { img.src = nextSrc; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
+          tmp.onerror = () => { img.src = 'Images/cover.jpeg'; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
+          tmp.src  = nextSrc;
+
+          img.alt  = `Affiche : ${ev.name || 'Événement'}`;
+          title.textContent = ev.name || 'Événement';
+          when.textContent  = fmtDate(ev.start_time);
+          where.textContent = ev.place?.name || ev.place || '—';
+          link.href         = ev.event_url || '#';
+
+          cta.innerHTML = '';
+          if (ev.ticket_url){
+            const a = document.createElement('a');
+            a.href = ev.ticket_url; a.target = '_blank'; a.rel = 'noopener';
+            a.className = 'btn'; a.textContent = 'Billetterie';
+            cta.appendChild(a);
+          }
+          dots.querySelectorAll('span').forEach((dot,i)=>{
+            dot.style.color = (i===idx)?'#000':'#ccc';
+            dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
+          });
+        }
+        function renderDots(){
+          dots.innerHTML = '';
+          events.forEach((_, i)=>{
+            const s = document.createElement('span');
+            s.textContent='●';
+            s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px';
+            s.style.transition='transform .2s, color .2s';
+            s.addEventListener('click', ()=>{ idx=i; renderCarousel(); });
+            dots.appendChild(s);
+          });
+        }
+        function renderList(){
+          list.innerHTML='';
+          events.forEach(ev=>{
+            const card=document.createElement('div');
+            card.className='card reveal';
+            card.style.display='grid'; card.style.gridTemplateColumns='120px 1fr';
+            card.style.gap='14px'; card.style.alignItems='center';
+
+            const pic=document.createElement('img');
+            pic.onerror = () => { pic.onerror = null; pic.src = 'Images/cover.jpeg'; };
+            pic.src=ev.cover||'Images/cover.jpeg';
+            pic.alt=`Affiche : ${ev.name||'Événement'}`;
+            pic.loading='lazy'; pic.style.width='120px'; pic.style.height='80px';
+            pic.style.objectFit='cover'; pic.style.borderRadius='8px';
+
+            const meta=document.createElement('div');
+            const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement';
+            const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time);
+            const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
+
+            const row=document.createElement('div'); row.style.marginTop='6px';
+            if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
+            if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
+
+            meta.append(h3,p1,p2,row);
+            card.append(pic,meta);
+            list.appendChild(card);
+          });
+          // trigger reveal on newly created cards
+          requestAnimationFrame(()=> window.__reveal && window.__reveal());
+        }
+
+        function goPrev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
+        function goNext(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
+
+        document.getElementById('ev-prev').addEventListener('click', goPrev);
+        document.getElementById('ev-next').addEventListener('click', goNext);
+        document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')goPrev(); if(e.key==='ArrowRight')goNext(); });
+
+        fetch(CSV_URL)
+          .then(r => r.text())
+          .then(text => {
+            const delimiter = detectDelimiter(text);
+            const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
+            const rows = parsed.data.map(row => {
+              const o={}; for (const k in row) if (Object.hasOwn(row,k)){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; }
+              return o;
+            });
+            events = rows.map(r => ({
+              id:r.id || r.name, name:r.name, start_time:r.start_time,
+              place:r.place ? {name:r.place} : {name:''},
+              cover:normalizeCover(r.cover || ''), event_url:r.event_url, ticket_url:r.ticket_url
+            }))
+            .filter(ev => ev.name)
+            .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
+
+            if (!events.length) return;
+            renderDots(); renderCarousel(); renderList();
+            enableEventSwipe(goPrev, goNext);
+          })
+          .catch(err => console.error('CSV load error:', err));
+
+        /* Swipe */
+        function enableEventSwipe(goPrev, goNext){
+          const card = document.getElementById('ev-card');
+          const anchor = document.getElementById('ev-link');
+          if (!card) return;
+          const TH=36, RS=90, FOLLOW=0.16, MAXT=0.5;
+          let sx=0, sy=0, dx=0, dy=0, active=false, id=null, lock=null, moved=false;
+
+          function stopClick(e){ if (moved){ e.preventDefault(); e.stopPropagation(); } }
+          anchor.addEventListener('click', stopClick);
+
+          function start(e){ if (e.pointerType==='mouse' && e.button!==0) return; active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; moved=false; card.classList.add('dragging'); card.setPointerCapture(id); document.body.style.userSelect='none'; }
+          function move(e){ if (!active || e.pointerId!==id) return; dx=e.clientX-sx; dy=e.clientY-sy; if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y'; if (lock==='x'){ e.preventDefault(); moved=true; const tx=dx*FOLLOW; const tilt=Math.max(-MAXT, Math.min(MAXT, dx*0.02)); card.style.transform=`translateX(${tx}px) rotate(${tilt}deg)`; } }
+          function end(e){ if (!active || e.pointerId!==id) return; active=false; card.classList.remove('dragging'); document.body.style.userSelect=''; const ax=Math.abs(dx), ay=Math.abs(dy); if (lock==='x' && ax>TH && ay<RS){ if (dx<0){ goNext(); card.classList.add('swipe-left'); } else { goPrev(); card.classList.add('swipe-right'); } setTimeout(()=>card.classList.remove('swipe-left','swipe-right'), 460); } card.style.transition='transform .38s ease'; card.style.transform=''; setTimeout(()=> card.style.transition='', 380); id=null; lock=null; moved=false; }
+          card.addEventListener('pointerdown', start, {passive:false});
+          card.addEventListener('pointermove',  move,  {passive:false});
+          card.addEventListener('pointerup',    end,   {passive:false});
+          card.addEventListener('pointercancel',end,   {passive:false});
+          card.querySelectorAll('img,a').forEach(el=> el.addEventListener('dragstart', ev => ev.preventDefault()));
+        }
+      })();
+
+      /* SoundCloud swipe */
+      (function(){
+        const base='https://w.soundcloud.com/player/?url=', tail='&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
+        const playlists=[
+          {title:'Kizomba – N°1', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/152611885')+tail},
+          {title:"Kiz'Bourges N°2", url:base+encodeURIComponent('https://api.soundcloud.com/playlists/879844930')+tail},
+          {title:'Kizomba - Tarraxa', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/124156830')+tail},
+          {title:'Kizomba - Urban', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/323224243')+tail},
+          {title:'Kizomba - Douceur', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/266791296')+tail},
+          {title:'Kizomba - Authentik', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/237162467')+tail},
+          {title:'Semba Kiz’Bourges', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/153330518')+tail}
+        ];
+        let idx=0;
+        const titleEl=document.getElementById('sc-title');
+        const frameEl=document.getElementById('sc-player');
+        const prevBtn=document.getElementById('sc-prev');
+        const nextBtn=document.getElementById('sc-next');
+        const carousel=document.querySelector('.soundcloud-carousel');
+        const playerWrap=document.querySelector('.sc-player');
+
+        const indicators=document.createElement('div');
+        indicators.style.textAlign='center'; indicators.style.marginTop='10px';
+        playlists.forEach((pl,i)=>{ const dot=document.createElement('span'); dot.textContent='●'; dot.style.cursor='pointer'; dot.style.margin='0 6px'; dot.style.fontSize='16px'; dot.style.transition='transform .2s, color .2s'; dot.addEventListener('click', ()=>{ idx=i; render(); }); indicators.appendChild(dot); });
+        carousel.appendChild(indicators);
+
+        function updateDots(){ [...indicators.children].forEach((dot,i)=>{ if(i===idx){ dot.style.color='#000'; dot.style.transform='scale(1.3)'; } else { dot.style.color='#ccc'; dot.style.transform='scale(1)'; } }); }
+        function render(){ titleEl.textContent=playlists[idx].title; if (frameEl && frameEl.src!==playlists[idx].url) frameEl.src=playlists[idx].url; updateDots(); }
+        function goPrev(){ idx=(idx-1+playlists.length)%playlists.length; render(); }
+        function goNext(){ idx=(idx+1)%playlists.length; render(); }
+
+        prevBtn.addEventListener('click', goPrev);
+        nextBtn.addEventListener('click', goNext);
+        document.addEventListener('keydown', (e)=>{ if (e.key==='ArrowLeft') goPrev(); if (e.key==='ArrowRight') goNext(); });
+
+        (function enableSoundSwipe(){
+          if (!playerWrap) return;
+          const TH=32, RS=90, FOLLOW=0.14;
+          let sx=0, sy=0, dx=0, dy=0, active=false, id=null, lock=null;
+
+          function start(e){ if (e.pointerType==='mouse' && e.button!==0) return; active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; playerWrap.classList.add('dragging'); playerWrap.setPointerCapture(id); document.body.style.userSelect='none'; }
+          function move(e){ if (!active || e.pointerId!==id) return; dx=e.clientX-sx; dy=e.clientY-sy; if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y'; if (lock==='x'){ e.preventDefault(); playerWrap.style.transform=`translateX(${dx*FOLLOW}px)`; } }
+          function end(e){ if (!active || e.pointerId!==id) return; active=false; playerWrap.classList.remove('dragging'); document.body.style.userSelect=''; const ax=Math.abs(dx), ay=Math.abs(dy); if (lock==='x' && ax>TH && ay<RS){ if (dx<0){ goNext(); playerWrap.classList.add('swipe-left'); } else { goPrev(); playerWrap.classList.add('swipe-right'); } setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 480); } playerWrap.style.transition='transform .36s ease'; playerWrap.style.transform=''; setTimeout(()=> playerWrap.style.transition='', 360); id=null; lock=null; }
+          playerWrap.addEventListener('pointerdown', start, {passive:false});
+          playerWrap.addEventListener('pointermove',  move,  {passive:false});
+          playerWrap.addEventListener('pointerup',    end,   {passive:false});
+          playerWrap.addEventListener('pointercancel',end,   {passive:false});
+          frameEl.addEventListener('dragstart', ev => ev.preventDefault());
+        })();
+
+        render();
+      })();
+
+      /* Promo video: play/pause on view */
+      (function(){
+        const v = document.getElementById('courseAdVideo');
+        if (!('IntersectionObserver' in window) || !v) return;
+        const io = new IntersectionObserver((entries) => { for (const e of entries) { if (e.isIntersecting) v.play().catch(()=>{}); else v.pause(); } }, { threshold: 0.5 });
+        io.observe(v);
+      })();
+
+      /* === JSON-LD (unchanged) === */
+      (function(){
+        const ldId = 'events-jsonld';
+        function upsertJSONLD(events){
+          const existing = document.getElementById(ldId);
+          if (existing) existing.remove();
+          const data = events.slice(0, 10).map(ev => ({
+            "@context": "https://schema.org",
+            "@type": "Event",
+            "name": ev.name,
+            "startDate": ev.start_time,
+            "eventStatus": "https://schema.org/EventScheduled",
+            "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+            "location": { "@type": "Place", "name": (ev.place && ev.place.name) || "Bourges", "address": { "@type": "PostalAddress", "addressLocality": "Bourges", "addressCountry":"FR" } },
+            "image": ev.cover || "https://kizbourges.fr/Images/cover.jpeg",
+            "url": ev.event_url || "https://kizbourges.fr/#events",
+            "offers": ev.ticket_url ? [{ "@type":"Offer","url":ev.ticket_url,"priceCurrency":"EUR","availability":"https://schema.org/InStock" }] : undefined
+          }));
+          const s = document.createElement('script');
+          s.type = 'application/ld+json'; s.id = ldId; s.textContent = JSON.stringify(data, null, 2);
+          document.head.appendChild(s);
+        }
+        const _fetch = window.fetch;
+        window.fetch = function(u,opts){
+          return _fetch(u,opts).then(async r=>{
+            if ((u||'').includes('kizbourges_events_template1.csv')) {
+              const text = await r.clone().text();
+              setTimeout(()=>{ try{
+                const delimiter = (text.split(/\r?\n/,1)[0]||'').includes(';')?';':',';
+                const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
+                const rows = parsed.data.map(row => { const o={}; for (const k in row){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; } return o; });
+                const events = rows.map(r => ({ id:r.id || r.name, name:r.name, start_time:r.start_time, place:r.place ? {name:r.place} : {name:''}, cover:(function(url){ if(!url) return ''; url = url.trim(); if (url.startsWith('/')) url = location.origin + url; if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) { url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/'); } if (url.startsWith('images/')) url = location.origin + '/Images/' + url.slice(7); return url; })(r.cover || ''), event_url:r.event_url, ticket_url:r.ticket_url })) .filter(ev => ev.name) .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
+                if (events.length) upsertJSONLD(events);
+              }catch(e){} }, 0);
+            }
+            return r;
+          });
+        };
+      })();
+
+      /* === Reveal on scroll (added) === */
+      (function(){
+        const els = () => Array.from(document.querySelectorAll('.reveal'));
+        function run(){ els().forEach(el=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) el.classList.add('in'); }); }
+        window.__reveal = run;
+        run();
+        window.addEventListener('scroll', run, {passive:true});
+        window.addEventListener('resize', run);
+      })();
+    </script>
+  </main>
 </body>
 </html>
