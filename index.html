@@ -103,7 +103,7 @@
       .ev-card{ transition: transform .48s ease, opacity .48s ease; }
       .ev-card.swipe-left{ transform:translateX(-30px); opacity:.86; }
       .ev-card.swipe-right{ transform:translateX(30px); opacity:.86; }
-      #ev-img{ transition: opacity .70s ease, transform .90s ease; }
+      #ev-img{ min-height:240px;  transition: opacity .70s ease, transform .90s ease; }
       .sc-player.swipe-left{ transform:translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       .sc-player.swipe-right{ transform:translateX(26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
       /* New reveal-on-scroll */
@@ -161,6 +161,51 @@
     #donate-fab svg{ width:18px; height:18px; }
     @media (prefers-reduced-motion:no-preference){ #donate-fab.show{ opacity:1; transform:none; transition: transform .28s var(--ease), opacity .28s var(--ease); } }
   .reveal{ opacity:1 !important; transform:none !important; }
+  /* ===== Enhanced visuals & animations v2 ===== */
+    :root{
+      --kb-accent: linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2);
+      --kb-border: rgba(0,0,0,.06);
+      --kb-glow: 0 10px 30px rgba(255,45,85,.25);
+    }
+
+    /* Section separators */
+    .section{ position:relative; }
+    .section::before{ content:""; position:absolute; left:0; right:0; top:0; height:1px; background:linear-gradient(90deg,transparent, rgba(0,0,0,.06), transparent); }
+
+    /* Nav hover/active underline with gradient */
+    .nav a{ --u: 0%; }
+    .nav a::after{ background: var(--kb-accent); height:2px; width: var(--u); }
+    .nav a:hover::after{ width:100%; }
+    .nav a.is-active{ font-weight:600; }
+    .nav a.is-active::after{ width:100%; }
+
+    /* Cards: stronger hover + border glow */
+    @media (prefers-reduced-motion:no-preference){
+      .card{ transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease); }
+      .card:hover{ transform: translateY(-8px); box-shadow: var(--elev-3), var(--kb-glow); border-color: rgba(255,45,85,.25); }
+    }
+
+    /* Carousel image subtle Ken Burns on hover */
+    #ev-img{ will-change: transform; }
+    @media (prefers-reduced-motion:no-preference){
+      #ev-img:hover{ transform: scale(1.02); transition: transform 3s ease; }
+    }
+
+    /* Button ripple (non-blocking) */
+    .btn{ position:relative; overflow:hidden; }
+    .btn .ripple{ position:absolute; border-radius:50%; transform: translate(-50%,-50%) scale(0); opacity:.35; background:currentColor; pointer-events:none; }
+    @media (prefers-reduced-motion:no-preference){
+      .btn .ripple{ animation: ripple .6s ease-out forwards; }
+    }
+    @keyframes ripple{ to{ transform: translate(-50%,-50%) scale(16); opacity:0; } }
+
+    /* Reveal animations remain non-blocking */
+    .reveal.in{ transition: opacity .6s var(--ease), transform .6s var(--ease); }
+    .reveal.in[data-effect="up"]{ transform:none; opacity:1; }
+    .reveal[data-effect="up"]{ transform:none; opacity:1; }
+
+    /* Smooth scroll anchoring offset for sticky header */
+    :target{ scroll-margin-top: 72px; }
   </style>
 </head>
 
@@ -526,6 +571,19 @@
         function normalizeCover(url){
           if(!url) return '';
           url = (url+"").trim().replace(/\?raw=1$/,'');
+          if (url.startsWith('./')) url = url.slice(2);
+          if (url.startsWith('/'))  url = url.slice(1);
+          if (/^images\//i.test(url)) url = 'Images/' + url.replace(/^images\//i,'');
+          // github.com → raw
+          const gh = url.match(/^https?:\/\/github\.com\/([^\/]+)\/([^\/]+)\/(blob|raw|tree)\/([^\/]+)\/(.+)$/i);
+          if (gh){ const [,own,repo,,branch,path] = gh; return `https://raw.githubusercontent.com/${own}/${repo}/${branch}/${path}`; }
+          // *.github.io → raw of the pages repo (assumes main branch)
+          const gio = url.match(/^https?:\/\/([a-z0-9-]+)\.github\.io\/(.+)$/i);
+          if (gio){ const user = gio[1]; const path = gio[2]; return `https://raw.githubusercontent.com/${user}/${user}.github.io/main/${path}`; }
+          return url;
+        }{
+          if(!url) return '';
+          url = (url+"").trim().replace(/\?raw=1$/,'');
           // Relative cases
           if (url.startsWith('./')) url = url.slice(2);
           if (url.startsWith('/')) url = url.slice(1);
@@ -560,11 +618,7 @@
           const nextSrc = ev.cover || 'Images/cover.jpeg';
           const tmp = new Image();
           tmp.onload = () => { img.src = nextSrc; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
-          tmp.onerror = () => {
-            console.warn('Image failed, fallback → cover.jpeg', nextSrc);
-            img.src = 'Images/cover.jpeg';
-            requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; });
-          };
+          tmp.onerror = () => { console.warn('Image failed, fallback → /Images/cover.jpeg', nextSrc); img.src = '/Images/cover.jpeg'; };
           tmp.src  = nextSrc;
 
           img.alt  = `Affiche : ${ev.name || 'Événement'}`;
@@ -969,6 +1023,69 @@ KizBourges Social;2025-10-12T21:00:00;Le Rio, Bourges;Images/events/soiree_1210.
       document.getElementById('ev-next')?.addEventListener('click', ()=>{ idx=(idx+1)%events.length; renderCarousel(events, idx); updateDotColors(idx); });
       renderList(events);
     })();
+  })();
+  </script>
+  <script>
+  // ===== Button ripple (delegated) =====
+  (function(){
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('.btn');
+      if (!btn) return;
+      try{
+        const r = btn.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        const d = Math.max(r.width, r.height);
+        const span = document.createElement('span');
+        span.className = 'ripple';
+        span.style.left = x+'px'; span.style.top = y+'px';
+        span.style.width = span.style.height = d+'px';
+        btn.appendChild(span); setTimeout(()=> span.remove(), 650);
+      }catch(_){}
+    }, {passive:true});
+  })();
+
+  // ===== Scrollspy for nav (active link) =====
+  (function(){
+    const navLinks = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
+    if (!navLinks.length) return;
+    const map = navLinks.map(a => ({a, id: a.getAttribute('href').slice(1)}));
+    const sections = map.map(({id}) => document.getElementById(id)).filter(Boolean);
+    function onScroll(){
+      const y = window.scrollY + 80;
+      let active = null;
+      for (const sec of sections){ if (sec.offsetTop <= y) active = sec.id; }
+      navLinks.forEach(({classList})=>{});
+      navLinks.forEach(l => l.classList.remove('is-active'));
+      const current = map.find(m => m.id === active);
+      if (current) current.a.classList.add('is-active');
+    }
+    onScroll();
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll);
+  })();
+
+  // ===== Smooth scroll for in-page nav (with header offset built via CSS :target) =====
+  (function(){
+    document.addEventListener('click', (e)=>{
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (location.pathname === a.pathname && location.hostname === a.hostname){
+        e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'});
+        history.replaceState(null, '', '#'+id);
+      }
+    });
+  })();
+
+  // ===== Upgrade reveals: tag some sections with data-effect =====
+  (function(){
+    document.querySelectorAll('#asso,#cours,#events,#covoit,#son,#contact').forEach((sec,i)=>{
+      sec.classList.add('reveal'); sec.dataset.effect = 'up'; sec.style.setProperty('transition-delay', (i*60)+'ms');
+      // ensure visibility default
+      sec.classList.add('in');
+    });
   })();
   </script>
 </body>
