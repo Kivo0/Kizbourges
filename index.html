@@ -66,6 +66,8 @@
       transition: color .2s ease, letter-spacing .2s ease; }
     .nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0; background:var(--kb-accent);
       transition: width .32s ease; opacity:.8; }
+    .nav a::after{ background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2); opacity:.9; }
+
     .nav a:hover{ letter-spacing:.2px; } .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
 
     #menu{ --bar-w:22px; --bar-h:2px; --gap:5px; width:40px; height:34px; border:1px solid #ddd; border-radius:10px; background:#fff;
@@ -105,8 +107,8 @@
       .ev-card{ transition: transform .48s ease, opacity .48s ease; }
       .ev-card.swipe-left{ transform:translateX(-30px); opacity:.86; }
       .ev-card.swipe-right{ transform:translateX(30px); opacity:.86; }
-      #ev-img{ transition: opacity .70s ease, transform .90s ease; will-change: transform; }
-      #ev-img:hover{ transform: scale(1.02); transition: transform 3s ease; }
+      #ev-img{ transition: opacity .70s ease, transform 2s ease; will-change: transform; }
+      #ev-img:hover{ transform: scale(1.04); transition: transform 3s ease; }
       .hero-inner{ will-change: transform; transition: transform .6s ease; }
       .hero:hover .hero-inner{ transform: translateY(-2px); }
     }
@@ -156,7 +158,35 @@
     @media (prefers-reduced-motion:no-preference){ #donate-fab.show{ opacity:1; transform:none; transition: transform .28s var(--ease), opacity .28s var(--ease); } }
 
     /* Accessiblity niceties */
-    .reveal{ opacity:1 !important; transform:none !important; }
+    /* .reveal{ opacity:1 !important; transform:none !important; } */
+
+    /* Reveal-in: bigger but smooth */
+.reveal{ opacity:0; transform:translateY(24px) scale(.98); will-change:opacity,transform; }
+.reveal.in{ opacity:1; transform:none; transition:opacity .72s cubic-bezier(.2,.8,.2,1), transform .72s cubic-bezier(.2,.8,.2,1); }
+
+/* Extra effects per-section (opt-in) */
+.reveal[data-effect="flip"]{ transform:rotateX(6deg) translateY(30px); transform-origin:50% 80%; opacity:.001; }
+.reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform .8s var(--ease),opacity .8s var(--ease); }
+
+.reveal[data-effect="zoom"]{ transform:scale(.94); opacity:.001; }
+.reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform .75s var(--ease),opacity .75s var(--ease); }
+
+/* Header gradient glow */
+.site-header::after{
+  content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+  background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2,#0cf,#ff2d55);
+  background-size:300% 100%; opacity:.85; transform:scaleX(0); transform-origin:left;
+}
+.site-header.scrolled::after{ transform:scaleX(1); animation:kb-glow 7s linear infinite; }
+@keyframes kb-glow{ 0%{background-position:0 0}100%{background-position:300% 0} }
+
+/* Card 3D hover (add class="tilt" to any card) */
+.tilt{transform-style:preserve-3d; perspective:900px;}
+@media (prefers-reduced-motion:no-preference){
+  .tilt:hover{ transition:transform .18s ease; }
+}
+
+    
     :target{ scroll-margin-top: 72px; }
   </style>
 </head>
@@ -869,5 +899,32 @@
     document.getElementById('haFrame').addEventListener('load', ()=>{ document.getElementById('haLoader').style.display='none'; });
   })();
   </script>
+<script>
+  (function(){
+    const els = document.querySelectorAll('.card');
+    els.forEach(el => {
+      el.classList.add('tilt');
+      let raf = null;
+      function onMove(e){
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - .5;
+        const y = (e.clientY - r.top) / r.height - .5;
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          el.style.transform = `rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*6).toFixed(2)}deg) translateY(-6px)`;
+        });
+      }
+      function onLeave(){
+        if (raf) cancelAnimationFrame(raf);
+        el.style.transform = 'none';
+      }
+      el.addEventListener('pointermove', onMove);
+      el.addEventListener('pointerleave', onLeave);
+    });
+  })();
+</script>
+
+
+  
 </body>
 </html>
