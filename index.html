@@ -39,7 +39,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
-  <!-- CSS -->
+  <!-- Your CSS -->
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="Images/logo2.jpeg">
 
@@ -49,12 +49,14 @@
       --elev-3: 0 18px 40px rgba(0,0,0,.14);
       --ease: cubic-bezier(.2,.8,.2,1);
       --brand:#111; --nav-bg:#fff; --nav-border:#eaeaea;
+      --kb-accent: linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2);
+      --kb-glow: 0 10px 30px rgba(255,45,85,.25);
     }
     html.ha-open, body.ha-open{ overflow:hidden; }
 
     /* ===== HEADER / NAV ===== */
     .site-header{ position:sticky; top:0; z-index:50; background:var(--nav-bg);
-      transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);} 
+      transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);}
     .site-header.scrolled{ box-shadow:0 6px 18px rgba(0,0,0,.06); backdrop-filter:saturate(1.05) blur(6px); }
     .site-header .container{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; }
     .logo-img{ height:44px; width:auto; display:block; }
@@ -62,8 +64,8 @@
     .nav{ display:flex; gap:18px; align-items:center; }
     .nav a{ position:relative; display:inline-block; color:var(--brand); text-decoration:none; padding:6px 2px;
       transition: color .2s ease, letter-spacing .2s ease; }
-    .nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0; background:currentColor; opacity:.28;
-      transition: width .32s ease; }
+    .nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0; background:var(--kb-accent);
+      transition: width .32s ease; opacity:.8; }
     .nav a:hover{ letter-spacing:.2px; } .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
 
     #menu{ --bar-w:22px; --bar-h:2px; --gap:5px; width:40px; height:34px; border:1px solid #ddd; border-radius:10px; background:#fff;
@@ -93,31 +95,28 @@
       #header .nav a{ display:block; padding:10px 0; }
     }
 
-    /* ===== Motion ===== */
+    /* ===== Visuals & Motion ===== */
     @media (prefers-reduced-motion:no-preference){
       .btn{ transition: transform .32s ease, box-shadow .32s ease; }
       .btn:hover{ transform:translateY(-4px); box-shadow:var(--elev-2); }
-      .card{ transition: transform .34s ease, box-shadow .34s ease; }
-      .card:hover{ transform:translateY(-6px); box-shadow:var(--elev-3); }
+      .card{ transition: transform .34s ease, box-shadow .34s ease, border-color .34s ease; }
+      .card:hover{ transform:translateY(-6px); box-shadow:var(--elev-3), var(--kb-glow); border-color: rgba(255,45,85,.25); }
       .events-carousel, .soundcloud-carousel{ touch-action: pan-y; }
       .ev-card{ transition: transform .48s ease, opacity .48s ease; }
       .ev-card.swipe-left{ transform:translateX(-30px); opacity:.86; }
       .ev-card.swipe-right{ transform:translateX(30px); opacity:.86; }
-      #ev-img{ min-height:240px;  transition: opacity .70s ease, transform .90s ease; }
-      .sc-player.swipe-left{ transform:translateX(-26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
-      .sc-player.swipe-right{ transform:translateX(26px); opacity:.9; transition: transform .42s ease, opacity .42s ease; }
-      /* New reveal-on-scroll */
-      .js .reveal{ /* animations are opt-in; never hide content by default */ }
-      .reveal.in{ opacity:1; transform:none; transition: opacity .6s var(--ease), transform .6s var(--ease); }
-      /* Subtle hero parallax */
+      #ev-img{ transition: opacity .70s ease, transform .90s ease; will-change: transform; }
+      #ev-img:hover{ transform: scale(1.02); transition: transform 3s ease; }
       .hero-inner{ will-change: transform; transition: transform .6s ease; }
       .hero:hover .hero-inner{ transform: translateY(-2px); }
     }
     @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
 
-    /* ===== HelloAsso modal ===== */
-    .ha-overlay{ position:fixed; inset:0; z-index:999; background:rgba(0,0,0,.5); opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; transition:opacity .25s ease; }
-    .ha-dialog{ width:min(960px, 96vw); height:min(88dvh, 900px); background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(0,0,0,.25); opacity:0; transform:scale(.98); transition: transform .28s ease, opacity .28s ease; display:flex; flex-direction:column; overflow:hidden; }
+    /* HelloAsso modal */
+    .ha-overlay{ position:fixed; inset:0; z-index:999; background:rgba(0,0,0,.5);
+      opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; transition:opacity .25s ease; }
+    .ha-dialog{ width:min(960px, 96vw); height:min(88dvh, 900px); background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(0,0,0,.25);
+      opacity:0; transform:scale(.98); transition: transform .28s ease, opacity .28s ease; display:flex; flex-direction:column; overflow:hidden; }
     .ha-open .ha-overlay{ opacity:1; pointer-events:auto; }
     .ha-open .ha-dialog{ opacity:1; transform:scale(1); }
     .ha-header{ position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; padding: calc(10px + env(safe-area-inset-top)) 14px 10px; background:#fff; border-bottom:1px solid #eee; }
@@ -127,105 +126,44 @@
     .ha-iframe{ width:100%; height:100%; border:0; display:block; }
     .ha-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.95rem; color:#555; background:#fff; }
     .ha-fallback{ position:absolute; right:12px; bottom:12px; font-size:.9rem; }
-    @media (max-width:520px){ .ha-dialog{ width:100vw; height:100dvh; border-radius:0; } .ha-title{ font-size:1rem; } }
 
-    /* Minor visual polish + upgraded animations */
-    .btn{ display:inline-block; background:#111; color:#fff; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 6px 16px rgba(0,0,0,.08); }
+    /* UI polish */
+    .btn{ display:inline-block; background:#111; color:#fff; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 6px 16px rgba(0,0,0,.08); position:relative; overflow:hidden; }
     .btn.alt{ background:#fff; color:#111; border:1px solid #eee; }
     .btn:active{ transform:translateY(1px); }
-    .section{ padding:56px 0; }
+    .section{ padding:56px 0; position:relative; }
     .section.alt{ background:linear-gradient(180deg,#fafafa, #fff 60%); }
     .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
     .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; position:relative; overflow:hidden; }
     .card::after{ content:""; position:absolute; inset:0; background:linear-gradient(120deg, transparent 0%, rgba(17,17,17,.03) 40%, transparent 80%); transform:translateX(-120%); }
-    @media (prefers-reduced-motion:no-preference){
-      .card:hover::after{ animation: shine 1.2s forwards; }
-      .card:hover{ transform:translateY(-6px) rotate3d(1,1,0, .25deg); box-shadow:var(--elev-3); }
-    }
+    @media (prefers-reduced-motion:no-preference){ .card:hover::after{ animation: shine 1.2s forwards; } }
     @keyframes shine{ to{ transform:translateX(120%);} }
-  /* ===== New UI extras: progress bar, hero entry, glow, FAB ===== */
+
+    /* Page extras: progress bar, hero entry, button glow ripple */
     #scrollbar{ position:fixed; inset:0 auto auto 0; height:3px; width:100%; transform-origin:left center; transform:scaleX(0); background:linear-gradient(90deg,#111,#f06,#0cf); z-index:1000; }
     @media (prefers-reduced-motion:no-preference){ #scrollbar{ transition: transform .15s linear; } }
-
-    /* Hero entry */
     .hero.enter h1,.hero.enter p,.hero.enter .cta-row{ opacity:0; animation: fadeUp .7s var(--ease) var(--d,0s) both; }
     @keyframes fadeUp{ from{ opacity:0; transform:translateY(12px);} to{ opacity:1; transform:none; } }
-
-    /* Mouse-follow glow on buttons */
-    .btn{ position:relative; overflow:hidden; }
-    .btn::before{ content:""; position:absolute; left:0; top:0; right:0; bottom:0; background:radial-gradient(140px 140px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.35), transparent 60%); opacity:0; pointer-events:none; }
+    .btn::before{ content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.35), transparent 60%); opacity:0; pointer-events:none; }
     @media (prefers-reduced-motion:no-preference){ .btn:hover::before{ opacity:1; transition: opacity .28s ease; } }
+    .btn .ripple{ position:absolute; border-radius:50%; transform: translate(-50%,-50%) scale(0); opacity:.35; background:currentColor; pointer-events:none; }
+    @media (prefers-reduced-motion:no-preference){ .btn .ripple{ animation: ripple .6s ease-out forwards; } }
+    @keyframes ripple{ to{ transform: translate(-50%,-50%) scale(16); opacity:0; } }
 
     /* Floating donate button */
     #donate-fab{ position:fixed; right:18px; bottom:18px; z-index:999; display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; background:#111; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,.2); border:1px solid rgba(0,0,0,.2); text-decoration:none; transform:translateY(16px) scale(.98); opacity:0; }
     #donate-fab svg{ width:18px; height:18px; }
     @media (prefers-reduced-motion:no-preference){ #donate-fab.show{ opacity:1; transform:none; transition: transform .28s var(--ease), opacity .28s var(--ease); } }
-  .reveal{ opacity:1 !important; transform:none !important; }
-  /* ===== Enhanced visuals & animations v2 ===== */
-    :root{
-      --kb-accent: linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2);
-      --kb-border: rgba(0,0,0,.06);
-      --kb-glow: 0 10px 30px rgba(255,45,85,.25);
-    }
 
-    /* Section separators */
-    .section{ position:relative; }
-    .section::before{ content:""; position:absolute; left:0; right:0; top:0; height:1px; background:linear-gradient(90deg,transparent, rgba(0,0,0,.06), transparent); }
-
-    /* Nav hover/active underline with gradient */
-    .nav a{ --u: 0%; }
-    .nav a::after{ background: var(--kb-accent); height:2px; width: var(--u); }
-    .nav a:hover::after{ width:100%; }
-    .nav a.is-active{ font-weight:600; }
-    .nav a.is-active::after{ width:100%; }
-
-    /* Cards: stronger hover + border glow */
-    @media (prefers-reduced-motion:no-preference){
-      .card{ transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease); }
-      .card:hover{ transform: translateY(-8px); box-shadow: var(--elev-3), var(--kb-glow); border-color: rgba(255,45,85,.25); }
-    }
-
-    /* Carousel image subtle Ken Burns on hover */
-    #ev-img{ will-change: transform; }
-    @media (prefers-reduced-motion:no-preference){
-      #ev-img:hover{ transform: scale(1.02); transition: transform 3s ease; }
-    }
-
-    /* Button ripple (non-blocking) */
-    .btn{ position:relative; overflow:hidden; }
-    .btn .ripple{ position:absolute; border-radius:50%; transform: translate(-50%,-50%) scale(0); opacity:.35; background:currentColor; pointer-events:none; }
-    @media (prefers-reduced-motion:no-preference){
-      .btn .ripple{ animation: ripple .6s ease-out forwards; }
-    }
-    @keyframes ripple{ to{ transform: translate(-50%,-50%) scale(16); opacity:0; } }
-
-    /* Reveal animations remain non-blocking */
-    .reveal.in{ transition: opacity .6s var(--ease), transform .6s var(--ease); }
-    .reveal.in[data-effect="up"]{ transform:none; opacity:1; }
-    .reveal[data-effect="up"]{ transform:none; opacity:1; }
-
-    /* Smooth scroll anchoring offset for sticky header */
+    /* Accessiblity niceties */
+    .reveal{ opacity:1 !important; transform:none !important; }
     :target{ scroll-margin-top: 72px; }
-
-
-    /* Skeleton shimmer for images */
-.skeleton { position: relative; background:#f2f2f2; border-radius:12px; }
-.skeleton::after {
-  content:""; position:absolute; inset:0; transform:translateX(-100%);
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);
-  animation:shimmer 1.1s infinite;
-}
-@keyframes shimmer { to { transform:translateX(100%); } }
-
-/* Ensure hero event image keeps space even before load */
-#ev-img { min-height:320px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.15); }
-
   </style>
 </head>
 
 <body>
   <div id="scrollbar" aria-hidden="true"></div>
-  <script>try{document.documentElement.classList.add('js');}catch(e){}</script>
+  <script>document.documentElement.classList.add('js');</script>
   <a href="#main" class="skip-link">Aller au contenu</a>
   <style>
     .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
@@ -423,8 +361,8 @@
           <button class="ha-close" id="haClose" aria-label="Fermer la fenêtre">✕</button>
         </div>
         <div class="ha-body" id="haDesc">
-          <div class="ha-loader" id="haLoader">Chargement du module…</div>
-          <iframe id="haFrame" class="ha-iframe" title="Formulaire HelloAsso"
+          <div class="ha-loader" id="haLoader">Chargement du module d’adhésion…</div>
+          <iframe id="haFrame" class="ha-iframe" title="Formulaire d’adhésion HelloAsso"
             loading="eager" allow="payment *; fullscreen *" referrerpolicy="no-referrer-when-downgrade"></iframe>
           <div class="ha-fallback" id="haFallback">
             Problème d’affichage ? <a id="haNewTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a>
@@ -478,7 +416,7 @@
         if (y && !y.textContent) y.textContent = new Date().getFullYear();
       })();
 
-      /* ===== HelloAsso Modal (supports Adhésion + Don) ===== */
+      /* ===== HelloAsso Modal (widget URL + Don) ===== */
       (function(){
         const overlay = document.getElementById('haOverlay');
         const dialog  = document.getElementById('haDialog');
@@ -490,24 +428,22 @@
 
         let lastFocus = null;
         let loadTimer = null;
-        let currentURL = HELLOASSO_WIDGET;
 
         function openHA(url, title){
-          currentURL = url || HELLOASSO_WIDGET;
-          titleEl.textContent = title || 'Adhésion KizBourges';
-
           document.documentElement.classList.add('ha-open');
           document.body.classList.add('ha-open');
           overlay.setAttribute('aria-hidden','false');
           dialog.setAttribute('aria-hidden','false');
 
-          lastFocus = document.activeElement; closeB.focus();
+          lastFocus = document.activeElement;
+          closeB.focus();
 
-          newTab.href = currentURL.replace('/widget','');
+          newTab.href = (url || HELLOASSO_WIDGET).replace('/widget','');
+          titleEl.textContent = title || 'Adhésion KizBourges';
 
           loader.style.display = 'flex';
           frame.removeAttribute('src');
-          setTimeout(()=>{ frame.src = currentURL; }, 0);
+          setTimeout(()=>{ frame.src = url || HELLOASSO_WIDGET; }, 0);
 
           clearTimeout(loadTimer);
           loadTimer = setTimeout(()=> { loader.textContent = "Toujours en chargement…"; }, 6000);
@@ -531,35 +467,42 @@
           if (lastFocus) { try{ lastFocus.focus(); }catch(_){} lastFocus = null; }
         }
 
-        function onKeydown(e){ if (e.key === 'Escape'){ e.preventDefault(); closeHA(); } if (e.key === 'Tab'){ handleTabTrap(e); } }
+        function onKeydown(e){
+          if (e.key === 'Escape'){ e.preventDefault(); closeHA(); }
+          if (e.key === 'Tab'){ handleTabTrap(e); }
+        }
         function onOverlayClick(e){ if (e.target === overlay) closeHA(); }
+
         function focusables(){ return dialog.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'); }
-        function handleTabTrap(e){ const list = Array.from(focusables()); if (!list.length) return; const first = list[0], last = list[list.length - 1]; if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); } }
+        function handleTabTrap(e){
+          const list = Array.from(focusables());
+          if (!list.length) return;
+          const first = list[0], last = list[list.length - 1];
+          if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+        }
         function trapFocus(enable){ if (enable){ dialog.setAttribute('tabindex','-1'); } else { dialog.removeAttribute('tabindex'); } }
 
-        // Openers
+        // Open via any .ha-open / .ha-donate
         document.addEventListener('click', (e)=>{
           const aOpen   = e.target.closest('a.ha-open');
           const aDonate = e.target.closest('a.ha-donate');
           if (!aOpen && !aDonate) return;
           if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey){
             e.preventDefault();
-            if (aDonate) return openHA(HELLOASSO_DON_WIDGET, 'Faire un don');
-            return openHA(HELLOASSO_WIDGET, 'Adhésion KizBourges');
+            if (aDonate) return openHA("https://www.helloasso.com/associations/amigos-latino/formulaires/1/widget", "Faire un don");
+            return openHA(HELLOASSO_WIDGET, "Adhésion KizBourges");
           }
         });
 
         closeB.addEventListener('click', closeHA);
         frame.addEventListener('load', ()=>{ loader.style.display = 'none'; });
 
-        // Deep links
         if (location.hash === '#adhesion'){ openHA(HELLOASSO_WIDGET, 'Adhésion KizBourges'); }
-        const params = new URLSearchParams(location.search);
-        if (params.get('adhesion') === '1'){ openHA(HELLOASSO_WIDGET, 'Adhésion KizBourges'); }
-        if (location.hash === '#don'){ openHA(HELLOASSO_DON_WIDGET, 'Faire un don'); }
+        if (location.hash === '#don'){ openHA("https://www.helloasso.com/associations/amigos-latino/formulaires/1/widget", "Faire un don"); }
       })();
 
-      /* === Events CSV loader + swipe === */
+      /* === Events CSV loader + swipe (clean original) === */
       (function(){
         const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
@@ -584,35 +527,12 @@
         }
         function normalizeCover(url){
           if(!url) return '';
-          url = (url+"").trim().replace(/\?raw=1$/,'');
-          if (url.startsWith('./')) url = url.slice(2);
-          if (url.startsWith('/'))  url = url.slice(1);
-          if (/^images\//i.test(url)) url = 'Images/' + url.replace(/^images\//i,'');
-          // github.com → raw
-          const gh = url.match(/^https?:\/\/github\.com\/([^\/]+)\/([^\/]+)\/(blob|raw|tree)\/([^\/]+)\/(.+)$/i);
-          if (gh){ const [,own,repo,,branch,path] = gh; return `https://raw.githubusercontent.com/${own}/${repo}/${branch}/${path}`; }
-          // *.github.io → raw of the pages repo (assumes main branch)
-          const gio = url.match(/^https?:\/\/([a-z0-9-]+)\.github\.io\/(.+)$/i);
-          if (gio){ const user = gio[1]; const path = gio[2]; return `https://raw.githubusercontent.com/${user}/${user}.github.io/main/${path}`; }
-          return url;
-        }{
-          if(!url) return '';
-          url = (url+"").trim().replace(/\?raw=1$/,'');
-          // Relative cases
-          if (url.startsWith('./')) url = url.slice(2);
+          url = url.trim();
           if (url.startsWith('/')) url = url.slice(1);
-          // Map common lowercase folder to your canonical folder
-          if (/^images\//i.test(url)) url = 'Images/' + url.replace(/^images\//i,'');
-          // Convert any github.com URL (blob/raw/tree) to raw.githubusercontent.com
-          const gh = url.match(/^https?:\/\/github\.com\/([^\/]+)\/([^\/]+)\/(blob|raw|tree)\/([^\/]+)\/(.+)$/i);
-          if (gh) {
-            const [, owner, repo, , branch, path] = gh;
-            url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
+          if (/^https?:\/\/github\.com\/.+\/blob\//i.test(url)) {
+            url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace('/blob/','/');
           }
-          // If it's still a github.com URL pointing to a file (fallback)
-          if (/^https?:\/\/github\.com\//i.test(url) && !/^https?:\/\/raw\.githubusercontent\.com\//i.test(url)){
-            url = url.replace(/^https?:\/\/github\.com\//i,'https://raw.githubusercontent.com/').replace(/\/blob\//,'/').replace(/\/raw\//,'/').replace(/\/tree\//,'/');
-          }
+          if (url.startsWith('images/')) url = 'Images/' + url.slice(7);
           return url;
         }
         function fmtDate(iso){
@@ -632,27 +552,6 @@
           const nextSrc = ev.cover || 'Images/cover.jpeg';
           const tmp = new Image();
           tmp.onload = () => { img.src = nextSrc; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
-          tmp.onerror = () => { console.warn('Image failed, fallback → /Images/cover.jpeg', nextSrc); img.src = '/Images/cover.jpeg'; };
-          tmp.src  = nextSrc;
-
-          img.alt  = `Affiche : ${ev.name || 'Événement'}`;
-          title.textContent = ev.name || 'Événement';
-          when.textContent  = fmtDate(ev.start_time);
-          where.textContent = ev.place?.name || ev.place || '—';
-          link.href         = ev.event_url || '#';
-
-          cta.innerHTML = '';
-          if (ev.ticket_url){
-            const a = document.createElement('a');
-            a.href = ev.ticket_url; a.target = '_blank'; a.rel = 'noopener';
-            a.className = 'btn'; a.textContent = 'Billetterie';
-            cta.appendChild(a);
-          }
-          dots.querySelectorAll('span').forEach((dot,i)=>{
-            dot.style.color = (i===idx)?'#000':'#ccc';
-            dot.style.transform = (i===idx)?'scale(1.25)':'scale(1)';
-          });
-        }); };
           tmp.onerror = () => { img.src = 'Images/cover.jpeg'; requestAnimationFrame(()=>{ img.style.opacity='1'; img.style.transform='scale(1)'; }); };
           tmp.src  = nextSrc;
 
@@ -689,7 +588,7 @@
           list.innerHTML='';
           events.forEach(ev=>{
             const card=document.createElement('div');
-            card.className='card reveal';
+            card.className='card';
             card.style.display='grid'; card.style.gridTemplateColumns='120px 1fr';
             card.style.gap='14px'; card.style.alignItems='center';
 
@@ -713,8 +612,6 @@
             card.append(pic,meta);
             list.appendChild(card);
           });
-          // trigger reveal on newly created cards
-          requestAnimationFrame(()=> window.__reveal && window.__reveal());
         }
 
         function goPrev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
@@ -747,7 +644,7 @@
           })
           .catch(err => console.error('CSV load error:', err));
 
-        /* Swipe */
+        /* Swipe (timing you liked) */
         function enableEventSwipe(goPrev, goNext){
           const card = document.getElementById('ev-card');
           const anchor = document.getElementById('ev-link');
@@ -758,9 +655,30 @@
           function stopClick(e){ if (moved){ e.preventDefault(); e.stopPropagation(); } }
           anchor.addEventListener('click', stopClick);
 
-          function start(e){ if (e.pointerType==='mouse' && e.button!==0) return; active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; moved=false; card.classList.add('dragging'); card.setPointerCapture(id); document.body.style.userSelect='none'; }
-          function move(e){ if (!active || e.pointerId!==id) return; dx=e.clientX-sx; dy=e.clientY-sy; if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y'; if (lock==='x'){ e.preventDefault(); moved=true; const tx=dx*FOLLOW; const tilt=Math.max(-MAXT, Math.min(MAXT, dx*0.02)); card.style.transform=`translateX(${tx}px) rotate(${tilt}deg)`; } }
-          function end(e){ if (!active || e.pointerId!==id) return; active=false; card.classList.remove('dragging'); document.body.style.userSelect=''; const ax=Math.abs(dx), ay=Math.abs(dy); if (lock==='x' && ax>TH && ay<RS){ if (dx<0){ goNext(); card.classList.add('swipe-left'); } else { goPrev(); card.classList.add('swipe-right'); } setTimeout(()=>card.classList.remove('swipe-left','swipe-right'), 460); } card.style.transition='transform .38s ease'; card.style.transform=''; setTimeout(()=> card.style.transition='', 380); id=null; lock=null; moved=false; }
+          function start(e){
+            if (e.pointerType==='mouse' && e.button!==0) return;
+            active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; moved=false;
+            card.classList.add('dragging'); card.setPointerCapture(id); document.body.style.userSelect='none';
+          }
+          function move(e){
+            if (!active || e.pointerId!==id) return;
+            dx=e.clientX-sx; dy=e.clientY-sy;
+            if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y';
+            if (lock==='x'){ e.preventDefault(); moved=true; const tx=dx*FOLLOW; const tilt=Math.max(-MAXT, Math.min(MAXT, dx*0.02)); card.style.transform=`translateX(${tx}px) rotate(${tilt}deg)`; }
+          }
+          function end(e){
+            if (!active || e.pointerId!==id) return;
+            active=false; card.classList.remove('dragging'); document.body.style.userSelect='';
+            const ax=Math.abs(dx), ay=Math.abs(dy);
+            if (lock==='x' && ax>TH && ay<RS){
+              if (dx<0){ goNext(); card.classList.add('swipe-left'); }
+              else { goPrev(); card.classList.add('swipe-right'); }
+              setTimeout(()=>card.classList.remove('swipe-left','swipe-right'), 460);
+            }
+            card.style.transition='transform .38s ease'; card.style.transform='';
+            setTimeout(()=> card.style.transition='', 380);
+            id=null; lock=null; moved=false;
+          }
           card.addEventListener('pointerdown', start, {passive:false});
           card.addEventListener('pointermove',  move,  {passive:false});
           card.addEventListener('pointerup',    end,   {passive:false});
@@ -829,89 +747,29 @@
         io.observe(v);
       })();
 
-      /* === JSON-LD (unchanged) === */
-      (function(){
-        const ldId = 'events-jsonld';
-        function upsertJSONLD(events){
-          const existing = document.getElementById(ldId);
-          if (existing) existing.remove();
-          const data = events.slice(0, 10).map(ev => ({
-            "@context": "https://schema.org",
-            "@type": "Event",
-            "name": ev.name,
-            "startDate": ev.start_time,
-            "eventStatus": "https://schema.org/EventScheduled",
-            "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-            "location": { "@type": "Place", "name": (ev.place && ev.place.name) || "Bourges", "address": { "@type": "PostalAddress", "addressLocality": "Bourges", "addressCountry":"FR" } },
-            "image": ev.cover || "https://kizbourges.fr/Images/cover.jpeg",
-            "url": ev.event_url || "https://kizbourges.fr/#events",
-            "offers": ev.ticket_url ? [{ "@type":"Offer","url":ev.ticket_url,"priceCurrency":"EUR","availability":"https://schema.org/InStock" }] : undefined
-          }));
-          const s = document.createElement('script');
-          s.type = 'application/ld+json'; s.id = ldId; s.textContent = JSON.stringify(data, null, 2);
-          document.head.appendChild(s);
-        }
-        const _fetch = window.fetch;
-        window.fetch = function(u,opts){
-          return _fetch(u,opts).then(async r=>{
-            if ((u||'').includes('kizbourges_events_template1.csv')) {
-              const text = await r.clone().text();
-              setTimeout(()=>{ try{
-                const delimiter = (text.split(/\r?\n/,1)[0]||'').includes(';')?';':',';
-                const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
-                const rows = parsed.data.map(row => { const o={}; for (const k in row){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; } return o; });
-                const events = rows.map(r => ({ id:r.id || r.name, name:r.name, start_time:r.start_time, place:r.place ? {name:r.place} : {name:''}, cover: (function(u){
-  u = (u || '').trim();
-  // tolerate accidental leading slash or the GitHub Pages prefix
-  if (u.startsWith('/')) u = u.slice(1);
-  if (u.toLowerCase().startsWith('kizbourges/')) u = u.slice(11);
-
-  // normalize common lowercase folder spelling
-  if (u.toLowerCase().startsWith('images/')) u = 'Images/' + u.slice(7);
-
-  // leave local Images/... as-is; convert GitHub URLs to raw if ever used
-  if (/^https?:\/\/github\.com\/[^/]+\/[^/]+\/(blob|raw|tree)\/[^/]+\/.+/i.test(u)) {
-    u = u.replace(/^https?:\/\/github\.com\//i, 'https://raw.githubusercontent.com/')
-         .replace(/\/(blob|raw|tree)\//i, '/');
-  }
-  // handle *.github.io if you still paste those
-  const m = u.match(/^https?:\/\/([a-z0-9-]+)\.github\.io\/(.+)$/i);
-  if (m) u = `https://raw.githubusercontent.com/${m[1]}/${m[1]}.github.io/main/${m[2]}`;
-
-  return u; // finally
-})(r.cover || ''),
- event_url:r.event_url, ticket_url:r.ticket_url })) .filter(ev => ev.name) .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
-                if (events.length) upsertJSONLD(events);
-              }catch(e){} }, 0);
-            }
-            return r;
-          });
-        };
-      })();
-
-      /* === Reveal on scroll (staggered, fail-safe) === */
+      /* Reveal on scroll (fail-safe) */
       (function(){
         try{
           const els = () => Array.from(document.querySelectorAll('.reveal'));
           function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
-          window.__reveal = run;
-          run();
+          window.__reveal = run; run();
           window.addEventListener('scroll', run, {passive:true});
           window.addEventListener('resize', run);
         }catch(e){
-          // If anything goes wrong, ensure content is visible
           document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
         }
       })();
     </script>
   </main>
+
+  <!-- Floating donate -->
   <a id="donate-fab" class="ha-donate" href="https://www.helloasso.com/associations/amigos-latino/formulaires/1" aria-label="Faire un don">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.438-7-10a4 4 0 0 1 7-2.645A4 4 0 0 1 19 11c0 5.562-7 10-7 10z"/></svg>
     Faire un don
   </a>
 
   <script>
-  // ===== Scroll progress bar =====
+  // Scroll progress bar
   (function(){
     const bar = document.getElementById('scrollbar');
     if (!bar) return;
@@ -926,7 +784,7 @@
     window.addEventListener('resize', update);
   })();
 
-  // ===== Mouse-follow glow on buttons =====
+  // Mouse-follow glow for .btn
   (function(){
     function onMove(e){
       const t = e.target.closest && e.target.closest('.btn');
@@ -938,170 +796,33 @@
     document.addEventListener('pointermove', onMove, {passive:true});
   })();
 
-  // ===== Floating donate button behavior =====
+  // Floating donate FAB show/hide
   (function(){
     const fab = document.getElementById('donate-fab');
     if (!fab) return;
-    const showAt = 220; // px scrolled before showing
+    const showAt = 220;
     function toggle(){ fab.classList.toggle('show', window.scrollY > showAt); }
     toggle();
     window.addEventListener('scroll', toggle, {passive:true});
   })();
 
-  // ===== Hero entry animation =====
-  (function(){
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-    // Stagger via CSS variable
-    const h1 = hero.querySelector('h1');
-    const p  = hero.querySelector('p');
-    const cta= hero.querySelector('.cta-row');
-    if (h1) h1.style.setProperty('--d','0s');
-    if (p)  p.style.setProperty('--d','.08s');
-    if (cta)cta.style.setProperty('--d','.16s');
-    requestAnimationFrame(()=> hero.classList.add('enter'));
-  })();
-  </script>
-  <script>
-  // ===== Robust Events loader (multi-source + graceful fallback) =====
-  (function(){
-    const img   = document.getElementById('ev-img');
-    const title = document.getElementById('ev-title');
-    const when  = document.getElementById('ev-when');
-    const where = document.getElementById('ev-where');
-    const link  = document.getElementById('ev-link');
-    const cta   = document.getElementById('ev-cta');
-    const dots  = document.getElementById('ev-dots');
-    const list  = document.getElementById('ev-list');
-
-    // If section not present, bail
-    if (!img || !list) return;
-
-    // Candidate CSV locations (same-origin only)
-    const sources = [
-      'kizbourges_events_template1.csv',
-      '/kizbourges_events_template1.csv',
-      'kizbourges_events.csv',
-      '/kizbourges_events.csv',
-      'data/kizbourges_events.csv',
-      '/data/kizbourges_events.csv',
-      'data/events.csv',
-      '/data/events.csv'
-    ].map(u => u + '?v=' + Date.now());
-      const nextSrc = ev.cover || 'Images/cover.jpeg';
-      const tmp = new Image();
-      tmp.onload = () => { img.src = nextSrc; img.alt = `Affiche : ${ev.name||'Événement'}`; };
-      tmp.onerror = () => { img.src = 'Images/cover.jpeg'; };
-      tmp.src = nextSrc;
-      title.textContent = ev.name || 'Événement';
-      when.textContent  = fmtDate(ev.start_time);
-      where.textContent = ev.place?.name || ev.place || '—';
-      link.href         = ev.event_url || '#';
-      cta.innerHTML='';
-      if (ev.ticket_url){ const a=document.createElement('a'); a.href=ev.ticket_url; a.target='_blank'; a.rel='noopener'; a.className='btn'; a.textContent='Billetterie'; cta.appendChild(a); }
-    }
-
-    function renderDots(events, idx, set){
-      dots.innerHTML='';
-      events.forEach((_,i)=>{ const s=document.createElement('span'); s.textContent='●'; s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px'; s.addEventListener('click',()=>set(i)); dots.appendChild(s); });
-      updateDots(idx);
-      function updateDots(current){ Array.from(dots.children).forEach((d,i)=>{ d.style.color = (i===current)?'#000':'#ccc'; d.style.transform=(i===current)?'scale(1.25)':'scale(1)'; }); }
-      return updateDots;
-    }
-
-    function renderList(events){
-      list.innerHTML='';
-      events.forEach(ev=>{
-        const card=document.createElement('div'); card.className='card'; card.style.display='grid'; card.style.gridTemplateColumns='120px 1fr'; card.style.gap='14px'; card.style.alignItems='center';
-        const pic=document.createElement('img'); pic.src=ev.cover||'Images/cover.jpeg'; pic.onerror=()=>{pic.onerror=null; pic.src='Images/cover.jpeg';}; pic.alt=`Affiche : ${ev.name||'Événement'}`; pic.loading='lazy'; pic.style.width='120px'; pic.style.height='80px'; pic.style.objectFit='cover'; pic.style.borderRadius='8px';
-        const meta=document.createElement('div'); const h3=document.createElement('h3'); h3.textContent=ev.name||'Événement'; const p1=document.createElement('p'); p1.style.margin='4px 0'; p1.textContent=fmtDate(ev.start_time); const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
-        const row=document.createElement('div'); row.style.marginTop='6px'; if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1);} if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2);} meta.append(h3,p1,p2,row);
-        card.append(pic,meta); list.appendChild(card);
-      });
-    }
-
-    async function loadCSV(url){
-      const r = await fetch(url);
-      if (!r.ok) throw new Error('HTTP '+r.status);
-      const text = await r.text();
-      const delimiter = detectDelimiter(text);
-      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
-      const rows = parsed.data.map(row => { const o={}; for (const k in row){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; } return o; });
-      let events = rows.map(r => ({ id:r.id||r.name, name:r.name, start_time:r.start_time, place:r.place?{name:r.place}:{name:''}, cover:normalizeCover(r.cover||''), event_url:r.event_url, ticket_url:r.ticket_url }))
-        .filter(ev => ev.name);
-      events.sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
-      return events;
-    }
-
-    (async function init(){
-      let events = [];
-      for (const src of sources){
-        try{ events = await loadCSV(src); if (events.length) { console.log('[Events] Loaded:', src, events.length); break; } }catch(e){ console.warn('[Events] Failed', src, e); }
-      }
-      if (!events.length){
-        // Graceful placeholder
-        title.textContent = 'Prochains événements';
-        img.src = 'Images/cover.jpeg';
-        when.textContent = '—'; where.textContent = '';
-        list.innerHTML = '';
-        const empty=document.createElement('div'); empty.className='card'; empty.innerHTML = `<h3>Aucun événement chargé</h3><p>Ajoutez un fichier CSV à la racine :</p><pre style="white-space:pre-wrap;background:#f7f7f7;border:1px solid #eee;border-radius:8px;padding:10px;">name;start_time;place;cover;event_url;ticket_url
-KizBourges Social;2025-10-12T21:00:00;Le Rio, Bourges;Images/events/soiree_1210.jpg;https://facebook.com/...;</pre>`;
-        list.appendChild(empty);
-        return;
-      }
-
-      // Render UI
-      let idx = 0; renderCarousel(events, idx);
-      const updateDotColors = renderDots(events, idx, (i)=>{ idx=i; renderCarousel(events, idx); });
-      document.getElementById('ev-prev')?.addEventListener('click', ()=>{ idx=(idx-1+events.length)%events.length; renderCarousel(events, idx); updateDotColors(idx); });
-      document.getElementById('ev-next')?.addEventListener('click', ()=>{ idx=(idx+1)%events.length; renderCarousel(events, idx); updateDotColors(idx); });
-      renderList(events);
-    })();
-  })();
-  </script>
-  <script>
-  // ===== Button ripple (delegated) =====
+  // Smooth anchors + ripple
   (function(){
     document.addEventListener('click', function(e){
-      const btn = e.target.closest('.btn');
-      if (!btn) return;
-      try{
-        const r = btn.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
-        const d = Math.max(r.width, r.height);
-        const span = document.createElement('span');
-        span.className = 'ripple';
-        span.style.left = x+'px'; span.style.top = y+'px';
-        span.style.width = span.style.height = d+'px';
-        btn.appendChild(span); setTimeout(()=> span.remove(), 650);
-      }catch(_){}
-    }, {passive:true});
-  })();
-
-  // ===== Scrollspy for nav (active link) =====
-  (function(){
-    const navLinks = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
-    if (!navLinks.length) return;
-    const map = navLinks.map(a => ({a, id: a.getAttribute('href').slice(1)}));
-    const sections = map.map(({id}) => document.getElementById(id)).filter(Boolean);
-    function onScroll(){
-      const y = window.scrollY + 80;
-      let active = null;
-      for (const sec of sections){ if (sec.offsetTop <= y) active = sec.id; }
-      navLinks.forEach(({classList})=>{});
-      navLinks.forEach(l => l.classList.remove('is-active'));
-      const current = map.find(m => m.id === active);
-      if (current) current.a.classList.add('is-active');
-    }
-    onScroll();
-    window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('resize', onScroll);
-  })();
-
-  // ===== Smooth scroll for in-page nav (with header offset built via CSS :target) =====
-  (function(){
-    document.addEventListener('click', (e)=>{
       const a = e.target.closest('a[href^="#"]');
+      const btn = e.target.closest('.btn');
+      if (btn){ // ripple
+        try{
+          const r = btn.getBoundingClientRect();
+          const x = e.clientX - r.left, y = e.clientY - r.top;
+          const d = Math.max(r.width, r.height);
+          const span = document.createElement('span');
+          span.className = 'ripple';
+          span.style.left = x+'px'; span.style.top = y+'px';
+          span.style.width = span.style.height = d+'px';
+          btn.appendChild(span); setTimeout(()=> span.remove(), 650);
+        }catch(_){}
+      }
       if (!a) return;
       const id = a.getAttribute('href').slice(1);
       const el = document.getElementById(id);
@@ -1113,41 +834,40 @@ KizBourges Social;2025-10-12T21:00:00;Le Rio, Bourges;Images/events/soiree_1210.
     });
   })();
 
-  // ===== Upgrade reveals: tag some sections with data-effect =====
+  // HelloAsso modal openers (adhésion + don)
   (function(){
-    document.querySelectorAll('#asso,#cours,#events,#covoit,#son,#contact').forEach((sec,i)=>{
-      sec.classList.add('reveal'); sec.dataset.effect = 'up'; sec.style.setProperty('transition-delay', (i*60)+'ms');
-      // ensure visibility default
-      sec.classList.add('in');
+    const overlay = document.getElementById('haOverlay');
+    const dialog  = document.getElementById('haDialog');
+    const frame   = document.getElementById('haFrame');
+    const loader  = document.getElementById('haLoader');
+    const closeB  = document.getElementById('haClose');
+    const newTab  = document.getElementById('haNewTab');
+    const titleEl = document.getElementById('haTitle');
+
+    function openHA(url, title){
+      document.documentElement.classList.add('ha-open');
+      document.body.classList.add('ha-open');
+      overlay.setAttribute('aria-hidden','false');
+      dialog.setAttribute('aria-hidden','false');
+      closeB.focus();
+      newTab.href = (url || "https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026").replace('/widget','');
+      titleEl.textContent = title || 'Adhésion KizBourges';
+      loader.style.display = 'flex'; frame.removeAttribute('src');
+      setTimeout(()=>{ frame.src = url || "https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget"; }, 0);
+      setTimeout(()=> { loader.textContent = "Toujours en chargement…"; }, 6000);
+    }
+    function closeHA(){ document.documentElement.classList.remove('ha-open'); document.body.classList.remove('ha-open'); overlay.setAttribute('aria-hidden','true'); dialog.setAttribute('aria-hidden','true'); frame.removeAttribute('src'); loader.style.display = 'none'; }
+    document.addEventListener('click', (e)=>{
+      const aOpen   = e.target.closest('a.ha-open');
+      const aDonate = e.target.closest('a.ha-donate');
+      if (!aOpen && !aDonate) return;
+      e.preventDefault();
+      if (aDonate) return openHA("https://www.helloasso.com/associations/amigos-latino/formulaires/1/widget", "Faire un don");
+      return openHA("https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026/widget", "Adhésion KizBourges");
     });
+    document.getElementById('haClose').addEventListener('click', closeHA);
+    document.getElementById('haFrame').addEventListener('load', ()=>{ document.getElementById('haLoader').style.display='none'; });
   })();
   </script>
-
-  <script>
-// Skeleton for the big event image
-(function(){
-  const heroImg = document.getElementById('ev-img');
-  if (!heroImg) return;
-  heroImg.classList.add('skeleton');
-  heroImg.addEventListener('load',  () => heroImg.classList.remove('skeleton'), {once:true});
-  heroImg.addEventListener('error', () => { heroImg.src = '/Images/cover.jpeg'; heroImg.classList.remove('skeleton'); }, {once:true});
-})();
-
-// Skeleton for the list thumbnails (auto-applies when cards render)
-(function(){
-  const list = document.getElementById('ev-list');
-  if (!list) return;
-  const upgrade = img => {
-    if (img.dataset.skeletonInited) return; // only once
-    img.dataset.skeletonInited = "1";
-    img.classList.add('skeleton');
-    img.addEventListener('load',  () => img.classList.remove('skeleton'), {once:true});
-    img.addEventListener('error', () => { img.src = '/Images/cover.jpeg'; img.classList.remove('skeleton'); }, {once:true});
-  };
-  new MutationObserver(() => list.querySelectorAll('img').forEach(upgrade))
-    .observe(list, {childList:true, subtree:true});
-})();
-</script>
-
 </body>
 </html>
