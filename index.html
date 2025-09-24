@@ -101,14 +101,14 @@
     @media (prefers-reduced-motion:no-preference){
       .btn{ transition: transform .32s ease, box-shadow .32s ease; }
       .btn:hover{ transform:translateY(-4px); box-shadow:var(--elev-2); }
-      .card{ transition: transform .34s ease, box-shadow .34s ease, border-color .34s ease; }
+      .card{ transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
       .card:hover{ transform:translateY(-6px); box-shadow:var(--elev-3), var(--kb-glow); border-color: rgba(255,45,85,.25); }
       .events-carousel, .soundcloud-carousel{ touch-action: pan-y; }
       .ev-card{ transition: transform .48s ease, opacity .48s ease; }
       .ev-card.swipe-left{ transform:translateX(-30px); opacity:.86; }
       .ev-card.swipe-right{ transform:translateX(30px); opacity:.86; }
-      #ev-img{ transition: opacity .70s ease, transform 2s ease; will-change: transform; }
-      #ev-img:hover{ transform: scale(1.04); transition: transform 3s ease; }
+      #ev-img{ transition: opacity .70s ease, transform 3s ease; will-change: transform; }
+      #ev-img:hover{ transform: scale(1.05); transition: transform 3s ease; }
       .hero-inner{ will-change: transform; transition: transform .6s ease; }
       .hero:hover .hero-inner{ transform: translateY(-2px); }
     }
@@ -188,6 +188,19 @@
 
     
     :target{ scroll-margin-top: 72px; }
+
+
+    /* Extra space below the sticky header */
+.hero{
+  margin-top: 28px;                /* mobile */
+}
+@media (min-width: 768px){
+  .hero{ margin-top: 56px; }       /* desktop/tablet */
+}
+
+/* (optional) since the header got taller visually, nudge anchor offset a bit */
+:target{ scroll-margin-top: 88px; }   /* was 72px */
+
   </style>
 </head>
 
