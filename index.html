@@ -190,16 +190,12 @@
     :target{ scroll-margin-top: 72px; }
 
 
-    /* Extra space below the sticky header */
-.hero{
-  margin-top: 28px;                /* mobile */
-}
-@media (min-width: 768px){
-  .hero{ margin-top: 56px; }       /* desktop/tablet */
+.site-header + .hero{
+  padding-top: clamp(32px, 8vw, 120px); /* tweak the max to taste */
 }
 
 /* (optional) since the header got taller visually, nudge anchor offset a bit */
-:target{ scroll-margin-top: 88px; }   /* was 72px */
+:target{ scroll-margin-top: 96px; }   /* was 72px */
 
   </style>
 </head>
