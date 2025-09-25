@@ -1,8 +1,14 @@
 name: Update events CSV from Google Calendar
 
+# on:
+#   schedule:
+#     - cron: "17 3 * * *"   # runs every day at 03:17 UTC (~05:17 Paris)
+#   workflow_dispatch: {}
+
+
 on:
   schedule:
-    - cron: "17 3 * * *"   # runs every day at 03:17 UTC (~05:17 Paris)
+    - cron: "*/5 * * * *"   # every 5 minutes (UTC)
   workflow_dispatch: {}
 
 jobs:
