@@ -1,4 +1,6 @@
-id,name,start_time,place,cover,event_url,ticket_url
-ev-2025-10-17,A la decouverte de la Kizomba,2025-10-17T21:00:00+02:00,Espace City 4 Rue Pelvoysin 18000 BOURGES,Images/events/espace_city.jpg,https://www.facebook.com/events/1504380194096913,
-ev-2025-09-30,Stage de Kizomba avec Héloïse et Steve,2025-09-30T20:00:00+02:00,2 Rue Parmentier 18000 Bourges France,Images/events/steve.png,https://fb.me/e/71tHFYrYK,
-ev-2025-10-25,🔥🌴 WEEK-END CALIENZA – Première Édition – Stage & Soirée SBK-Kompa 🌴🔥,2025-10-25T14:00:00+02:00,Le Grand Monarque – 10 rue de l’Étape 58220 Donzy,Images/events/donzy.png,https://fb.me/e/1NnPqfADSj,
+id,name,start_time,place,cover,event_url,ticket_url,source
+ECCCACB8-6269-4537-AD98-AD5A1A8FB2B6_20250926T1900,Xclusiv - Cours Kizomba - Soirée Kizomba & Bachata - DJ Chico,2025-09-26T19:00:00.000+02:00,"La Pampa, 3 bis Rue Saint Maurice 37510 Saint Genouph",https://www.facebook.com/share/1Fj5CeHGnK/?mibextid=ii,https://facebook.com/events/s/xclusiv-cours-kizomba-soiree-k/24618769534444602/,,auto
+ev-2025-09-30,Stage de Kizomba avec Héloïse et Steve,2025-09-30T20:00:00+02:00,2 Rue Parmentier 18000 Bourges France,Images/events/steve.png,https://fb.me/e/71tHFYrYK,,
+ev-2025-10-17,A la decouverte de la Kizomba,2025-10-17T21:00:00+02:00,Espace City 4 Rue Pelvoysin 18000 BOURGES,Images/events/espace_city.jpg,https://www.facebook.com/events/1504380194096913,,
+4D099F90-E39C-4569-8B55-D8E8F1354FA9_20251017T2100,A la découverte de la Kizomba,2025-10-17T21:00:00.000+02:00,Espace City 4 Rue Pelvoysin 18000 BOURGES,,,,auto
+ev-2025-10-25,🔥🌴 WEEK-END CALIENZA – Première Édition – Stage & Soirée SBK-Kompa 🌴🔥,2025-10-25T14:00:00+02:00,Le Grand Monarque – 10 rue de l’Étape 58220 Donzy,Images/events/donzy.png,https://fb.me/e/1NnPqfADSj,,
