@@ -1,40 +1,48 @@
 name: Update events CSV from Google Calendar
 
-# on:
-#   schedule:
-#     - cron: "17 3 * * *"   # runs every day at 03:17 UTC (~05:17 Paris)
-#   workflow_dispatch: {}
-
-
 on:
   schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes (UTC)
+    - cron: '2-59/6 * * * *'   # every 5 min, starting at :02 UTC to avoid top-of-hour load
   workflow_dispatch: {}
+
+permissions:
+  contents: write   # needed for push with GITHUB_TOKEN
+
+concurrency:
+  group: update-events-csv
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm i ical@0.8.0 luxon@3 node-fetch@3 papaparse@5
+          cache: 'npm'               # speeds up repeated runs
+
+      - name: Install deps
+        run: |
+          npm i ical@0.8.0 luxon@3 node-fetch@3 papaparse@5
+
       - name: Generate CSV
         env:
           GCAL_ICS_URL: ${{ secrets.GCAL_ICS_URL }}
         run: node scripts/ics_to_csv.js
-        
-      - name: Commit CSV
+
+      - name: Commit CSV if changed
         run: |
           if git diff --quiet -- kizbourges_events_template1.csv; then
             echo "No changes."
           else
             git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add kizbourges_events_template1.csv
             git commit -m "update events CSV"
             git push
