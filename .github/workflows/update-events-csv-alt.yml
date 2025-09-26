@@ -1,0 +1,50 @@
+name: Update events CSV from Google Calendar (alt, :03 + every 10m)
+
+on:
+  schedule:
+    - cron: '3-59/10 * * * *'   # every 10 minutes starting at minute 3 (UTC)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# Share the same group name across BOTH workflows to avoid simultaneous runs
+concurrency:
+  group: events-csv-${{ github.repository }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install deps
+        run: |
+          npm i ical@0.8.0 luxon@3 node-fetch@3 papaparse@5
+
+      - name: Generate CSV
+        env:
+          GCAL_ICS_URL: ${{ secrets.GCAL_ICS_URL }}
+        run: node scripts/ics_to_csv.js
+
+      - name: Commit CSV if changed
+        run: |
+          if git diff --quiet -- kizbourges_events_template1.csv; then
+            echo "No changes."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add kizbourges_events_template1.csv
+            git commit -m "update events CSV (alt schedule)"
+            git push
+          fi
