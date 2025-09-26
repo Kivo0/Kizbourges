@@ -26,6 +26,39 @@
   <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="Images/logo2.jpeg">
+
+  <style>
+:root{ 
+  --brand:#111; 
+  --ease:cubic-bezier(.22,1.05,.36,1); /* overshoot springy */
+}
+
+/* Base reveal */
+.reveal{ opacity:0; transform:translateY(40px) scale(.95); will-change:opacity,transform; }
+.reveal.in{ opacity:1; transform:none; transition:opacity .9s var(--ease), transform .9s var(--ease); }
+
+/* Zoom-in effect */
+.reveal[data-effect="zoom"]{ transform:scale(.85); opacity:.001; }
+.reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform .9s var(--ease),opacity .9s var(--ease); }
+
+/* Flip-up effect */
+.reveal[data-effect="flip"]{ transform:rotateX(12deg) translateY(40px); transform-origin:50% 100%; opacity:.001; }
+.reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform .95s var(--ease),opacity .95s var(--ease); }
+
+/* Fade from left/right */
+.reveal[data-effect="left"]{ transform:translateX(-60px); opacity:.001; }
+.reveal.in[data-effect="left"]{ transform:none; opacity:1; transition:transform .9s var(--ease),opacity .9s var(--ease); }
+.reveal[data-effect="right"]{ transform:translateX(60px); opacity:.001; }
+.reveal.in[data-effect="right"]{ transform:none; opacity:1; transition:transform .9s var(--ease),opacity .9s var(--ease); }
+
+/* Card hover pop */
+.card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; transition:transform .3s ease, box-shadow .3s ease; }
+.card:hover{ transform:translateY(-6px) scale(1.03); box-shadow:0 10px 24px rgba(0,0,0,.12); }
+
+/* Tilt stronger */
+.tilt{ transform-style:preserve-3d; perspective:1000px; }
+</style>
+
   <style>
     :root { 
       --brand:#111; 
@@ -87,19 +120,17 @@
 
 <main id="main">
   <!-- Hero -->
-  <section class="page-hero reveal" data-effect="zoom">
-    <div class="container">
-      <h1>Cours & Tarifs</h1>
-      <p class="lead">
-        Kizomba, Semba et Urban Kiz à Bourges — des cours accessibles,
-        une progression réelle, et une ambiance qui donne envie de danser.
-      </p>
-      <div class="cta-row">
-        <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">S’inscrire / Adhérer</a>
-        <a class="btn alt" href="/#events">Voir les prochaines dates</a>
-      </div>
+<section class="page-hero reveal" data-effect="zoom">
+  <div class="container reveal" data-effect="left">
+    <h1>Cours & Tarifs</h1>
+    <p class="lead">Kizomba, Semba et Urban Kiz à Bourges — des cours accessibles, une progression réelle, et une ambiance qui donne envie de danser.</p>
+    <div class="cta-row reveal" data-effect="right">
+      <a class="btn ha-open" href="...">S’inscrire / Adhérer</a>
+      <a class="btn alt" href="/#events">Voir les prochaines dates</a>
     </div>
-  </section>
+  </div>
+</section>
+
 
 
     <!-- Kizomba & Semba -->
