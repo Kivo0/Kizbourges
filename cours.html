@@ -198,5 +198,37 @@
       const y=document.getElementById('year'); if(y && !y.textContent) y.textContent=new Date().getFullYear();
     })();
   </script>
+
+  <script>
+(function(){
+  try{
+    const els = () => Array.from(document.querySelectorAll('.reveal'));
+    function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
+    window.__reveal = run; run();
+    window.addEventListener('scroll', run, {passive:true});
+    window.addEventListener('resize', run);
+  }catch(e){
+    document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
+  }
+})();
+
+(function(){
+  const els = document.querySelectorAll('.card');
+  els.forEach(el => {
+    el.classList.add('tilt');
+    let raf=null;
+    function onMove(e){
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left)/r.width - .5;
+      const y = (e.clientY - r.top)/r.height - .5;
+      if (raf) cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(()=>{ el.style.transform=`rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*6).toFixed(2)}deg) translateY(-6px)`; });
+    }
+    function onLeave(){ if (raf) cancelAnimationFrame(raf); el.style.transform='none'; }
+    el.addEventListener('pointermove',onMove); el.addEventListener('pointerleave',onLeave);
+  });
+})();
+</script>
+
 </body>
 </html>
