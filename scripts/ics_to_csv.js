@@ -72,27 +72,29 @@ function normalizeIcsEvent(e, key) {
 
   const { EventURL, TicketURL, Cover } = parseKeys(e.description || '');
 
-  // Stable auto id: UID + start time (handles recurrences)
-  const base = (e.uid || `ics_${key}`).replace(/@.*/,'');
-  const autoId = `${base}_${start.toFormat("yyyyLLdd'T'HHmm")}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+  // Base UID (before @host) → stable across instances
+  const uidBase = (e.uid || `ics_${key}`).replace(/@.*/,'');
+  const autoId  = `${uidBase}_${start.toFormat("yyyyLLdd'T'HHmm")}`.replace(/[^a-zA-Z0-9_-]/g, '_');
 
   return {
     id: autoId,
+    uid_base: uidBase,          // << add this
     name: e.summary || 'Événement',
     start_time: start.toISO(),
     place: e.location || '',
     cover: Cover || '',
     event_url: EventURL || '',
     ticket_url: TicketURL || '',
-    source: 'auto' // mark as auto so we can refresh later
+    source: 'auto'
   };
 }
 
+
 function toCSV(rows) {
-  const header = ['id','name','start_time','place','cover','event_url','ticket_url','source']; // 'source' optional
-  const csv = Papa.unparse(rows, { columns: header });
-  return csv;
+  const header = ['id','name','start_time','place','cover','event_url','ticket_url','source','uid_base'];
+  return Papa.unparse(rows, { columns: header });
 }
+
 
 function readExistingCSV(path) {
   if (!fs.existsSync(path)) return [];
@@ -223,8 +225,8 @@ for (const auto of autoRows) {
 }
 
 // Final array, sorted
-let merged = Array.from(mergedByKey.values())
-  .sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
+// let merged = Array.from(mergedByKey.values())
+//   .sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
 
     // Final array
     let merged = Array.from(mergedByKey.values());
