@@ -2,7 +2,7 @@ name: Update events CSV from Google Calendar
 
 on:
   schedule:
-    - cron: '2-59/6 * * * *'   # every 5 min, starting at :02 UTC to avoid top-of-hour load
+    - cron: '2-59/17 * * * *'   # every 5 min, starting at :02 UTC to avoid top-of-hour load
   workflow_dispatch: {}
 
 permissions:
