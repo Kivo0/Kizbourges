@@ -6,13 +6,13 @@
   <title>Cours & Tarifs — KizBourges</title>
 
   <!-- SEO -->
-  <meta name="description" content="Cours de kizomba et urban kiz à Bourges : explications claires, niveaux, horaires, lieu et tarifs. Adhésion en ligne et ambiance conviviale. Rejoins KizBourges !">
+  <meta name="description" content="KizBourges : cours de kizomba & urban kiz à Bourges, explications claires, niveaux, horaires, lieu et tarifs. Adhésion en ligne et ambiance conviviale.">
   <link rel="canonical" href="https://kizbourges.fr/cours.html">
   <meta name="robots" content="index,follow,max-image-preview:large">
 
   <!-- Social -->
   <meta property="og:title" content="Cours & Tarifs — KizBourges">
-  <meta property="og:description" content="Découvre nos cours de kizomba & urban kiz à Bourges : niveaux, horaires, lieu et tarifs. Adhère en ligne et rejoins la communauté.">
+  <meta property="og:description" content="Découvre nos cours de Kizomba & Urban Kiz à Bourges : niveaux, horaires, lieu et tarifs. Adhère en ligne et rejoins la communauté.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://kizbourges.fr/Images/cover.jpeg">
   <meta property="og:url" content="https://kizbourges.fr/cours.html">
@@ -28,84 +28,100 @@
   <link rel="icon" href="Images/logo2.jpeg">
 
   <style>
-:root{ 
-  --brand:#111; 
-  --ease:cubic-bezier(.22,1.05,.36,1); /* overshoot springy */
-}
+    /* ==== SAME THEME VARS & EASING AS HOME ==== */
+    :root{
+      --elev-2: 0 12px 28px rgba(0,0,0,.11);
+      --elev-3: 0 18px 40px rgba(0,0,0,.14);
+      --ease: cubic-bezier(.2,.8,.2,1);
+      --brand:#111; --nav-bg:#fff; --nav-border:#eaeaea;
+      --kb-accent: linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2);
+      --kb-glow: 0 10px 30px rgba(255,45,85,.25);
+    }
 
-/* Base reveal */
-.reveal{ opacity:0; transform:translateY(40px) scale(.95); will-change:opacity,transform; }
-.reveal.in{ opacity:1; transform:none; transition:opacity .9s var(--ease), transform .9s var(--ease); }
+    /* ==== HEADER WITH THE MOVING GRADIENT LINE (copied) ==== */
+    .site-header{ position:sticky; top:0; z-index:50; background:var(--nav-bg);
+      transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);}
+    .site-header.scrolled{ box-shadow:0 6px 18px rgba(0,0,0,.06); backdrop-filter:saturate(1.05) blur(6px); }
+    .site-header .container{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; }
+    .logo-img{ height:44px; width:auto; display:block; }
+    nav.nav{ display:flex; gap:18px; align-items:center; }
+    nav.nav a{ position:relative; display:inline-block; color:var(--brand); text-decoration:none; padding:6px 2px;
+      transition: color .2s ease, letter-spacing .2s ease; }
+    nav.nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+      background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2); transition: width .32s ease; opacity:.9; }
+    nav.nav a:hover{ letter-spacing:.2px; } nav.nav a:hover::after, nav.nav a:focus-visible::after{ width:100%; }
 
-/* Zoom-in effect */
-.reveal[data-effect="zoom"]{ transform:scale(.85); opacity:.001; }
-.reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform .9s var(--ease),opacity .9s var(--ease); }
+    .site-header::after{
+      content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+      background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2,#0cf,#ff2d55);
+      background-size:300% 100%; opacity:.85; transform:scaleX(0); transform-origin:left;
+    }
+    .site-header.scrolled::after{ transform:scaleX(1); animation:kb-glow 7s linear infinite; }
+    @keyframes kb-glow{ 0%{background-position:0 0}100%{background-position:300% 0} }
 
-/* Flip-up effect */
-.reveal[data-effect="flip"]{ transform:rotateX(12deg) translateY(40px); transform-origin:50% 100%; opacity:.001; }
-.reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform .95s var(--ease),opacity .95s var(--ease); }
-
-/* Fade from left/right */
-.reveal[data-effect="left"]{ transform:translateX(-60px); opacity:.001; }
-.reveal.in[data-effect="left"]{ transform:none; opacity:1; transition:transform .9s var(--ease),opacity .9s var(--ease); }
-.reveal[data-effect="right"]{ transform:translateX(60px); opacity:.001; }
-.reveal.in[data-effect="right"]{ transform:none; opacity:1; transition:transform .9s var(--ease),opacity .9s var(--ease); }
-
-/* Card hover pop */
-.card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; transition:transform .3s ease, box-shadow .3s ease; }
-.card:hover{ transform:translateY(-6px) scale(1.03); box-shadow:0 10px 24px rgba(0,0,0,.12); }
-
-/* Tilt stronger */
-.tilt{ transform-style:preserve-3d; perspective:1000px; }
-</style>
-
-  <style>
-    :root { 
-      --brand:#111; 
-      --ease:cubic-bezier(.2,.8,.2,1); 
-      }
-
-    
+    /* ==== PAGE STRUCTURE ==== */
+    .container{ max-width:1100px; margin:auto; padding:0 16px; }
     .page-hero{ padding:64px 0; background:linear-gradient(180deg,#fafafa,#fff); }
     .page-hero h1{ margin:0 0 8px; }
     .lead{ color:#555; }
-    .grid-2{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
-    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-    .btn{ display:inline-block; background:#111; color:#fff; padding:10px 16px; border-radius:999px; text-decoration:none; }
+    .section{ padding:56px 0; position:relative; }
+    .grid-2{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; position:relative; overflow:hidden; }
+    .btn{ display:inline-block; background:#111; color:#fff; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 6px 16px rgba(0,0,0,.08); position:relative; overflow:hidden; }
     .btn.alt{ background:#fff; color:#111; border:1px solid #eee; }
-    .section{ padding:48px 0; }
-    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; }
     .video-wrap{ border-radius:12px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.12); }
     .muted{ color:#666; font-size:.95rem; }
-    .site-header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid #eaeaea; }
-    .site-header .container{ display:flex; align-items:center; justify-content:space-between; padding:10px 16px; }
-    .logo-img{ height:44px; width:auto; display:block; }
-    nav.nav{ display:flex; gap:18px; align-items:center; }
-    nav.nav a{ text-decoration:none; color:var(--brand); }
-    nav.nav a[aria-current="page"]{ font-weight:600; }
     .site-footer{ border-top:1px solid #eee; padding:18px 0; font-size:.95rem; color:#555; }
-    .container{ max-width:1100px; margin:auto; padding:0 16px; }
+
+    /* ==== REVEAL / ZOOMS same as home ==== */
+    .reveal{ opacity:0; transform:translateY(24px) scale(.98); will-change:opacity,transform; }
+    .reveal.in{ opacity:1; transform:none; transition:opacity .72s var(--ease), transform .72s var(--ease); }
+    .reveal[data-effect="flip"]{ transform:rotateX(6deg) translateY(30px); transform-origin:50% 80%; opacity:.001; }
+    .reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform .8s var(--ease),opacity .8s var(--ease); }
+    .reveal[data-effect="zoom"]{ transform:scale(.94); opacity:.001; }
+    .reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform .75s var(--ease),opacity .75s var(--ease); }
+
+    /* ==== CARD TILT hover (same behavior as home) ==== */
+    .tilt{transform-style:preserve-3d; perspective:900px;}
+    @media (prefers-reduced-motion:no-preference){
+      .card{ transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
+      .card:hover{ transform:translateY(-6px); box-shadow:var(--elev-3), var(--kb-glow); border-color: rgba(255,45,85,.25); }
+    }
+
+    /* ==== BUTTON glow ripple like home ==== */
+    .btn::before{ content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.35), transparent 60%); opacity:0; pointer-events:none; }
+    @media (prefers-reduced-motion:no-preference){ .btn:hover::before{ opacity:1; transition: opacity .28s ease; } }
+    .btn .ripple{ position:absolute; border-radius:50%; transform: translate(-50%,-50%) scale(0); opacity:.35; background:currentColor; pointer-events:none; }
+    @media (prefers-reduced-motion:no-preference){ .btn .ripple{ animation: ripple .6s ease-out forwards; } }
+    @keyframes ripple{ to{ transform: translate(-50%,-50%) scale(16); opacity:0; } }
+
+    /* ==== SCROLL PROGRESS BAR (same as home) ==== */
+    #scrollbar{ position:fixed; inset:0 auto auto 0; height:3px; width:100%; transform-origin:left center; transform:scaleX(0);
+      background:linear-gradient(90deg,#111,#f06,#0cf); z-index:1000; }
+    @media (prefers-reduced-motion:no-preference){ #scrollbar{ transition: transform .15s linear; } }
   </style>
-
-  <style>
-.reveal{ opacity:0; transform:translateY(24px) scale(.98); will-change:opacity,transform; }
-.reveal.in{ opacity:1; transform:none; transition:opacity .72s cubic-bezier(.2,.8,.2,1), transform .72s cubic-bezier(.2,.8,.2,1); }
-.reveal[data-effect="flip"]{ transform:rotateX(6deg) translateY(30px); transform-origin:50% 80%; opacity:.001; }
-.reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform .8s var(--ease),opacity .8s var(--ease); }
-.reveal[data-effect="zoom"]{ transform:scale(.94); opacity:.001; }
-.reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform .75s var(--ease),opacity .75s var(--ease); }
-.tilt{ transform-style:preserve-3d; perspective:900px; }
-</style>
-
 </head>
 <body>
+  <div id="scrollbar" aria-hidden="true"></div>
+  <script>document.documentElement.classList.add('js');</script>
+  <a href="#main" class="skip-link">Aller au contenu</a>
+  <style>
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+    .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:9999;}
+    :focus-visible{ outline: 3px solid #222; outline-offset: 2px; }
+  </style>
+
   <!-- Header -->
-  <header class="site-header" id="header">
+  <header class="site-header" id="header" data-menu="closed">
     <div class="container">
       <a class="logo" href="/" aria-label="KizBourges">
         <img src="Images/logo2.jpeg" alt="Logo KizBourges" class="logo-img">
       </a>
-      <nav class="nav" aria-label="Navigation principale">
+
+      <!-- Hamburger (same behavior; visible on small screens if your main CSS handles it) -->
+      <button id="menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav" style="display:none;"></button>
+
+      <nav id="nav" class="nav" aria-label="Navigation principale">
         <a href="/">Accueil</a>
         <a href="cours.html" aria-current="page">Cours & tarifs</a>
         <a href="/#events">Événements</a>
@@ -117,30 +133,26 @@
       </nav>
     </div>
   </header>
+  <main id="main">
+    <!-- Hero -->
+    <section class="page-hero reveal" data-effect="zoom">
+      <div class="container">
+        <h1>Cours & Tarifs</h1>
+        <p class="lead">Kizomba, Semba et Urban Kiz à Bourges — des cours accessibles, une progression réelle, et une ambiance qui donne envie de danser.</p>
+        <div class="cta-row">
+          <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">S’inscrire / Adhérer</a>
+          <a class="btn alt" href="/#events">Voir les prochaines dates</a>
+        </div>
+      </div>
+    </section>
 
-<main id="main">
-  <!-- Hero -->
-<section class="page-hero reveal" data-effect="zoom">
-  <div class="container reveal" data-effect="left">
-    <h1>Cours & Tarifs</h1>
-    <p class="lead">Kizomba, Semba et Urban Kiz à Bourges — des cours accessibles, une progression réelle, et une ambiance qui donne envie de danser.</p>
-    <div class="cta-row reveal" data-effect="right">
-      <a class="btn ha-open" href="...">S’inscrire / Adhérer</a>
-      <a class="btn alt" href="/#events">Voir les prochaines dates</a>
-    </div>
-  </div>
-</section>
-
-
-
-    <!-- Kizomba & Semba -->
-   <section class="section reveal" data-effect="zoom">
+    <!-- Kizomba & Semba / Urban Kiz -->
+    <section class="section reveal" data-effect="zoom">
       <div class="container grid-2">
         <div class="card reveal tilt" data-effect="flip">
           <h2>Kizomba & Semba</h2>
           <p>Nées en Angola, ces danses de couple allient sensualité, élégance et connexion. On les compare souvent au <em>tango africain</em> pour la proximité du cadre et la qualité d’écoute entre partenaires. Les appuis restent simples, la musicalité envoûte, et l’on se laisse porter par une énergie douce qui fait oublier le temps. Le déplacement se dessine plutôt en cercle, à la manière de la salsa cubaine.</p>
         </div>
-        <!-- Urban Kiz -->
         <div class="card reveal tilt" data-effect="flip">
           <h2>Urban Kiz (Urban Kizomba)</h2>
           <p>Version contemporaine de la Kizomba, l’Urban Kiz s’inspire du Ghetto Zouk, du Hip-hop et des musiques électroniques. Elle apporte davantage de liberté, de technicité et de variations de style. Le système de déplacement y est plus linéaire — proche de la salsa portoricaine — et l’interprétation musicale y est très créative, idéale pour les passionnés comme pour les curieux.</p>
@@ -149,57 +161,56 @@
     </section>
 
     <!-- Benefits blocks -->
-     <section class="section reveal" data-effect="zoom">
+    <section class="section reveal" data-effect="zoom">
       <div class="container grid-2">
         <div class="card reveal tilt" data-effect="flip">
           <h3>Atouts pour les danseuses</h3>
           <ul>
-            <li class="reveal" data-effect="left">Affirmer confiance et élégance dans le mouvement.</li>
-            <li class="reveal" data-effect="left">Apprendre à relâcher, écouter et savourer la musique.</li>
-            <li class="reveal" data-effect="left">Vivre une connexion subtile et sincère avec son partenaire.</li>
-            <li class="reveal" data-effect="left">S’offrir un moment pour soi mêlant bien-être, énergie et sensualité.</li>
+            <li class="reveal" data-effect="zoom">Affirmer confiance et élégance dans le mouvement.</li>
+            <li class="reveal" data-effect="zoom">Apprendre à relâcher, écouter et savourer la musique.</li>
+            <li class="reveal" data-effect="zoom">Vivre une connexion subtile et sincère avec son partenaire.</li>
+            <li class="reveal" data-effect="zoom">S’offrir un moment pour soi mêlant bien-être, énergie et sensualité.</li>
           </ul>
         </div>
         <div class="card reveal tilt" data-effect="flip">
           <h3>Atouts pour les danseurs</h3>
           <ul>
-            <li class="reveal" data-effect="left">Guider avec assurance, précision et créativité.</li>
-            <li class="reveal" data-effect="left">Gagner en présence, en charisme et en aisance.</li>
-            <li class="reveal" data-effect="left">Affiner l’écoute musicale et la capacité d’improvisation.</li>
-            <li class="reveal" data-effect="left">Exprimer un style personnel dans une danse moderne et élégante.</li>
+            <li class="reveal" data-effect="zoom">Guider avec assurance, précision et créativité.</li>
+            <li class="reveal" data-effect="zoom">Gagner en présence, en charisme et en aisance.</li>
+            <li class="reveal" data-effect="zoom">Affiner l’écoute musicale et la capacité d’improvisation.</li>
+            <li class="reveal" data-effect="zoom">Exprimer un style personnel dans une danse moderne et élégante.</li>
           </ul>
         </div>
       </div>
     </section>
 
     <!-- Shared benefits -->
-     <section class="section reveal" data-effect="zoom">
+    <section class="section reveal" data-effect="zoom">
       <div class="container">
-        
-       <div class="card reveal tilt" data-effect="flip">
+        <div class="card reveal tilt" data-effect="flip">
           <h3>Ce que ces danses t’apportent</h3>
           <ul>
-            <li class="reveal" data-effect="left">Une posture naturelle et une aisance corporelle durable.</li>
-            <li class="reveal" data-effect="left">Une immersion musicale et une connexion authentique aux autres.</li>
-            <li class="reveal" data-effect="left">Des rencontres, du partage et une communauté conviviale.</li>
-            <li class="reveal" data-effect="left">Du plaisir avant tout : chaque danse est une histoire nouvelle.</li>
+            <li class="reveal" data-effect="zoom">Une posture naturelle et une aisance corporelle durable.</li>
+            <li class="reveal" data-effect="zoom">Une immersion musicale et une connexion authentique aux autres.</li>
+            <li class="reveal" data-effect="zoom">Des rencontres, du partage et une communauté conviviale.</li>
+            <li class="reveal" data-effect="zoom">Du plaisir avant tout : chaque danse est une histoire nouvelle.</li>
           </ul>
         </div>
       </div>
     </section>
 
     <!-- Tarifs / horaires -->
-   <section class="section reveal" data-effect="zoom">
+    <section class="section reveal" data-effect="zoom">
       <div class="container">
         <h2>Horaires & Tarifs</h2>
         <div class="grid-2">
-            <div class="card reveal tilt" data-effect="flip">
+          <div class="card reveal tilt" data-effect="flip">
             <h3>Cours — Tous niveaux</h3>
             <p><strong>Quand :</strong> Mardi 20h–21h15</p>
             <p><strong>Où :</strong> Salle Baptiste Marcet, 2 Rue Parmentier, 18000 Bourges</p>
             <p><strong>Tarif :</strong> 10€ / cours ou 150€ / année</p>
           </div>
-            <div class="card reveal tilt" data-effect="flip">
+          <div class="card reveal tilt" data-effect="flip">
             <h3>Pratique guidée</h3>
             <p><strong>Quand :</strong> Mardi 21h15–22h15</p>
             <p><strong>Où :</strong> Salle Baptiste Marcet, 2 Rue Parmentier, 18000 Bourges</p>
@@ -218,7 +229,7 @@
     <section class="section reveal" data-effect="zoom">
       <div class="container">
         <h2>Découvre l’ambiance en 60 secondes</h2>
-        <div class="video-wrap">
+        <div class="video-wrap reveal" data-effect="flip">
           <video title="KizBourges — Promo cours" playsinline muted controls preload="metadata" poster="Images/course-poster.jpg" style="width:100%;height:auto;display:block;">
             <source src="Videos/course-ad.mp4" type="video/mp4">
             Votre navigateur ne supporte pas la vidéo HTML5.
@@ -227,106 +238,115 @@
       </div>
     </section>
   </main>
-
-  <!-- Footer -->
   <footer class="site-footer">
     <div class="container">© <span id="year"></span> KizBourges — Tous droits réservés</div>
   </footer>
-
   <script>
-    // Footer year
-    (function(){
-      const y=document.getElementById('year'); if(y && !y.textContent) y.textContent=new Date().getFullYear();
-    })();
-  </script>
+  /* Sticky header shadow + glow line */
+  (function(){
+    const h = document.getElementById('header');
+    if(!h) return;
+    const onScroll = () => h.classList.toggle('scrolled', window.scrollY > 6);
+    onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+  })();
 
-  <script>
-(function(){
-  try{
-    const els = () => Array.from(document.querySelectorAll('.reveal'));
-    function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
-    window.__reveal = run; run();
-    window.addEventListener('scroll', run, {passive:true});
-    window.addEventListener('resize', run);
-  }catch(e){
-    document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
-  }
-})();
-
-(function(){
-  const els = document.querySelectorAll('.card');
-  els.forEach(el => {
-    el.classList.add('tilt');
-    let raf=null;
-    function onMove(e){
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left)/r.width - .5;
-      const y = (e.clientY - r.top)/r.height - .5;
-      if (raf) cancelAnimationFrame(raf);
-      raf=requestAnimationFrame(()=>{ el.style.transform=`rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*6).toFixed(2)}deg) translateY(-6px)`; });
+  /* Scroll progress bar */
+  (function(){
+    const bar = document.getElementById('scrollbar');
+    if (!bar) return;
+    function update(){
+      const ht = document.documentElement;
+      const max = (ht.scrollHeight - window.innerHeight) || 1;
+      const p = Math.min(1, Math.max(0, window.scrollY / max));
+      bar.style.transform = 'scaleX(' + p + ')';
     }
-    function onLeave(){ if (raf) cancelAnimationFrame(raf); el.style.transform='none'; }
-    el.addEventListener('pointermove',onMove); el.addEventListener('pointerleave',onLeave);
-  });
-})();
-</script>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "VideoObject",
-  "name": "KizBourges — Promo cours",
-  "description": "Ambiance des cours de Kizomba et Urban Kiz à Bourges en 60 secondes.",
-  "thumbnailUrl": ["https://kizbourges.fr/Images/course-poster.jpg"],
-  "uploadDate": "2025-09-01",
-  "contentUrl": "https://kizbourges.fr/Videos/course-ad.mp4",
-  "embedUrl": "https://kizbourges.fr/cours.html"
-}
-</script>
-<script>
-(function(){
-  try{
-    const els = () => Array.from(document.querySelectorAll('.reveal'));
-    function run(){
-      els().forEach((el,i)=>{
+    update();
+    window.addEventListener('scroll', update, {passive:true});
+    window.addEventListener('resize', update);
+  })();
+
+  /* Reveal on scroll (same timing style as home) */
+  (function(){
+    try{
+      const els = () => Array.from(document.querySelectorAll('.reveal'));
+      function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
+      window.__reveal = run; run();
+      window.addEventListener('scroll', run, {passive:true});
+      window.addEventListener('resize', run);
+    }catch(e){
+      document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
+    }
+  })();
+
+  /* Mouse-follow glow for .btn */
+  (function(){
+    function onMove(e){
+      const t = e.target.closest && e.target.closest('.btn');
+      if (!t) return;
+      const r = t.getBoundingClientRect();
+      t.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      t.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    }
+    document.addEventListener('pointermove', onMove, {passive:true});
+  })();
+
+  /* Smooth anchors + ripple */
+  (function(){
+    document.addEventListener('click', function(e){
+      const a = e.target.closest('a[href^="#"]');
+      const btn = e.target.closest('.btn');
+      if (btn){
+        try{
+          const r = btn.getBoundingClientRect();
+          const x = e.clientX - r.left, y = e.clientY - r.top;
+          const d = Math.max(r.width, r.height);
+          const span = document.createElement('span');
+          span.className = 'ripple';
+          span.style.left = x+'px'; span.style.top = y+'px';
+          span.style.width = span.style.height = d+'px';
+          btn.appendChild(span); setTimeout(()=> span.remove(), 650);
+        }catch(_){}
+      }
+      if (!a) return;
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (location.pathname === a.pathname && location.hostname === a.hostname){
+        e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'});
+        history.replaceState(null, '', '#'+id);
+      }
+    });
+  })();
+
+  /* Card tilt (same as home) */
+  (function(){
+    const els = document.querySelectorAll('.card');
+    els.forEach(el => {
+      el.classList.add('tilt');
+      let raf = null;
+      function onMove(e){
         const r = el.getBoundingClientRect();
-        if(r.top < window.innerHeight*0.9){
-          // Delay based on position and element type
-          let delay = (i*60) + (el.tagName==="LI" ? i*40 : 0);
-          el.style.transitionDelay = delay+"ms";
-          el.classList.add('in');
-        }
-      });
-    }
-    window.__reveal=run; run();
-    window.addEventListener('scroll', run,{passive:true});
-    window.addEventListener('resize', run);
-  }catch(e){
-    document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
-  }
-})();
-</script>
-<script>
-(function(){
-  const els=document.querySelectorAll('.card.tilt');
-  els.forEach(el=>{
-    let raf=null;
-    function onMove(e){
-      const r=el.getBoundingClientRect();
-      const x=(e.clientX-r.left)/r.width - .5;
-      const y=(e.clientY-r.top)/r.height - .5;
-      if(raf) cancelAnimationFrame(raf);
-      raf=requestAnimationFrame(()=>{
-        el.style.transform=`rotateX(${(-y*10).toFixed(2)}deg) rotateY(${(x*10).toFixed(2)}deg) translateY(-8px)`;
-        el.style.boxShadow=`${x*20}px ${y*20}px 30px rgba(0,0,0,.15)`;
-      });
-    }
-    function onLeave(){ if(raf) cancelAnimationFrame(raf); el.style.transform='none'; el.style.boxShadow=''; }
-    el.addEventListener('pointermove',onMove);
-    el.addEventListener('pointerleave',onLeave);
-  });
-})();
-</script>
+        const x = (e.clientX - r.left) / r.width - .5;
+        const y = (e.clientY - r.top) / r.height - .5;
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          el.style.transform = `rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*6).toFixed(2)}deg) translateY(-6px)`;
+        });
+      }
+      function onLeave(){
+        if (raf) cancelAnimationFrame(raf);
+        el.style.transform = 'none';
+      }
+      el.addEventListener('pointermove', onMove);
+      el.addEventListener('pointerleave', onLeave);
+    });
+  })();
 
-
+  /* Footer year */
+  (function(){
+    const y = document.getElementById('year');
+    if (y && !y.textContent) y.textContent = new Date().getFullYear();
+  })();
+  </script>
 </body>
 </html>
