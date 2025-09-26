@@ -21,17 +21,18 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- Security -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' https://connect.facebook.net https://cdn.jsdelivr.net 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' data: https://raw.githubusercontent.com https://i1.sndcdn.com https://i.scdn.co https://kivo0.github.io https://*.github.io;
-    font-src 'self' data:;
-    frame-src https://w.soundcloud.com https://www.helloasso.com https://connect.facebook.net;
-    connect-src 'self' https://api.soundcloud.com;
-    media-src 'self' https://w.soundcloud.com;
-    upgrade-insecure-requests;
-  ">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://connect.facebook.net https://cdn.jsdelivr.net 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https://raw.githubusercontent.com https://i1.sndcdn.com https://i.scdn.co https://kivo0.github.io https://*.github.io https://*.fbcdn.net;
+  font-src 'self' data:;
+  frame-src https://w.soundcloud.com https://www.helloasso.com https://connect.facebook.net;
+  connect-src 'self' https://api.soundcloud.com;
+  media-src 'self' https://w.soundcloud.com;
+  upgrade-insecure-requests;
+">
+
 
   <!-- Icons / PWA -->
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
