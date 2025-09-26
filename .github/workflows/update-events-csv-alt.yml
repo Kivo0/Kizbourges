@@ -2,7 +2,7 @@ name: Update events CSV from Google Calendar (alt, :03 + every 10m)
 
 on:
   schedule:
-    - cron: '3-59/10 * * * *'   # every 10 minutes starting at minute 3 (UTC)
+    - cron: '3-59/20 * * * *'   # every 10 minutes starting at minute 3 (UTC)
   workflow_dispatch: {}
 
 permissions:
