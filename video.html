@@ -3,142 +3,327 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Vidéo — Découvre la Kizomba en 60 secondes | KizBourges</title>
+  <title>Vidéo — KizBourges</title>
 
-  <!-- Canonical / hreflang -->
+  <!-- SEO -->
+  <meta name="description" content="Vidéo promo KizBourges : découvre l’ambiance de nos cours de Kizomba & Urban Kiz à Bourges. Énergie, connexion, convivialité — en 60 secondes.">
   <link rel="canonical" href="https://kizbourges.fr/video.html">
-  <link rel="alternate" href="https://kizbourges.fr/video.html" hreflang="fr">
-  <link rel="alternate" href="https://kizbourges.fr/video.html" hreflang="x-default">
-
-  <!-- Basic SEO -->
-  <meta name="description" content="Regarde la vidéo promo KizBourges : 60 secondes pour découvrir la Kizomba à Bourges.">
   <meta name="robots" content="index,follow,max-image-preview:large">
 
   <!-- Social -->
+  <meta property="og:title" content="Vidéo — KizBourges">
+  <meta property="og:description" content="Ambiance des cours Kizomba & Urban Kiz à Bourges en 60 secondes. Rejoins la communauté !">
   <meta property="og:type" content="video.other">
-  <meta property="og:title" content="Découvre la Kizomba en 60 secondes — KizBourges">
-  <meta property="og:description" content="Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours ✨">
-  <meta property="og:url" content="https://kizbourges.fr/video.html">
   <meta property="og:image" content="https://kizbourges.fr/Images/course-poster.jpg">
-  <meta property="og:site_name" content="KizBourges">
-  <meta name="twitter:card" content="player">
+  <meta property="og:video" content="https://kizbourges.fr/Videos/course-ad.mp4">
+  <meta property="og:url" content="https://kizbourges.fr/video.html">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary_large_image">
 
-  <!-- CSP compatible with this page (keeps it simple / same policy as main) -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' data:;
-    font-src 'self' data:;
-    frame-src 'self';
-    connect-src 'self';
-    media-src 'self';
-    upgrade-insecure-requests;
-  ">
-
+  <!-- Icons / CSS -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="Images/logo2.jpeg">
-  <style>
-    :root{ --ease: cubic-bezier(.2,.8,.2,1); }
-    *{ box-sizing:border-box; }
-    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif; color:#111; background:#fff; }
-    header{ position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid #eee; }
-    header .wrap{ display:flex; align-items:center; gap:14px; padding:12px 16px; max-width:1100px; margin:auto; }
-    header a{ text-decoration:none; color:#111; font-weight:600; }
-    main{ max-width:1100px; margin:auto; padding:24px 16px 40px; }
-    h1{ margin:18px 0 10px; font-size:clamp(1.6rem,3.2vw,2.2rem); }
-    .meta{ color:#666; margin-bottom:14px; }
-    .player{ position:relative; border-radius:14px; overflow:hidden; box-shadow:0 16px 40px rgba(0,0,0,.18); }
-    video{ width:100%; height:auto; display:block; background:#000; }
-    .btns{ display:flex; gap:10px; margin:18px 0 0; flex-wrap:wrap; }
-    .btn{ display:inline-block; padding:10px 14px; border-radius:999px; text-decoration:none; border:1px solid #eee; }
-    .btn.primary{ background:#111; color:#fff; border-color:#111; }
-    .desc{ margin-top:18px; line-height:1.55; color:#333; }
-    footer{ border-top:1px solid #eee; margin-top:32px; padding:18px 0; color:#666; font-size:.95rem; }
-    @media (prefers-reduced-motion:no-preference){
-      .player{ transform:translateY(6px); opacity:0; animation:in .7s var(--ease) .1s both; }
-      @keyframes in{ to{ transform:none; opacity:1; } }
-      .btn:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,.08); transition:.25s var(--ease); }
-    }
-  </style>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "VideoObject",
-  "name": "KizBourges — Promo cours (60 s)",
-  "description": "Ambiance des cours Kizomba/Urban Kiz à Bourges : énergie, connexion et bonne vibe en 60 secondes.",
-  "thumbnailUrl": [
-    "https://kizbourges.fr/Images/course-poster.jpg"
-  ],
-  "uploadDate": "2025-09-01T00:00:00+02:00",
-  "duration": "PT1M0S",
-  "contentUrl": "https://kizbourges.fr/Videos/course-ad.mp4",
-  "embedUrl": "https://kizbourges.fr/video.html",
-  "publisher": {
-    "@type": "Organization",
-    "name": "KizBourges",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://kizbourges.fr/Images/logo2.jpeg",
-      "width": 512,
-      "height": 512
+  <!-- Structured data for video (thumbnailUrl required for indexing) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "KizBourges — Promo cours (60 s)",
+    "description": "Ambiance des cours Kizomba et Urban Kiz à Bourges : énergie, connexion et convivialité en 60 secondes.",
+    "thumbnailUrl": ["https://kizbourges.fr/Images/course-poster.jpg"],
+    "uploadDate": "2025-09-01T00:00:00+02:00",
+    "duration": "PT1M0S",
+    "contentUrl": "https://kizbourges.fr/Videos/course-ad.mp4",
+    "embedUrl": "https://kizbourges.fr/video.html",
+    "publisher": {
+      "@type": "Organization",
+      "name": "KizBourges",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://kizbourges.fr/Images/logo2.jpeg",
+        "width": 512,
+        "height": 512
+      }
     }
-  },
-  "potentialAction": {
-    "@type": "WatchAction",
-    "target": "https://kizbourges.fr/video.html"
   }
-}
-</script>
+  </script>
 
+  <style>
+    /* ==== SAME THEME AS HOME ==== */
+    :root{
+      --elev-2: 0 12px 28px rgba(0,0,0,.11);
+      --elev-3: 0 18px 40px rgba(0,0,0,.14);
+      --ease: cubic-bezier(.2,.8,.2,1);
+      --brand:#111; --nav-bg:#fff; --nav-border:#eaeaea;
+      --kb-accent: linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2);
+      --kb-glow: 0 10px 30px rgba(255,45,85,.25);
+    }
+
+    /* Header with moving glow line */
+    .site-header{ position:sticky; top:0; z-index:50; background:var(--nav-bg);
+      transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);}
+    .site-header.scrolled{ box-shadow:0 6px 18px rgba(0,0,0,.06); backdrop-filter:saturate(1.05) blur(6px); }
+    .site-header .container{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; }
+    .logo-img{ height:44px; width:auto; display:block; }
+    nav.nav{ display:flex; gap:18px; align-items:center; }
+    nav.nav a{ position:relative; display:inline-block; color:var(--brand); text-decoration:none; padding:6px 2px;
+      transition: color .2s ease, letter-spacing .2s ease; }
+    nav.nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0; background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2);
+      transition: width .32s ease; opacity:.9; }
+    nav.nav a:hover{ letter-spacing:.2px; } nav.nav a:hover::after, nav.nav a:focus-visible::after{ width:100%; }
+
+    .site-header::after{
+      content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+      background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2,#0cf,#ff2d55);
+      background-size:300% 100%; opacity:.85; transform:scaleX(0); transform-origin:left;
+    }
+    .site-header.scrolled::after{ transform:scaleX(1); animation:kb-glow 7s linear infinite; }
+    @keyframes kb-glow{ 0%{background-position:0 0}100%{background-position:300% 0} }
+
+    /* Layout */
+    .container{ max-width:1100px; margin:auto; padding:0 16px; }
+    .page-hero{ padding:64px 0; background:linear-gradient(180deg,#fafafa,#fff); }
+    .page-hero h1{ margin:0 0 8px; }
+    .lead{ color:#555; }
+    .section{ padding:56px 0; position:relative; }
+    .grid-2{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; position:relative; overflow:hidden; }
+    .btn{ display:inline-block; background:#111; color:#fff; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 6px 16px rgba(0,0,0,.08); position:relative; overflow:hidden; }
+    .btn.alt{ background:#fff; color:#111; border:1px solid #eee; }
+    .video-wrap{ border-radius:16px; overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,.18); }
+    .muted{ color:#666; font-size:.95rem; }
+    .site-footer{ border-top:1px solid #eee; padding:18px 0; font-size:.95rem; color:#555; }
+
+    /* Reveal animations (same palette/curve as home) */
+    .reveal{ opacity:0; transform:translateY(24px) scale(.98); will-change:opacity,transform; }
+    .reveal.in{ opacity:1; transform:none; transition:opacity .72s var(--ease), transform .72s var(--ease); }
+    .reveal[data-effect="flip"]{ transform:rotateX(6deg) translateY(30px); transform-origin:50% 80%; opacity:.001; }
+    .reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform .8s var(--ease),opacity .8s var(--ease); }
+    .reveal[data-effect="zoom"]{ transform:scale(.94); opacity:.001; }
+    .reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform .75s var(--ease),opacity .75s var(--ease); }
+
+    /* Card hover polish + tilt */
+    .tilt{transform-style:preserve-3d; perspective:900px;}
+    @media (prefers-reduced-motion:no-preference){
+      .card{ transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
+      .card:hover{ transform:translateY(-6px); box-shadow:var(--elev-3), var(--kb-glow); border-color: rgba(255,45,85,.25); }
+    }
+
+    /* Button glow & ripple */
+    .btn::before{ content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.35), transparent 60%); opacity:0; pointer-events:none; }
+    @media (prefers-reduced-motion:no-preference){ .btn:hover::before{ opacity:1; transition: opacity .28s ease; } }
+    .btn .ripple{ position:absolute; border-radius:50%; transform: translate(-50%,-50%) scale(0); opacity:.35; background:currentColor; pointer-events:none; }
+    @keyframes ripple{ to{ transform: translate(-50%,-50%) scale(16); opacity:0; } }
+
+    /* Scroll progress bar */
+    #scrollbar{ position:fixed; inset:0 auto auto 0; height:3px; width:100%; transform-origin:left center; transform:scaleX(0);
+      background:linear-gradient(90deg,#111,#f06,#0cf); z-index:1000; }
+    @media (prefers-reduced-motion:no-preference){ #scrollbar{ transition: transform .15s linear; } }
+  </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <a href="/">← Retour à l’accueil</a>
+  <div id="scrollbar" aria-hidden="true"></div>
+  <script>document.documentElement.classList.add('js');</script>
+  <a href="#main" class="skip-link">Aller au contenu</a>
+  <style>
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+    .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:9999;}
+    :focus-visible{ outline: 3px solid #222; outline-offset: 2px; }
+  </style>
+
+  <!-- Header -->
+  <header class="site-header" id="header" data-menu="closed">
+    <div class="container">
+      <a class="logo" href="/" aria-label="KizBourges">
+        <img src="Images/logo2.jpeg" alt="Logo KizBourges" class="logo-img">
+      </a>
+
+      <nav id="nav" class="nav" aria-label="Navigation principale">
+        <a href="/">Accueil</a>
+        <a href="cours.html">Cours & tarifs</a>
+        <a href="/#events">Événements</a>
+        <a href="/#covoit">Covoiturage</a>
+        <a href="/#son">Ambiance</a>
+        <a class="ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">Adhésion</a>
+        <a class="ha-donate" href="https://www.helloasso.com/associations/amigos-latino/formulaires/1">Don</a>
+        <a href="/#contact">Contact</a>
+      </nav>
     </div>
   </header>
+  <main id="main">
+    <!-- Hero -->
+    <section class="page-hero reveal" data-effect="zoom">
+      <div class="container">
+        <h1>Vidéo</h1>
+        <p class="lead">Plonge dans l’ambiance KizBourges : Kizomba & Urban Kiz à Bourges — énergie, connexion, convivialité.</p>
+        <div class="cta-row">
+          <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">S’inscrire / Adhérer</a>
+          <a class="btn alt" href="/#events">Voir les prochaines dates</a>
+        </div>
+      </div>
+    </section>
 
-  <main>
-    <h1>Découvre la Kizomba en 60 secondes</h1>
-    <div class="meta">KizBourges • Bourges • Vidéo promo</div>
+    <!-- Video block -->
+    <section class="section reveal" data-effect="zoom">
+      <div class="container">
+        <div class="video-wrap reveal" data-effect="flip">
+          <video title="KizBourges — Promo cours" playsinline controls preload="metadata"
+                 poster="Images/course-poster.jpg" style="width:100%;height:auto;display:block;">
+            <source src="Videos/course-ad.mp4" type="video/mp4">
+            Votre navigateur ne supporte pas la vidéo HTML5.
+          </video>
+        </div>
+        <p class="muted" style="margin-top:8px;">Astuce : active le son et passe en plein écran pour une immersion totale.</p>
+      </div>
+    </section>
 
-    <div class="player">
-      <video
-        playsinline
-        muted
-        autoplay
-        controls
-        preload="metadata"
-        poster="Images/course-poster.jpg"
-        title="Vidéo promo KizBourges"
-      >
-        <source src="Videos/course-ad.mp4" type="video/mp4">
-        Votre navigateur ne supporte pas la vidéo HTML5.
-      </video>
-    </div>
+    <!-- Text sections for SEO/context -->
+    <section class="section reveal" data-effect="zoom">
+      <div class="container grid-2">
+        <div class="card reveal tilt" data-effect="flip">
+          <h2>Ce que tu vas voir</h2>
+          <p>Des extraits de nos cours et pratiques à Bourges : guidage précis, écoute musicale, liberté d’interprétation et une bonne dose de fun. La Kizomba et l’Urban Kiz invitent à la connexion et à la créativité, que tu sois débutant(e) ou confirmé(e).</p>
+        </div>
+        <div class="card reveal tilt" data-effect="flip">
+          <h2>Pourquoi nous rejoindre</h2>
+          <ul>
+            <li class="reveal" data-effect="zoom">Progression réelle, pas à pas, dans une ambiance bienveillante.</li>
+            <li class="reveal" data-effect="zoom">Communauté conviviale : soirées, stages, covoiturage.</li>
+            <li class="reveal" data-effect="zoom">Cours accessibles : Kizomba, Urban Kiz, et pratique guidée.</li>
+            <li class="reveal" data-effect="zoom">Adhésion en ligne avec HelloAsso, simple et rapide.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-    <div class="btns">
-      <a class="btn primary" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">S’inscrire / Adhérer</a>
-      <a class="btn" href="/#events">Voir les prochaines soirées</a>
-      <a class="btn" href="/#cours">Infos cours & tarifs</a>
-    </div>
-
-    <p class="desc">
-      Envie de commencer la Kizomba à Bourges ? Cette courte vidéo te montre l’ambiance des cours et des soirées KizBourges. Tous niveaux, bonne vibe, bienveillance — on t’attend !
-    </p>
-
-    <footer>© <span id="y"></span> KizBourges — Association de danse</footer>
+    <!-- CTA -->
+    <section class="section reveal" data-effect="zoom">
+      <div class="container">
+        <div class="card reveal tilt" data-effect="flip">
+          <h3>Envie d’essayer ?</h3>
+          <p>Commence dès cette semaine : viens seul(e) ou avec un(e) partenaire, on s’occupe du reste.</p>
+          <div class="cta-row">
+            <a class="btn ha-open" href="https://www.helloasso.com/associations/amigos-latino/adhesions/kiz-bourges-2025-2026">S’inscrire / Adhérer</a>
+            <a class="btn alt" href="/#events">Calendrier des soirées</a>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
-
+  <footer class="site-footer">
+    <div class="container">© <span id="year"></span> KizBourges — Tous droits réservés</div>
+  </footer>
   <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-    // Nudge autoplay on some browsers
-    (function(){
-      const v = document.querySelector('video');
-      if (!v) return; const play = () => v.play().catch(()=>{});
-      if (v.readyState >= 2) play(); else v.addEventListener('canplay', play, {once:true});
-    })();
+  /* Sticky header shadow + glow line */
+  (function(){
+    const h = document.getElementById('header');
+    if(!h) return;
+    const onScroll = () => h.classList.toggle('scrolled', window.scrollY > 6);
+    onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+  })();
+
+  /* Scroll progress bar */
+  (function(){
+    const bar = document.getElementById('scrollbar');
+    if (!bar) return;
+    function update(){
+      const ht = document.documentElement;
+      const max = (ht.scrollHeight - window.innerHeight) || 1;
+      const p = Math.min(1, Math.max(0, window.scrollY / max));
+      bar.style.transform = 'scaleX(' + p + ')';
+    }
+    update();
+    window.addEventListener('scroll', update, {passive:true});
+    window.addEventListener('resize', update);
+  })();
+
+  /* Reveal on scroll */
+  (function(){
+    try{
+      const els = () => Array.from(document.querySelectorAll('.reveal'));
+      function run(){ els().forEach((el,i)=>{ const r = el.getBoundingClientRect(); if (r.top < window.innerHeight*0.9) { el.style.transitionDelay = (i*40)+'ms'; el.classList.add('in'); }}); }
+      window.__reveal = run; run();
+      window.addEventListener('scroll', run, {passive:true});
+      window.addEventListener('resize', run);
+    }catch(e){
+      document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
+    }
+  })();
+
+  /* Mouse-follow glow for .btn */
+  (function(){
+    function onMove(e){
+      const t = e.target.closest && e.target.closest('.btn');
+      if (!t) return;
+      const r = t.getBoundingClientRect();
+      t.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      t.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    }
+    document.addEventListener('pointermove', onMove, {passive:true});
+  })();
+
+  /* Smooth anchors + ripple */
+  (function(){
+    document.addEventListener('click', function(e){
+      const a = e.target.closest('a[href^="#"]');
+      const btn = e.target.closest('.btn');
+      if (btn){
+        try{
+          const r = btn.getBoundingClientRect();
+          const x = e.clientX - r.left, y = e.clientY - r.top;
+          const d = Math.max(r.width, r.height);
+          const span = document.createElement('span');
+          span.className = 'ripple';
+          span.style.left = x+'px'; span.style.top = y+'px';
+          span.style.width = span.style.height = d+'px';
+          btn.appendChild(span); setTimeout(()=> span.remove(), 650);
+        }catch(_){}
+      }
+      if (!a) return;
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (location.pathname === a.pathname && location.hostname === a.hostname){
+        e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'});
+        history.replaceState(null, '', '#'+id);
+      }
+    });
+  })();
+
+  /* Card tilt */
+  (function(){
+    const els = document.querySelectorAll('.card');
+    els.forEach(el => {
+      el.classList.add('tilt');
+      let raf = null;
+      function onMove(e){
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - .5;
+        const y = (e.clientY - r.top) / r.height - .5;
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          el.style.transform = `rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*6).toFixed(2)}deg) translateY(-6px)`;
+        });
+      }
+      function onLeave(){
+        if (raf) cancelAnimationFrame(raf);
+        el.style.transform = 'none';
+      }
+      el.addEventListener('pointermove', onMove);
+      el.addEventListener('pointerleave', onLeave);
+    });
+  })();
+
+  /* Footer year */
+  (function(){
+    const y = document.getElementById('year');
+    if (y && !y.textContent) y.textContent = new Date().getFullYear();
+  })();
   </script>
 </body>
 </html>
