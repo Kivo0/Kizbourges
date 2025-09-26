@@ -75,16 +75,16 @@
 
     /* ==== REVEAL / ZOOMS same as home ==== */
     .reveal{ opacity:0; transform:translateY(24px) scale(.98); will-change:opacity,transform; }
-    .reveal.in{ opacity:1; transform:none; transition:opacity .72s var(--ease), transform .72s var(--ease); }
+    .reveal.in{ opacity:1; transform:none; transition:opacity 2.72s var(--ease), transform .72s var(--ease); }
     .reveal[data-effect="flip"]{ transform:rotateX(6deg) translateY(30px); transform-origin:50% 80%; opacity:.001; }
-    .reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform .8s var(--ease),opacity .8s var(--ease); }
+    .reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform 2.8s var(--ease),opacity .8s var(--ease); }
     .reveal[data-effect="zoom"]{ transform:scale(.94); opacity:.001; }
-    .reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform .75s var(--ease),opacity .75s var(--ease); }
+    .reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform 2.75s var(--ease),opacity .75s var(--ease); }
 
     /* ==== CARD TILT hover (same behavior as home) ==== */
     .tilt{transform-style:preserve-3d; perspective:900px;}
     @media (prefers-reduced-motion:no-preference){
-      .card{ transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
+      .card{ transition: transform 2.35s ease, box-shadow 2.35s ease, border-color 2.35s ease; }
       .card:hover{ transform:translateY(-6px); box-shadow:var(--elev-3), var(--kb-glow); border-color: rgba(255,45,85,.25); }
     }
 
@@ -92,7 +92,7 @@
     .btn::before{ content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.35), transparent 60%); opacity:0; pointer-events:none; }
     @media (prefers-reduced-motion:no-preference){ .btn:hover::before{ opacity:1; transition: opacity .28s ease; } }
     .btn .ripple{ position:absolute; border-radius:50%; transform: translate(-50%,-50%) scale(0); opacity:.35; background:currentColor; pointer-events:none; }
-    @media (prefers-reduced-motion:no-preference){ .btn .ripple{ animation: ripple .6s ease-out forwards; } }
+    @media (prefers-reduced-motion:no-preference){ .btn .ripple{ animation: ripple 2.6s ease-out forwards; } }
     @keyframes ripple{ to{ transform: translate(-50%,-50%) scale(16); opacity:0; } }
 
     /* ==== SCROLL PROGRESS BAR (same as home) ==== */
