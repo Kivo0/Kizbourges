@@ -282,6 +282,50 @@
   "embedUrl": "https://kizbourges.fr/cours.html"
 }
 </script>
+<script>
+(function(){
+  try{
+    const els = () => Array.from(document.querySelectorAll('.reveal'));
+    function run(){
+      els().forEach((el,i)=>{
+        const r = el.getBoundingClientRect();
+        if(r.top < window.innerHeight*0.9){
+          // Delay based on position and element type
+          let delay = (i*60) + (el.tagName==="LI" ? i*40 : 0);
+          el.style.transitionDelay = delay+"ms";
+          el.classList.add('in');
+        }
+      });
+    }
+    window.__reveal=run; run();
+    window.addEventListener('scroll', run,{passive:true});
+    window.addEventListener('resize', run);
+  }catch(e){
+    document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
+  }
+})();
+</script>
+<script>
+(function(){
+  const els=document.querySelectorAll('.card.tilt');
+  els.forEach(el=>{
+    let raf=null;
+    function onMove(e){
+      const r=el.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width - .5;
+      const y=(e.clientY-r.top)/r.height - .5;
+      if(raf) cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(()=>{
+        el.style.transform=`rotateX(${(-y*10).toFixed(2)}deg) rotateY(${(x*10).toFixed(2)}deg) translateY(-8px)`;
+        el.style.boxShadow=`${x*20}px ${y*20}px 30px rgba(0,0,0,.15)`;
+      });
+    }
+    function onLeave(){ if(raf) cancelAnimationFrame(raf); el.style.transform='none'; el.style.boxShadow=''; }
+    el.addEventListener('pointermove',onMove);
+    el.addEventListener('pointerleave',onLeave);
+  });
+})();
+</script>
 
 
 </body>
