@@ -61,28 +61,36 @@
     }
   </style>
 
-  <!-- VideoObject JSON-LD -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    "name": "Découvre la Kizomba en 60 secondes",
-    "description": "Ambiance, pas de base, bonne vibe — tout ce que tu verras au cours avec KizBourges.",
-    "thumbnailUrl": ["https://kizbourges.fr/Images/course-poster.jpg"],
-    "uploadDate": "2025-09-01",
-    "duration": "PT1M", 
-    "contentUrl": "https://kizbourges.fr/Videos/course-ad.mp4",
-    "embedUrl": "https://kizbourges.fr/video.html",
-    "publisher": {
-      "@type": "Organization",
-      "name": "KizBourges",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://kizbourges.fr/Images/logo2.jpeg"
-      }
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "KizBourges — Promo cours (60 s)",
+  "description": "Ambiance des cours Kizomba/Urban Kiz à Bourges : énergie, connexion et bonne vibe en 60 secondes.",
+  "thumbnailUrl": [
+    "https://kizbourges.fr/Images/course-poster.jpg"
+  ],
+  "uploadDate": "2025-09-01T00:00:00+02:00",
+  "duration": "PT1M0S",
+  "contentUrl": "https://kizbourges.fr/Videos/course-ad.mp4",
+  "embedUrl": "https://kizbourges.fr/video.html",
+  "publisher": {
+    "@type": "Organization",
+    "name": "KizBourges",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://kizbourges.fr/Images/logo2.jpeg",
+      "width": 512,
+      "height": 512
     }
+  },
+  "potentialAction": {
+    "@type": "WatchAction",
+    "target": "https://kizbourges.fr/video.html"
   }
-  </script>
+}
+</script>
+
 </head>
 <body>
   <header>
