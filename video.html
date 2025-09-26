@@ -66,15 +66,15 @@
 
     /* Header with moving glow line */
     .site-header{ position:sticky; top:0; z-index:50; background:var(--nav-bg);
-      transition:box-shadow .25s ease, backdrop-filter .25s ease; backdrop-filter:saturate(1) blur(0px);}
+      transition:box-shadow 2.25s ease, backdrop-filter 2.25s ease; backdrop-filter:saturate(1) blur(0px);}
     .site-header.scrolled{ box-shadow:0 6px 18px rgba(0,0,0,.06); backdrop-filter:saturate(1.05) blur(6px); }
     .site-header .container{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; }
     .logo-img{ height:44px; width:auto; display:block; }
     nav.nav{ display:flex; gap:18px; align-items:center; }
     nav.nav a{ position:relative; display:inline-block; color:var(--brand); text-decoration:none; padding:6px 2px;
-      transition: color .2s ease, letter-spacing .2s ease; }
+      transition: color 2.2s ease, letter-spacing 2.2s ease; }
     nav.nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0; background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2);
-      transition: width .32s ease; opacity:.9; }
+      transition: width 2.32s ease; opacity:.9; }
     nav.nav a:hover{ letter-spacing:.2px; } nav.nav a:hover::after, nav.nav a:focus-visible::after{ width:100%; }
 
     .site-header::after{
@@ -101,29 +101,29 @@
 
     /* Reveal animations (same palette/curve as home) */
     .reveal{ opacity:0; transform:translateY(24px) scale(.98); will-change:opacity,transform; }
-    .reveal.in{ opacity:1; transform:none; transition:opacity .72s var(--ease), transform .72s var(--ease); }
+    .reveal.in{ opacity:1; transform:none; transition:opacity 2.72s var(--ease), transform 2.72s var(--ease); }
     .reveal[data-effect="flip"]{ transform:rotateX(6deg) translateY(30px); transform-origin:50% 80%; opacity:.001; }
-    .reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform .8s var(--ease),opacity .8s var(--ease); }
+    .reveal.in[data-effect="flip"]{ transform:none; opacity:1; transition:transform 1.8s var(--ease),opacity 1.8s var(--ease); }
     .reveal[data-effect="zoom"]{ transform:scale(.94); opacity:.001; }
-    .reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform .75s var(--ease),opacity .75s var(--ease); }
+    .reveal.in[data-effect="zoom"]{ transform:none; opacity:1; transition:transform 1.75s var(--ease),opacity 1.75s var(--ease); }
 
     /* Card hover polish + tilt */
     .tilt{transform-style:preserve-3d; perspective:900px;}
     @media (prefers-reduced-motion:no-preference){
-      .card{ transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
+      .card{ transition: transform 1.35s ease, box-shadow 1.35s ease, border-color 1.35s ease; }
       .card:hover{ transform:translateY(-6px); box-shadow:var(--elev-3), var(--kb-glow); border-color: rgba(255,45,85,.25); }
     }
 
     /* Button glow & ripple */
     .btn::before{ content:""; position:absolute; inset:0; background:radial-gradient(140px 140px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.35), transparent 60%); opacity:0; pointer-events:none; }
-    @media (prefers-reduced-motion:no-preference){ .btn:hover::before{ opacity:1; transition: opacity .28s ease; } }
-    .btn .ripple{ position:absolute; border-radius:50%; transform: translate(-50%,-50%) scale(0); opacity:.35; background:currentColor; pointer-events:none; }
+    @media (prefers-reduced-motion:no-preference){ .btn:hover::before{ opacity:1; transition: opacity 1.28s ease; } }
+    .btn .ripple{ position:absolute; border-radius:50%; transform: translate(-50%,-50%) scale(0); opacity:1.35; background:currentColor; pointer-events:none; }
     @keyframes ripple{ to{ transform: translate(-50%,-50%) scale(16); opacity:0; } }
 
     /* Scroll progress bar */
     #scrollbar{ position:fixed; inset:0 auto auto 0; height:3px; width:100%; transform-origin:left center; transform:scaleX(0);
       background:linear-gradient(90deg,#111,#f06,#0cf); z-index:1000; }
-    @media (prefers-reduced-motion:no-preference){ #scrollbar{ transition: transform .15s linear; } }
+    @media (prefers-reduced-motion:no-preference){ #scrollbar{ transition: transform 1.15s linear; } }
   </style>
 </head>
 <body>
