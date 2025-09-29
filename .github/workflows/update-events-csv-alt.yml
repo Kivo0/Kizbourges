@@ -11,7 +11,11 @@ permissions:
 jobs:
   update-events-test:
     runs-on: ubuntu-latest
+    env:
+      TZ: Europe/Paris
+      REMOVAL_DELAY_HOURS: 30
 
+      
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
