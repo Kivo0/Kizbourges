@@ -230,10 +230,21 @@
       <div class="container">
         <h2>Découvre l’ambiance en 60 secondes</h2>
         <div class="video-wrap reveal" data-effect="flip">
-          <video title="KizBourges — Promo cours" playsinline muted controls preload="metadata" poster="Images/course-poster.jpg" style="width:100%;height:auto;display:block;">
-            <source src="Videos/course-ad.mp4" type="video/mp4">
-            Votre navigateur ne supporte pas la vidéo HTML5.
-          </video>
+         <!-- Homepage / cours.html video tag -->
+<video
+  id="courseAdVideo"
+  class="course-video"
+  playsinline
+  muted
+  loop
+  controls
+  preload="metadata"
+  poster="Images/course-poster.jpg"
+  data-nosnippet
+>
+  <source src="Videos/course-ad.mp4" type="video/mp4">
+</video>
+
         </div>
       </div>
     </section>
