@@ -4,31 +4,32 @@
 
   <url>
     <loc>https://kizbourges.fr/</loc>
-    <lastmod>2025-09-29</lastmod>
+    <lastmod>2025-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Dedicated watch page for your promo video -->
+  <!-- Watch page -->
   <url>
     <loc>https://kizbourges.fr/video.html</loc>
-    <lastmod>2025-09-29</lastmod>
+    <lastmod>2025-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <video:video>
       <video:thumbnail_loc>https://kizbourges.fr/Images/course-poster.jpg</video:thumbnail_loc>
       <video:title>KizBourges — Vidéo promo Kizomba</video:title>
       <video:description>Découvre la Kizomba avec KizBourges en 60 secondes.</video:description>
-      <!-- If the MP4 is public, keep content_loc. If you later block /Videos/, remove content_loc and keep player_loc. -->
+      <!-- The actual video file URL -->
       <video:content_loc>https://kizbourges.fr/Videos/course-ad.mp4</video:content_loc>
-      <video:player_loc allow_embed="yes">https://kizbourges.fr/video.html</video:player_loc>
       <video:publication_date>2025-09-29T08:00:00+02:00</video:publication_date>
+      <!-- optional but nice to have -->
+      <video:duration>48</video:duration>
     </video:video>
   </url>
 
   <url>
     <loc>https://kizbourges.fr/cours.html</loc>
-    <lastmod>2025-09-29</lastmod>
+    <lastmod>2025-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
