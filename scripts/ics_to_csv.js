@@ -215,20 +215,19 @@ function richnessScore(r) {
   return sc;
 }
 
-function mergeRows(a, b) {
-  // prefer non-empty, richer fields
-  const pick = (x, y) => clean(y || x);
-  const r = { ...a };
-  r.id         = pick(a.id,         b.id);
-  r.name       = pick(a.name,       b.name);
-  r.start_time = pick(a.start_time, b.start_time);
-  r.place      = richnessScore(b) > richnessScore(a) ? pick(a.place, b.place) : pick(b.place, a.place);
-  r.cover      = (b.cover && !/^images\/logo|logo/i.test(b.cover)) ? b.cover : (a.cover || b.cover || "");
-  r.event_url  = pick(a.event_url,  b.event_url);
-  r.ticket_url = pick(a.ticket_url, b.ticket_url);
-  
-  return r;
+function mergeRowsManualFirst(existing, incoming){
+  // existing = row from CSV (manual); incoming = row from ICS (auto)
+  return {
+    id:         keepManual(existing.id,         incoming.id),
+    name:       preferICS(existing.name,       incoming.name),
+    start_time: preferICS(existing.start_time, incoming.start_time),
+    place:      preferICS(existing.place,      incoming.place),
+    cover:      safeCover(existing.cover,      incoming.cover),
+    event_url:  keepManual(existing.event_url,  incoming.event_url),
+    ticket_url: keepManual(existing.ticket_url, incoming.ticket_url),
+  };
 }
+
 
 function parseCSV(text) {
   if (!text || !text.trim()) return [];
