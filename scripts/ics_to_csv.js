@@ -140,6 +140,39 @@ function normalizeCoverUrl(u) {
   return u;
 }
 
+// 1) add near helpers
+function parseDescTags(desc=""){
+  const out = {};
+  const lines = String(desc).split(/\r?\n/);
+  for (const raw of lines){
+    const m = raw.match(/^\s*(!)?\s*(cover|image|poster|ticket|billet|tickets|event|link|url|place|adresse)\s*:\s*(.+)$/i);
+    if (!m) continue;
+    const [,bang,key,val] = m;
+    const v = val.trim();
+    const lock = !!bang;  // "!" before the key means lock
+    switch(key.toLowerCase()){
+      case "cover":
+      case "image":
+      case "poster":
+        out.cover = v; out.coverLock = lock; break;
+      case "ticket":
+      case "billet":
+      case "tickets":
+        out.ticket_url = v; out.ticketLock = lock; break;
+      case "event":
+      case "link":
+      case "url":
+        out.event_url = v; out.eventLock = lock; break;
+      case "place":
+      case "adresse":
+        out.place = v; out.placeLock = lock; break;
+    }
+  }
+  return out;
+}
+
+
+
 // Extract the first image-like URL from a string
 function firstImageFromText(text) {
   if (!text) return "";
@@ -250,21 +283,29 @@ function unparseCSV(rows) {
   }) + "\n";
 }
 
+// 2) in toRowFromICS(ev), after building the base row, apply description tags
 function toRowFromICS(ev) {
   const start = ev.start instanceof Date ? ev.start : new Date(ev.start);
-  const coverUrl  = extractCoverFromICS(ev);      // from the cover helpers you added earlier
-  const ticketUrl = extractTicketFromICS(ev);     // <-- new
-
-  return {
+  const row = {
     id: clean(ev.uid || ev.id || ev.summary),
     name: clean(ev.summary),
     start_time: toISOWithOffset(start),
     place: clean(ev.location || ev.geo || ""),
-    cover: coverUrl,
-    event_url: clean(ev.url || ev.source || ""),   // keep event page URL if provided
-    ticket_url: ticketUrl                          // <-- populated only if found
+    cover: "",
+    event_url: clean(ev.url || ev.source || ""),
+    ticket_url: ""
   };
+
+  // read optional overrides from description
+  const tags = parseDescTags(ev.description || "");
+  if (tags.place)      row.place      = tags.placeLock      ? "!" + tags.place      : tags.place;
+  if (tags.cover)      row.cover      = tags.coverLock      ? "!" + tags.cover      : tags.cover;
+  if (tags.event_url)  row.event_url  = tags.eventLock      ? "!" + tags.event_url  : tags.event_url;
+  if (tags.ticket_url) row.ticket_url = tags.ticketLock     ? "!" + tags.ticket_url : tags.ticket_url;
+
+  return row;
 }
+
 /* ---------- safe merge helpers (manual-first) ---------- */
 
 // Field is “locked” if it starts with "!"
@@ -328,20 +369,25 @@ async function main() {
   // 3) merge:
   //    - start from existing rows
   //    - add incoming rows
-  //    - dedupe by canonicalKey (name+rounded start+place)
-  const map = new Map();
+const map = new Map();
 
-  function addOrMerge(r) {
-    // normalize start to minute for stable keys
-    r.start_time = roundToMinuteISO(r.start_time);
-    const ck = canonicalKey(r);
-    const ex = map.get(ck);
-    if (!ex) map.set(ck, r);
-    else map.set(ck, mergeRows(ex, r));
+function addOrMerge(r, source){ // source: "existing" | "incoming"
+  // normalize start to minute for stability
+  r.start_time = roundToMinuteISO(r.start_time);
+  const key = keyOf(r);
+  const ex = map.get(key);
+  if (!ex){
+    map.set(key, r);
+  } else {
+    // CSV row is treated as existing (manual); ICS row is incoming (auto)
+    map.set(key, mergeRowsManualFirst(ex, r));
   }
+}
 
-  existing.forEach(addOrMerge);
-  incoming.forEach(addOrMerge);
+// feed rows
+existing.forEach(r => addOrMerge(r, "existing"));
+incoming.forEach(r => addOrMerge(r, "incoming"));
+
 
   // 4) remove past rows once start+delay has passed
   const kept = [];
