@@ -52,6 +52,159 @@ function canonicalKey(row) {
   return `${n}__${s}__${p}`;
 }
 
+/* ---------- cover helpers ---------- */
+
+
+/* ---------- ticket helpers ---------- */
+
+function firstUrlFromText(text) {
+  if (!text) return "";
+  const m = text.match(/https?:\/\/[^\s)]+/i);
+  return m ? m[0] : "";
+}
+
+// Known ticketing hosts
+const TICKET_HOSTS = /(?:helloasso\.com|eventbrite\.[a-z.]+|billetweb\.fr|weezevent\.com|yurplan\.com|shotgun\.live|dice\.fm|ti\.to|tito\.io|billetterie|yvent\.io|leetchi\.com|payasso|pay\.asso)/i;
+
+// “Tickets: …”, “Billets: …”, “Billetterie: …”, “Réservation: …”, “Inscription: …”
+function ticketDirectiveFromDescription(desc) {
+  if (!desc) return "";
+  const m = desc.match(/\b(?:tickets?|billets?|billetterie|reservations?|réservations?|reservation|réservation|inscriptions?)\s*[:=-]\s*(\S+)/i);
+  return m && m[1] ? m[1] : "";
+}
+
+function normalizeTicketUrl(u) {
+  if (!u) return "";
+  u = clean(u);
+
+  // Prefer public HelloAsso pages over widgets
+  // https://www.helloasso.com/.../widget  ->  https://www.helloasso.com/...
+  if (/^https?:\/\/www\.helloasso\.com\/.+\/widget(?:\/)?$/i.test(u)) {
+    return u.replace(/\/widget\/?$/i, "");
+  }
+  return u;
+}
+
+function extractTicketFromICS(ev) {
+  const desc = ev.description || ev.summary || "";
+
+  // 1) Directive in description
+  const direct = ticketDirectiveFromDescription(desc);
+  if (direct) return normalizeTicketUrl(direct);
+
+  // 2) Any ticketing URL in description
+  const anyUrl = firstUrlFromText(desc);
+  if (anyUrl && TICKET_HOSTS.test(anyUrl)) {
+    return normalizeTicketUrl(anyUrl);
+  }
+
+  // 3) Fallback: if ev.url looks like a ticketing link, use it
+  const evUrl = clean(ev.url || ev.source || "");
+  if (evUrl && TICKET_HOSTS.test(evUrl)) {
+    return normalizeTicketUrl(evUrl);
+  }
+
+  return "";
+}
+
+
+// your public host (used to resolve relative image paths)
+const SITE_ORIGIN = "https://kizbourges.fr";
+
+function normalizeCoverUrl(u) {
+  if (!u) return "";
+  u = clean(u);
+
+  // Accept data URLs as-is
+  if (/^data:image\//i.test(u)) return u;
+
+  // Fix GitHub "blob" to raw content
+  if (/^https?:\/\/github\.com\/.+\/blob\//i.test(u)) {
+    return u
+      .replace(/^https?:\/\/github\.com\//i, "https://raw.githubusercontent.com/")
+      .replace("/blob/", "/");
+  }
+
+  // Allow GitHub Pages (kivo0.github.io) as-is
+  // Allow absolute http(s) as-is
+  if (/^https?:\/\//i.test(u)) return u;
+
+  // Resolve site-relative/short paths => https://kizbourges.fr/Images/...
+  // Accept "Images/..." or "/Images/..." or "images/..."
+  const short = u.replace(/^\/+/, ""); // remove leading slash
+  if (/^(images|Images)\//.test(short)) {
+    return `${SITE_ORIGIN}/${short}`;
+  }
+
+  // Fallback: return original
+  return u;
+}
+
+// Extract the first image-like URL from a string
+function firstImageFromText(text) {
+  if (!text) return "";
+  // markdown ![](url) or plain http(s)://...ext
+  const md = text.match(/!\[[^\]]*\]\((https?:\/\/[^\s)]+?\.(?:jpe?g|png|webp|gif))\)/i);
+  if (md && md[1]) return md[1];
+
+  const plain = text.match(/https?:\/\/[^\s)]+?\.(?:jpe?g|png|webp|gif)/i);
+  if (plain && plain[0]) return plain[0];
+
+  return "";
+}
+
+// Try to read a "Cover:" / "Affiche:" / "Image:" directive from DESCRIPTION
+function coverDirectiveFromDescription(desc) {
+  if (!desc) return "";
+  // e.g. "Cover: https://example.com/image.jpg"
+  const m = desc.match(/\b(?:cover|couverture|affiche|image)\s*[:=-]\s*(\S+)/i);
+  if (m && m[1]) return m[1];
+  return "";
+}
+
+/**
+ * Find a cover image URL inside an ical event.
+ * Supports ATTACH / attachments, description directive, generic image URLs, vendor fields.
+ */
+function extractCoverFromICS(ev) {
+  // 1) ATTACH / attachments
+  // node-ical may expose "attachments" as array or single value.
+  const attachCandidates = [];
+  const rawAttach = ev.attach || ev.attachment || ev.attachments || ev.ATTACH || ev.ATTACHMENT;
+  if (rawAttach) {
+    const pushVal = (val) => {
+      if (!val) return;
+      if (typeof val === "string") attachCandidates.push(val);
+      else if (Array.isArray(val)) val.forEach(pushVal);
+      else if (val.value) attachCandidates.push(val.value);
+      else if (val.uri) attachCandidates.push(val.uri);
+      else if (val.params && val.params.VALUE) attachCandidates.push(val.params.VALUE);
+    };
+    pushVal(rawAttach);
+  }
+  const attachImg = attachCandidates.find((x) => /\.(jpe?g|png|webp|gif)(\?|#|$)/i.test(x || ""));
+  if (attachImg) return normalizeCoverUrl(attachImg);
+
+  // 2) Vendor fields sometimes present
+  const vendorImg =
+    ev.image || ev.photo || ev["x-image"] || ev["X-IMAGE"] || ev["X-APPLE-STRUCTURED-LOCATION"]; // last one unlikely
+  if (typeof vendorImg === "string" && /\.(jpe?g|png|webp|gif)(\?|#|$)/i.test(vendorImg)) {
+    return normalizeCoverUrl(vendorImg);
+  }
+
+  // 3) DESCRIPTION directive
+  const desc = ev.description || ev.summary || "";
+  const directive = coverDirectiveFromDescription(desc);
+  if (directive) return normalizeCoverUrl(directive);
+
+  // 4) Any image URL in description
+  const any = firstImageFromText(desc);
+  if (any) return normalizeCoverUrl(any);
+
+  return ""; // nothing found
+}
+
+
 function richnessScore(r) {
   // prefer rows that have more useful info
   let sc = 0;
@@ -73,6 +226,7 @@ function mergeRows(a, b) {
   r.cover      = (b.cover && !/^images\/logo|logo/i.test(b.cover)) ? b.cover : (a.cover || b.cover || "");
   r.event_url  = pick(a.event_url,  b.event_url);
   r.ticket_url = pick(a.ticket_url, b.ticket_url);
+  
   return r;
 }
 
@@ -99,16 +253,22 @@ function unparseCSV(rows) {
 
 function toRowFromICS(ev) {
   const start = ev.start instanceof Date ? ev.start : new Date(ev.start);
+  const coverUrl  = extractCoverFromICS(ev);      // from the cover helpers you added earlier
+  const ticketUrl = extractTicketFromICS(ev);     // <-- new
+
   return {
     id: clean(ev.uid || ev.id || ev.summary),
     name: clean(ev.summary),
     start_time: toISOWithOffset(start),
     place: clean(ev.location || ev.geo || ""),
-    cover: "",       // keep if you map posters programmatically
-    event_url: clean(ev.url || ev.source || ""),
-    ticket_url: ""
+    cover: coverUrl,
+    event_url: clean(ev.url || ev.source || ""),   // keep event page URL if provided
+    ticket_url: ticketUrl                          // <-- populated only if found
   };
 }
+
+
+
 
 /* ---------------- main ---------------- */
 async function main() {
