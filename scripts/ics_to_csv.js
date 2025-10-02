@@ -266,6 +266,39 @@ function toRowFromICS(ev) {
     ticket_url: ticketUrl                          // <-- populated only if found
   };
 }
+/* ---------- safe merge helpers (manual-first) ---------- */
+
+// Field is “locked” if it starts with "!"
+function isLocked(v){ return typeof v === "string" && /^\s*!/.test(v); }
+function unlock(v){ return typeof v === "string" ? v.replace(/^\s*!/, "").trim() : v; }
+function hasVal(v){ return !!clean(v); }
+
+// For manual-first fields (cover, event_url, ticket_url)
+function keepManual(existingVal, incomingVal){
+  if (isLocked(existingVal)) return unlock(existingVal);
+  if (hasVal(existingVal))  return existingVal;         // keep manual
+  return clean(incomingVal);                            // fill when empty
+}
+
+// For ICS-managed fields (start_time, name, place) unless locked
+function preferICS(existingVal, incomingVal){
+  if (isLocked(existingVal)) return unlock(existingVal); // frozen by user
+  return hasVal(incomingVal) ? clean(incomingVal) : clean(existingVal);
+}
+
+// Avoid treating generic logos as “better” covers
+function isGenericLogo(u){ return /(?:^|\/)(logo|logo2)\.(?:png|jpe?g|webp)$/i.test(u||""); }
+function safeCover(existingVal, incomingVal){
+  const picked = keepManual(existingVal, incomingVal);
+  return isGenericLogo(picked) ? clean(existingVal) || "" : picked;
+}
+
+// Use UID when possible, else canonical
+function keyOf(row){
+  const byId = clean(row.id);
+  if (byId) return "id__" + byId;
+  return "ck__" + canonicalKey(row);
+}
 
 
 
