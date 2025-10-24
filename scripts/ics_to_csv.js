@@ -22,43 +22,33 @@ const ZONE = process.env.TZ || "Europe/Paris";
 const REMOVAL_DELAY_HOURS = Number(process.env.REMOVAL_DELAY_HOURS ?? 24);
 const CSV_PATH = "kizbourges_events_template1.csv";
 
-// -----------------------------------------------------------------------------
-// helpers (generic)
-// -----------------------------------------------------------------------------
+/* ---------------- helpers ---------------- */
 const clean = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
 
 function slug(s) {
   return clean(s)
     .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove accents
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
 function toISOWithOffset(d) {
-  return DateTime.fromJSDate(d, { zone: ZONE })
-    .toISO({ suppressMilliseconds: true });
+  return DateTime.fromJSDate(d, { zone: ZONE }).toISO({ suppressMilliseconds: true });
 }
 
-/** Round to minute, keep local zone */
 function roundToMinuteISO(iso) {
   const dt = DateTime.fromISO(iso, { zone: ZONE });
   return dt.startOf("minute").toISO({ suppressMilliseconds: true });
 }
 
-// -----------------------------------------------------------------------------
-// cover helpers
-// -----------------------------------------------------------------------------
+/* ---------------- cover helpers ---------------- */
 const SITE_ORIGIN = "https://kizbourges.fr";
 
 function normalizeCoverUrl(u) {
   if (!u) return "";
   u = clean(u);
 
-  // Drop impossible blob: URLs (session-local)
-  if (/^blob:/i.test(u)) return "";
-
-  // data: URL accepted as-is
   if (/^data:image\//i.test(u)) return u;
 
   // GitHub "blob" -> raw
@@ -68,22 +58,16 @@ function normalizeCoverUrl(u) {
       .replace("/blob/", "/");
   }
 
-  // Facebook/FB CDN: accept (CSP should allow scontent.*)
-  if (/^https?:\/\/(scontent|lookaside|platform)\./i.test(u)) return u;
+  // Facebook blob: ignore (invalid)
+  if (/^blob:https?:\/\//i.test(u)) return "";
 
-  // absolute http(s)
   if (/^https?:\/\//i.test(u)) return u;
 
-  // Images/... or /Images/... -> absolute to site origin
   const short = u.replace(/^\/+/, "");
-  if (/^(images|Images)\//i.test(short)) {
-    return `${SITE_ORIGIN}/${short}`;
-  }
-
+  if (/^(images|Images)\//.test(short)) return `${SITE_ORIGIN}/${short}`;
   return u;
 }
 
-// Extract the first image-like URL from text
 function firstImageFromText(text) {
   if (!text) return "";
   const md = text.match(/!\[[^\]]*\]\((https?:\/\/[^\s)]+?\.(?:jpe?g|png|webp|gif))\)/i);
@@ -92,16 +76,13 @@ function firstImageFromText(text) {
   return plain?.[0] || "";
 }
 
-// Try "Cover: ..." / "Affiche: ..." / "Image: ..." directive in DESCRIPTION
 function coverDirectiveFromDescription(desc) {
   if (!desc) return "";
   const m = desc.match(/\b(?:cover|couverture|affiche|image)\s*[:=-]\s*(\S+)/i);
   return m?.[1] || "";
 }
 
-/** Find a cover image URL inside an ical event. */
 function extractCoverFromICS(ev) {
-  // 1) ATTACH/ATTACHMENT
   const attachCandidates = [];
   const rawAttach = ev.attach || ev.attachment || ev.attachments || ev.ATTACH || ev.ATTACHMENT;
   if (rawAttach) {
@@ -118,38 +99,29 @@ function extractCoverFromICS(ev) {
   const attachImg = attachCandidates.find((x) => /\.(jpe?g|png|webp|gif)(\?|#|$)/i.test(x || ""));
   if (attachImg) return normalizeCoverUrl(attachImg);
 
-  // 2) vendor-ish fields
   const vendorImg = ev.image || ev.photo || ev["x-image"] || ev["X-IMAGE"];
-  if (typeof vendorImg === "string" && /\.(jpe?g|png|webp|gif)(\?|#|$)/i.test(vendorImg)) {
+  if (typeof vendorImg === "string" && /\.(jpe?g|png|webp|gif)(\?|#|$)/i.test(vendorImg))
     return normalizeCoverUrl(vendorImg);
-  }
 
-  // 3) description directive
   const desc = ev.description || ev.summary || "";
   const directive = coverDirectiveFromDescription(desc);
   if (directive) return normalizeCoverUrl(directive);
 
-  // 4) any image in description
   const any = firstImageFromText(desc);
   if (any) return normalizeCoverUrl(any);
 
   return "";
 }
 
-// -----------------------------------------------------------------------------
-// ticket helpers
-// -----------------------------------------------------------------------------
+/* ---------------- ticket helpers ---------------- */
 function firstUrlFromText(text) {
   if (!text) return "";
   const m = text.match(/https?:\/\/[^\s)]+/i);
   return m ? m[0] : "";
 }
 
-// Known ticketing hosts
-const TICKET_HOSTS =
-  /(?:helloasso\.com|eventbrite\.[a-z.]+|billetweb\.fr|weezevent\.com|yurplan\.com|shotgun\.live|dice\.fm|ti\.to|tito\.io|billetterie|yvent\.io|leetchi\.com|payasso|pay\.asso)/i;
+const TICKET_HOSTS = /(?:helloasso\.com|eventbrite\.[a-z.]+|billetweb\.fr|weezevent\.com|yurplan\.com|shotgun\.live|dice\.fm|ti\.to|tito\.io|billetterie|yvent\.io|leetchi\.com|payasso|pay\.asso)/i;
 
-// “Tickets: …”, “Billets: …”, “Billetterie: …”, “Réservation: …”, “Inscription: …”
 function ticketDirectiveFromDescription(desc) {
   if (!desc) return "";
   const m = desc.match(/\b(?:tickets?|billets?|billetterie|reservations?|réservations?|reservation|réservation|inscriptions?)\s*[:=-]\s*(\S+)/i);
@@ -159,35 +131,23 @@ function ticketDirectiveFromDescription(desc) {
 function normalizeTicketUrl(u) {
   if (!u) return "";
   u = clean(u);
-
-  // Prefer public HelloAsso pages over widgets
-  if (/^https?:\/\/www\.helloasso\.com\/.+\/widget(?:\/)?$/i.test(u)) {
+  if (/^https?:\/\/www\.helloasso\.com\/.+\/widget(?:\/)?$/i.test(u))
     return u.replace(/\/widget\/?$/i, "");
-  }
   return u;
 }
 
 function extractTicketFromICS(ev) {
   const desc = ev.description || ev.summary || "";
-
-  // 1) explicit directive
   const direct = ticketDirectiveFromDescription(desc);
   if (direct) return normalizeTicketUrl(direct);
-
-  // 2) any ticketing URL in description
   const anyUrl = firstUrlFromText(desc);
   if (anyUrl && TICKET_HOSTS.test(anyUrl)) return normalizeTicketUrl(anyUrl);
-
-  // 3) fallback: ev.url looks like ticketing
   const evUrl = clean(ev.url || ev.source || "");
   if (evUrl && TICKET_HOSTS.test(evUrl)) return normalizeTicketUrl(evUrl);
-
   return "";
 }
 
-// -----------------------------------------------------------------------------
-// description tags (!cover:, !ticket:, !url:, !place:)
-// -----------------------------------------------------------------------------
+/* ---------------- description tag parser ---------------- */
 function parseDescTags(desc = "") {
   const out = {};
   const lines = String(desc).split(/\r?\n/);
@@ -200,88 +160,74 @@ function parseDescTags(desc = "") {
     switch (key.toLowerCase()) {
       case "cover":
       case "image":
-      case "poster":
-        out.cover = v; out.coverLock = lock; break;
+      case "poster": out.cover = v; out.coverLock = lock; break;
       case "ticket":
       case "billet":
-      case "tickets":
-        out.ticket_url = v; out.ticketLock = lock; break;
+      case "tickets": out.ticket_url = v; out.ticketLock = lock; break;
       case "event":
       case "link":
-      case "url":
-        out.event_url = v; out.eventLock = lock; break;
+      case "url": out.event_url = v; out.eventLock = lock; break;
       case "place":
-      case "adresse":
-        out.place = v; out.placeLock = lock; break;
+      case "adresse": out.place = v; out.placeLock = lock; break;
     }
   }
   return out;
 }
 
-// -----------------------------------------------------------------------------
-// merging priorities (manual first, with locks)
-// -----------------------------------------------------------------------------
-function isLocked(v)   { return typeof v === "string" && /^\s*!/.test(v); }
-function unlock(v)     { return typeof v === "string" ? v.replace(/^\s*!/, "").trim() : v; }
-function hasVal(v)     { return !!clean(v); }
+/* ---------------- merge helpers ---------------- */
+function isLocked(v){ return typeof v === "string" && /^\s*!/.test(v); }
+function unlock(v){ return typeof v === "string" ? v.replace(/^\s*!/, "").trim() : v; }
+function hasVal(v){ return !!clean(v); }
 function isGenericLogo(u){ return /(?:^|\/)(logo|logo2)\.(?:png|jpe?g|webp)$/i.test(u||""); }
 
-// For manual-first fields (cover, event_url, ticket_url)
-function keepManual(existingVal, incomingVal) {
+function keepManual(existingVal, incomingVal){
   if (isLocked(existingVal)) return unlock(existingVal);
-  if (hasVal(existingVal))  return existingVal;  // keep manual
-  return clean(incomingVal);                     // fill only if empty
+  if (hasVal(existingVal)) return existingVal;
+  return clean(incomingVal);
 }
-
-// For ICS-managed fields (start_time, name, place) unless locked
-function preferICS(existingVal, incomingVal) {
+function preferICS(existingVal, incomingVal){
   if (isLocked(existingVal)) return unlock(existingVal);
   return hasVal(incomingVal) ? clean(incomingVal) : clean(existingVal);
 }
-
-function safeCover(existingVal, incomingVal) {
+function safeCover(existingVal, incomingVal){
   const picked = keepManual(existingVal, incomingVal);
   return isGenericLogo(picked) ? (clean(existingVal) || "") : picked;
 }
 
-// -----------------------------------------------------------------------------
-// FIX 3: mergeRowsManualFirst now merges missing info from duplicates
-// -----------------------------------------------------------------------------
+/* --- New robust merge --- */
 function mergeRowsManualFirst(existing, incoming) {
+  const now = DateTime.now().setZone(ZONE);
+  const startExisting = DateTime.fromISO(existing.start_time, { zone: ZONE });
+  const startIncoming = DateTime.fromISO(incoming.start_time, { zone: ZONE });
+
+  if (startExisting < now && startIncoming > now) return incoming;
+
   const merged = {
-    id:         keepManual(existing.id,         incoming.id),
-    name:       preferICS(existing.name,       incoming.name),
+    id: keepManual(existing.id, incoming.id),
+    name: preferICS(existing.name, incoming.name),
     start_time: preferICS(existing.start_time, incoming.start_time),
-    place:      preferICS(existing.place,      incoming.place),
-    cover:      safeCover(existing.cover,      incoming.cover),
-    event_url:  keepManual(existing.event_url,  incoming.event_url),
+    place: preferICS(existing.place, incoming.place),
+    cover: safeCover(existing.cover, incoming.cover),
+    event_url: keepManual(existing.event_url, incoming.event_url),
     ticket_url: keepManual(existing.ticket_url, incoming.ticket_url),
   };
 
-  // If existing lacks some info but incoming has it, fill it in.
-  if (!hasVal(existing.cover) && hasVal(incoming.cover))
-    merged.cover = incoming.cover;
-
-  if (!hasVal(existing.event_url) && hasVal(incoming.event_url))
-    merged.event_url = incoming.event_url;
-
-  if (!hasVal(existing.ticket_url) && hasVal(incoming.ticket_url))
-    merged.ticket_url = incoming.ticket_url;
+  if (!hasVal(existing.cover) && hasVal(incoming.cover)) merged.cover = incoming.cover;
+  if (!hasVal(existing.event_url) && hasVal(incoming.event_url)) merged.event_url = incoming.event_url;
+  if (!hasVal(existing.ticket_url) && hasVal(incoming.ticket_url)) merged.ticket_url = incoming.ticket_url;
 
   return merged;
 }
 
-// -----------------------------------------------------------------------------
-// de-duplication key
-//   FIX 2: de-duplicate only by event name (case/accent-insensitive)
-// -----------------------------------------------------------------------------
-function keyOf(row) {
-  return "name__" + slug(row.name || "");
+/* --- Dedup key: name + date --- */
+function keyOf(row){
+  const n = slug(row.name || "");
+  const d = roundToMinuteISO(row.start_time || "");
+  const dateKey = (d || "").split("T")[0];
+  return `event__${n}__${dateKey}`;
 }
 
-// -----------------------------------------------------------------------------
-// CSV helpers
-// -----------------------------------------------------------------------------
+/* ---------------- CSV helpers ---------------- */
 function parseCSV(text) {
   if (!text || !text.trim()) return [];
   const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
@@ -295,7 +241,6 @@ function parseCSV(text) {
     ticket_url: clean(r.ticket_url),
   })).filter(r => r.name && r.start_time);
 }
-
 function unparseCSV(rows) {
   return Papa.unparse(rows, {
     header: true,
@@ -303,53 +248,43 @@ function unparseCSV(rows) {
   }) + "\n";
 }
 
-// -----------------------------------------------------------------------------
-// ICS -> row (with auto extractors + description-tag overrides)
-// -----------------------------------------------------------------------------
+/* ---------------- ICS → row ---------------- */
 function toRowFromICS(ev) {
   const start = ev.start instanceof Date ? ev.start : new Date(ev.start);
-
-  // Auto-detected values (normalized)
-  const autoCover  = normalizeCoverUrl(extractCoverFromICS(ev));
+  const autoCover = normalizeCoverUrl(extractCoverFromICS(ev));
   const autoTicket = normalizeTicketUrl(extractTicketFromICS(ev));
 
   const row = {
-    id:         clean(ev.uid || ev.id || ev.summary),
-    name:       clean(ev.summary),
+    id: clean(ev.uid || ev.id || ev.summary),
+    name: clean(ev.summary),
     start_time: toISOWithOffset(start),
-    place:      clean(ev.location || ev.geo || ""),
-    cover:      autoCover || "",
-    event_url:  clean(ev.url || ev.source || ""),
+    place: clean(ev.location || ev.geo || ""),
+    cover: autoCover || "",
+    event_url: clean(ev.url || ev.source || ""),
     ticket_url: autoTicket || "",
   };
 
-  // Description directives (with optional leading "!" to lock)
   const tags = parseDescTags(ev.description || "");
-  if (tags.place)      row.place      = tags.placeLock  ? "!" + tags.place                         : tags.place;
-  if (tags.cover)      row.cover      = tags.coverLock  ? "!" + normalizeCoverUrl(tags.cover)      : normalizeCoverUrl(tags.cover);
-  if (tags.event_url)  row.event_url  = tags.eventLock  ? "!" + tags.event_url                     : tags.event_url;
+  if (tags.place) row.place = tags.placeLock ? "!" + tags.place : tags.place;
+  if (tags.cover) row.cover = tags.coverLock ? "!" + normalizeCoverUrl(tags.cover) : normalizeCoverUrl(tags.cover);
+  if (tags.event_url) row.event_url = tags.eventLock ? "!" + tags.event_url : tags.event_url;
   if (tags.ticket_url) row.ticket_url = tags.ticketLock ? "!" + normalizeTicketUrl(tags.ticket_url) : normalizeTicketUrl(tags.ticket_url);
 
-  if (process.env.DEBUG_ICS === "1") {
+  if (process.env.DEBUG_ICS === "1")
     console.log("[ICS]", row.start_time, row.name, { cover: row.cover, ticket: row.ticket_url, event: row.event_url });
-  }
   return row;
 }
 
-// -----------------------------------------------------------------------------
-// main
-// -----------------------------------------------------------------------------
+/* ---------------- main ---------------- */
 async function main() {
   const now = DateTime.now().setZone(ZONE);
 
-  // 1) load existing csv
   let existing = [];
   if (existsSync(CSV_PATH)) {
     const txt = await fs.readFile(CSV_PATH, "utf8").catch(() => "");
     existing = parseCSV(txt);
   }
 
-  // 2) fetch/parse ICS
   const res = await fetch(ICS_URL, { redirect: "follow" });
   if (!res.ok) throw new Error(`ICS download failed: ${res.status} ${res.statusText}`);
   const data = ical.parseICS(await res.text());
@@ -361,11 +296,8 @@ async function main() {
     incoming.push(toRowFromICS(ev));
   }
 
-  // 3) merge (manual CSV first, then ICS; dedupe by name-only)
   const map = new Map();
-
   function addOrMerge(r) {
-    // keep normalized start for consistent outputs
     r.start_time = roundToMinuteISO(r.start_time);
     const key = keyOf(r);
     const ex = map.get(key);
@@ -376,23 +308,19 @@ async function main() {
   existing.forEach(addOrMerge);
   incoming.forEach(addOrMerge);
 
-  // 4) remove past rows once start+delay has passed
   const kept = [];
   for (const r of map.values()) {
     const start = DateTime.fromISO(r.start_time, { zone: ZONE });
     if (!start.isValid) continue;
     const removeAt = start.plus({ hours: REMOVAL_DELAY_HOURS });
-    if (now >= removeAt) continue; // drop
+    if (now >= removeAt) continue;
     kept.push(r);
   }
 
-  // 5) sort & write
   kept.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
   await fs.writeFile(CSV_PATH, unparseCSV(kept), "utf8");
 
-  console.log(
-    `Saved ${kept.length} unique upcoming rows (manual-first, locks respected, deduped by NAME only, removed past beyond +${REMOVAL_DELAY_HOURS}h).`
-  );
+  console.log(`Saved ${kept.length} unique upcoming rows (manual-first, locks respected, deduped by name+date, removed past beyond +${REMOVAL_DELAY_HOURS}h).`);
 }
 
 main().catch((err) => {
