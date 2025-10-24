@@ -46,14 +46,6 @@ function roundToMinuteISO(iso) {
   return dt.startOf("minute").toISO({ suppressMilliseconds: true });
 }
 
-/** Canonical key that survives “different ids” for the same event */
-function canonicalKey(row) {
-  const s = roundToMinuteISO(row.start_time);
-  const n = slug(row.name);
-  const p = slug(row.place || "");
-  return `${n}__${s}__${p}`;
-}
-
 // -----------------------------------------------------------------------------
 // cover helpers
 // -----------------------------------------------------------------------------
@@ -62,6 +54,9 @@ const SITE_ORIGIN = "https://kizbourges.fr";
 function normalizeCoverUrl(u) {
   if (!u) return "";
   u = clean(u);
+
+  // Drop impossible blob: URLs (session-local)
+  if (/^blob:/i.test(u)) return "";
 
   // data: URL accepted as-is
   if (/^data:image\//i.test(u)) return u;
@@ -73,12 +68,15 @@ function normalizeCoverUrl(u) {
       .replace("/blob/", "/");
   }
 
+  // Facebook/FB CDN: accept (CSP should allow scontent.*)
+  if (/^https?:\/\/(scontent|lookaside|platform)\./i.test(u)) return u;
+
   // absolute http(s)
   if (/^https?:\/\//i.test(u)) return u;
 
   // Images/... or /Images/... -> absolute to site origin
   const short = u.replace(/^\/+/, "");
-  if (/^(images|Images)\//.test(short)) {
+  if (/^(images|Images)\//i.test(short)) {
     return `${SITE_ORIGIN}/${short}`;
   }
 
@@ -246,8 +244,11 @@ function safeCover(existingVal, incomingVal) {
   return isGenericLogo(picked) ? (clean(existingVal) || "") : picked;
 }
 
+// -----------------------------------------------------------------------------
+// FIX 3: mergeRowsManualFirst now merges missing info from duplicates
+// -----------------------------------------------------------------------------
 function mergeRowsManualFirst(existing, incoming) {
-  return {
+  const merged = {
     id:         keepManual(existing.id,         incoming.id),
     name:       preferICS(existing.name,       incoming.name),
     start_time: preferICS(existing.start_time, incoming.start_time),
@@ -256,13 +257,26 @@ function mergeRowsManualFirst(existing, incoming) {
     event_url:  keepManual(existing.event_url,  incoming.event_url),
     ticket_url: keepManual(existing.ticket_url, incoming.ticket_url),
   };
+
+  // If existing lacks some info but incoming has it, fill it in.
+  if (!hasVal(existing.cover) && hasVal(incoming.cover))
+    merged.cover = incoming.cover;
+
+  if (!hasVal(existing.event_url) && hasVal(incoming.event_url))
+    merged.event_url = incoming.event_url;
+
+  if (!hasVal(existing.ticket_url) && hasVal(incoming.ticket_url))
+    merged.ticket_url = incoming.ticket_url;
+
+  return merged;
 }
 
-// Use UID when possible, else canonical (name+minute+place)
+// -----------------------------------------------------------------------------
+// de-duplication key
+//   FIX 2: de-duplicate only by event name (case/accent-insensitive)
+// -----------------------------------------------------------------------------
 function keyOf(row) {
-  const byId = clean(row.id);
-  if (byId) return "id__" + byId;
-  return "ck__" + canonicalKey(row);
+  return "name__" + slug(row.name || "");
 }
 
 // -----------------------------------------------------------------------------
@@ -311,10 +325,10 @@ function toRowFromICS(ev) {
 
   // Description directives (with optional leading "!" to lock)
   const tags = parseDescTags(ev.description || "");
-  if (tags.place)      row.place      = tags.placeLock  ? "!" + tags.place                        : tags.place;
-  if (tags.cover)      row.cover      = tags.coverLock  ? "!" + normalizeCoverUrl(tags.cover)     : normalizeCoverUrl(tags.cover);
+  if (tags.place)      row.place      = tags.placeLock  ? "!" + tags.place                         : tags.place;
+  if (tags.cover)      row.cover      = tags.coverLock  ? "!" + normalizeCoverUrl(tags.cover)      : normalizeCoverUrl(tags.cover);
   if (tags.event_url)  row.event_url  = tags.eventLock  ? "!" + tags.event_url                     : tags.event_url;
-  if (tags.ticket_url) row.ticket_url = tags.ticketLock ? "!" + normalizeTicketUrl(tags.ticket_url): normalizeTicketUrl(tags.ticket_url);
+  if (tags.ticket_url) row.ticket_url = tags.ticketLock ? "!" + normalizeTicketUrl(tags.ticket_url) : normalizeTicketUrl(tags.ticket_url);
 
   if (process.env.DEBUG_ICS === "1") {
     console.log("[ICS]", row.start_time, row.name, { cover: row.cover, ticket: row.ticket_url, event: row.event_url });
@@ -347,10 +361,11 @@ async function main() {
     incoming.push(toRowFromICS(ev));
   }
 
-  // 3) merge (manual CSV first, then ICS; dedupe by UID or canonical key)
+  // 3) merge (manual CSV first, then ICS; dedupe by name-only)
   const map = new Map();
 
   function addOrMerge(r) {
+    // keep normalized start for consistent outputs
     r.start_time = roundToMinuteISO(r.start_time);
     const key = keyOf(r);
     const ex = map.get(key);
@@ -376,7 +391,7 @@ async function main() {
   await fs.writeFile(CSV_PATH, unparseCSV(kept), "utf8");
 
   console.log(
-    `Saved ${kept.length} unique upcoming rows (manual-first, locks respected, deduped by UID/canonical, removed past beyond +${REMOVAL_DELAY_HOURS}h).`
+    `Saved ${kept.length} unique upcoming rows (manual-first, locks respected, deduped by NAME only, removed past beyond +${REMOVAL_DELAY_HOURS}h).`
   );
 }
 
