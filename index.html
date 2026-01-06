@@ -7,7 +7,6 @@
 
   <!-- SEO -->
   <meta name="description" content="KizBourges : cours de kizomba & urban kiz à Bourges, soirées conviviales, stages, covoiturage et adhésion en ligne. Rejoins la communauté danse !">
-
   <meta name="keywords" content="Kizomba Bourges, danse Bourges, cours kizomba, soirées kizomba, KizBourges">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://kizbourges.fr/">
@@ -66,10 +65,9 @@
     .nav{ display:flex; gap:18px; align-items:center; }
     .nav a{ position:relative; display:inline-block; color:var(--brand); text-decoration:none; padding:6px 2px;
       transition: color .2s ease, letter-spacing .2s ease; }
-    .nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0; background:var(--kb-accent);
-      transition: width .32s ease; opacity:.8; }
-    .nav a::after{ background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2); opacity:.9; }
-
+    .nav a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+      background:linear-gradient(90deg,#ff2d55,#ff7a00,#8a2be2); opacity:.9;
+      transition: width .32s ease; }
     .nav a:hover{ letter-spacing:.2px; } .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
 
     #menu{ --bar-w:22px; --bar-h:2px; --gap:5px; width:40px; height:34px; border:1px solid #ddd; border-radius:10px; background:#fff;
@@ -143,12 +141,6 @@
     @media (prefers-reduced-motion:no-preference){ .card:hover::after{ animation: shine 1.2s forwards; } }
     @keyframes shine{ to{ transform:translateX(120%);} }
 
-    /* ✅ CHANGE: make Events cards look different than Courses cards (very subtle) */
-    .ev-cards .ev-item{
-      border-left: 4px solid rgba(255,45,85,.55);
-      background: linear-gradient(180deg,#fff,#fcfcff);
-    }
-
     /* Page extras: progress bar, hero entry, button glow ripple */
     #scrollbar{ position:fixed; inset:0 auto auto 0; height:3px; width:100%; transform-origin:left center; transform:scaleX(0); background:linear-gradient(90deg,#111,#f06,#0cf); z-index:1000; }
     @media (prefers-reduced-motion:no-preference){ #scrollbar{ transition: transform .15s linear; } }
@@ -184,7 +176,27 @@
       .tilt:hover{ transition:transform .18s ease; }
     }
 
-    :target{ scroll-margin-top: 72px; }
+    :target{ scroll-margin-top: 76px; }
+
+    /* ✅ Tabs (Events / Courses) */
+    .ev-tab{
+      border:1px solid #eee;
+      background:#fff;
+      padding:8px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .ev-tab.is-active{
+      background:#111;
+      color:#fff;
+      border-color:#111;
+    }
+
+    /* Skip link */
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+    .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:9999;}
+    :focus-visible{ outline: 3px solid #222; outline-offset: 2px; }
   </style>
 </head>
 
@@ -192,11 +204,6 @@
   <div id="scrollbar" aria-hidden="true"></div>
   <script>document.documentElement.classList.add('js');</script>
   <a href="#main" class="skip-link">Aller au contenu</a>
-  <style>
-    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
-    .skip-link:focus{left:10px;top:10px;width:auto;height:auto;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:9999;}
-    :focus-visible{ outline: 3px solid #222; outline-offset: 2px; }
-  </style>
 
   <main id="main">
     <div id="fb-root"></div>
@@ -247,7 +254,7 @@
       <section id="asso" class="section reveal">
         <div class="container">
           <h2>L’association</h2>
-          <p>KizBourges promeut la Kizomba à Bourges :  hebdomadaires, stages et soirées sociales ouvertes à tous niveaux.</p>
+          <p>KizBourges promeut la Kizomba à Bourges : hebdomadaires, stages et soirées sociales ouvertes à tous niveaux.</p>
         </div>
       </section>
 
@@ -263,6 +270,7 @@
               <p><strong>Tarif :</strong> 10€ / cours ou 150€ / année</p>
               <p><strong>Video</strong> <a class="btn alt" href="/video.html">Regarder la vidéo</a></p>
             </li>
+
             <li class="card">
               <h3>Pratique — Tous niveaux</h3>
               <p><strong>Quand :</strong> Mardi 21h15–22h15</p>
@@ -283,9 +291,17 @@
                 </div>
 
                 <div class="media">
-                  <video id="courseAdVideo" class="course-video"
-                    playsinline muted loop controls preload="metadata"
-                    poster="Images/course-poster.jpg" data-nosnippet>
+                  <video
+                    id="courseAdVideo"
+                    class="course-video"
+                    playsinline
+                    muted
+                    loop
+                    controls
+                    preload="metadata"
+                    poster="Images/course-poster.jpg"
+                    data-nosnippet
+                  >
                     <source src="Videos/course-ad.mp4" type="video/mp4">
                   </video>
                 </div>
@@ -300,30 +316,40 @@
         <div class="container">
           <h2>Événements à venir</h2>
 
-          <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
-            <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
-              style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
-
-            <div class="ev-card" id="ev-card" style="padding:0 28px;text-align:center;">
-              <a id="ev-link" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-block;">
-                <img id="ev-img" src="" alt="Affiche de l’événement"
-                     loading="lazy"
-                     style="width:100%;max-height:720px; object-position:center;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
-                <h3 id="ev-title" style="margin:10px 0 6px;"></h3>
-                <p id="ev-when" style="margin:0;color:#555;"></p>
-                <p id="ev-where" style="margin:2px 0 0;color:#777;font-size:14px;"></p>
-              </a>
-              <div id="ev-cta" style="margin-top:10px;"></div>
-            </div>
-
-            <button id="ev-next" aria-label="Événement suivant" class="ev-arrow"
-              style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+          <!-- ✅ Tabs: Events / Courses (to keep weekly course out of Events) -->
+          <div class="ev-tabs" role="tablist" aria-label="Filtrer Événements / Cours" style="display:flex;gap:10px;justify-content:center;margin:10px 0 18px;">
+            <button id="tab-events" class="ev-tab is-active" role="tab" aria-selected="true" aria-controls="ev-panel" type="button">
+              Événements <span id="count-events" style="opacity:.6;font-weight:600;"></span>
+            </button>
+            <button id="tab-courses" class="ev-tab" role="tab" aria-selected="false" aria-controls="ev-panel" type="button">
+              Cours <span id="count-courses" style="opacity:.6;font-weight:600;"></span>
+            </button>
           </div>
 
-          <div id="ev-dots" style="text-align:center;margin-top:12px;"></div>
+          <div id="ev-panel" role="tabpanel" aria-labelledby="tab-events">
+            <div class="events-carousel" style="max-width:900px;margin:auto;position:relative;">
+              <button id="ev-prev" aria-label="Événement précédent" class="ev-arrow"
+                style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">‹</button>
 
-          <!-- ✅ CHANGE: add ev-cards to make Events cards independent from Courses cards -->
-          <div id="ev-list" class="cards ev-cards" role="list" style="margin-top:22px;"></div>
+              <div class="ev-card" id="ev-card" style="padding:0 28px;text-align:center;">
+                <a id="ev-link" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-block;">
+                  <img id="ev-img" src="" alt="Affiche de l’événement"
+                       loading="lazy"
+                       style="width:100%;max-height:720px; object-position:center;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);" />
+                  <h3 id="ev-title" style="margin:10px 0 6px;"></h3>
+                  <p id="ev-when" style="margin:0;color:#555;"></p>
+                  <p id="ev-where" style="margin:2px 0 0;color:#777;font-size:14px;"></p>
+                </a>
+                <div id="ev-cta" style="margin-top:10px;"></div>
+              </div>
+
+              <button id="ev-next" aria-label="Événement suivant" class="ev-arrow"
+                style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:28px;cursor:pointer;border:none;background:transparent;">›</button>
+            </div>
+
+            <div id="ev-dots" style="text-align:center;margin-top:12px;"></div>
+            <div id="ev-list" class="cards" role="list" style="margin-top:22px;"></div>
+          </div>
         </div>
       </section>
 
@@ -384,7 +410,7 @@
       <div class="container">© <span id="year"></span> KizBourges — Tous droits réservés</div>
     </footer>
 
-    <!-- HelloAsso modal -->
+    <!-- HelloAsso modal (overlay + dialog) -->
     <div class="ha-overlay" id="haOverlay" aria-hidden="true">
       <div class="ha-dialog" id="haDialog" role="dialog" aria-modal="true" aria-labelledby="haTitle" aria-describedby="haDesc" aria-hidden="true">
         <div class="ha-header">
@@ -514,13 +540,14 @@
         }
         function trapFocus(enable){ if (enable){ dialog.setAttribute('tabindex','-1'); } else { dialog.removeAttribute('tabindex'); } }
 
+        // Open via any .ha-open / .ha-donate
         document.addEventListener('click', (e)=>{
           const aOpen   = e.target.closest('a.ha-open');
           const aDonate = e.target.closest('a.ha-donate');
           if (!aOpen && !aDonate) return;
           if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey){
             e.preventDefault();
-            if (aDonate) return openHA("https://www.helloasso.com/associations/amigos-latino/formulaires/1/widget", "Faire un don");
+            if (aDonate) return openHA(HELLOASSO_DON_WIDGET, "Faire un don");
             return openHA(HELLOASSO_WIDGET, "Adhésion KizBourges");
           }
         });
@@ -529,10 +556,10 @@
         frame.addEventListener('load', ()=>{ loader.style.display = 'none'; });
 
         if (location.hash === '#adhesion'){ openHA(HELLOASSO_WIDGET, 'Adhésion KizBourges'); }
-        if (location.hash === '#don'){ openHA("https://www.helloasso.com/associations/amigos-latino/formulaires/1/widget", "Faire un don"); }
+        if (location.hash === '#don'){ openHA(HELLOASSO_DON_WIDGET, "Faire un don"); }
       })();
 
-      /* === Events CSV loader + swipe === */
+      /* === Events CSV loader + swipe + Tabs (Events vs Courses) === */
       (function(){
         const CSV_URL = 'kizbourges_events_template1.csv?v=' + Date.now();
 
@@ -545,7 +572,18 @@
         const dots  = document.getElementById('ev-dots');
         const list  = document.getElementById('ev-list');
 
-        let events = [], idx = 0;
+        const tabEvents  = document.getElementById('tab-events');
+        const tabCourses = document.getElementById('tab-courses');
+        const countEvents = document.getElementById('count-events');
+        const countCourses = document.getElementById('count-courses');
+        const panel      = document.getElementById('ev-panel');
+
+        let all = [];
+        let eventsOnly = [];
+        let coursesOnly = [];
+
+        let activeData = [];
+        let idx = 0;
 
         function detectDelimiter(text){
           const header = text.split(/\r?\n/,1)[0] || '';
@@ -572,8 +610,8 @@
         }
 
         function renderCarousel(){
-          if(!events.length) return;
-          const ev = events[idx];
+          if(!activeData.length) return;
+          const ev = activeData[idx];
 
           img.style.opacity = '0';
           img.style.transform = 'scale(1.015)';
@@ -605,7 +643,7 @@
 
         function renderDots(){
           dots.innerHTML = '';
-          events.forEach((_, i)=>{
+          activeData.forEach((_, i)=>{
             const s = document.createElement('span');
             s.textContent='●';
             s.style.cursor='pointer'; s.style.margin='0 6px'; s.style.fontSize='16px';
@@ -617,9 +655,9 @@
 
         function renderList(){
           list.innerHTML='';
-          events.forEach(ev=>{
+          activeData.forEach(ev=>{
             const card=document.createElement('div');
-            card.className='card ev-item'; /* ✅ CHANGE: event cards get their own class */
+            card.className='card';
             card.style.display='grid'; card.style.gridTemplateColumns='120px 1fr';
             card.style.gap='14px'; card.style.alignItems='center';
 
@@ -636,21 +674,50 @@
             const p2=document.createElement('p'); p2.style.margin='2px 0'; p2.style.color='#666'; p2.textContent=ev.place?.name||ev.place||'—';
 
             const row=document.createElement('div'); row.style.marginTop='6px';
-            if(ev.event_url){ const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener'; a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1); }
-            if(ev.ticket_url){ const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener'; a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2); }
+            if(ev.event_url){
+              const a1=document.createElement('a'); a1.href=ev.event_url; a1.target='_blank'; a1.rel='noopener';
+              a1.className='btn alt'; a1.textContent='Détails'; row.appendChild(a1);
+            }
+            if(ev.ticket_url){
+              const a2=document.createElement('a'); a2.href=ev.ticket_url; a2.target='_blank'; a2.rel='noopener';
+              a2.className='btn'; a2.style.marginLeft='8px'; a2.textContent='Billets'; row.appendChild(a2);
+            }
 
             meta.append(h3,p1,p2,row);
             card.append(pic,meta);
             list.appendChild(card);
           });
+
+          if (!activeData.length){
+            list.innerHTML = `<div class="card" style="text-align:center;color:#666;">Aucun élément pour le moment.</div>`;
+          }
         }
 
-        function goPrev(){ if(!events.length) return; idx=(idx-1+events.length)%events.length; renderCarousel(); }
-        function goNext(){ if(!events.length) return; idx=(idx+1)%events.length; renderCarousel(); }
+        function goPrev(){ if(!activeData.length) return; idx=(idx-1+activeData.length)%activeData.length; renderCarousel(); }
+        function goNext(){ if(!activeData.length) return; idx=(idx+1)%activeData.length; renderCarousel(); }
 
         document.getElementById('ev-prev').addEventListener('click', goPrev);
         document.getElementById('ev-next').addEventListener('click', goNext);
         document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft')goPrev(); if(e.key==='ArrowRight')goNext(); });
+
+        function setTab(which){
+          const isCourses = which === 'course';
+          activeData = isCourses ? coursesOnly : eventsOnly;
+          idx = 0;
+
+          tabEvents.classList.toggle('is-active', !isCourses);
+          tabCourses.classList.toggle('is-active', isCourses);
+          tabEvents.setAttribute('aria-selected', !isCourses ? 'true' : 'false');
+          tabCourses.setAttribute('aria-selected', isCourses ? 'true' : 'false');
+          if(panel) panel.setAttribute('aria-labelledby', isCourses ? 'tab-courses' : 'tab-events');
+
+          renderDots();
+          renderCarousel();
+          renderList();
+        }
+
+        tabEvents?.addEventListener('click', ()=> setTab('event'));
+        tabCourses?.addEventListener('click', ()=> setTab('course'));
 
         fetch(CSV_URL)
           .then(r => r.text())
@@ -658,21 +725,150 @@
             const delimiter = detectDelimiter(text);
             const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, delimiter });
             const rows = parsed.data.map(row => {
-              const o={}; for (const k in row) if (Object.hasOwn(row,k)){ const key=(k||'').trim(); const val=typeof row[k]==='string'?row[k].trim():row[k]; o[key]=val; }
+              const o={};
+              for (const k in row) if (Object.hasOwn(row,k)){
+                const key=(k||'').trim();
+                const val=typeof row[k]==='string' ? row[k].trim() : row[k];
+                o[key]=val;
+              }
               return o;
             });
-            events = rows.map(r => ({
-              id:r.id || r.name, name:r.name, start_time:r.start_time,
-              place:r.place ? {name:r.place} : {name:''},
-              cover:normalizeCover(r.cover || ''), event_url:r.event_url, ticket_url:r.ticket_url
-            }))
-            .filter(ev => ev.name)
+
+            all = rows.map(r => {
+              const name = (r.name || '').trim();
+
+              // ✅ category from CSV if present: category = "course" or "event"
+              const rawCat = (r.category || r.type || '').toString().trim().toLowerCase();
+
+              // fallback heuristic (so your current CSV still works)
+              const isCourseHeuristic = /(^|\b)(cours|course|hebdo|weekly)(\b|$)/i.test(name);
+
+              const category =
+                (rawCat === 'course' || rawCat === 'cours') ? 'course' :
+                (rawCat === 'event' || rawCat === 'evenement' || rawCat === 'événement') ? 'event' :
+                (isCourseHeuristic ? 'course' : 'event');
+
+              return ({
+                id: r.id || name,
+                name,
+                start_time: r.start_time,
+                place: r.place ? {name:r.place} : {name:''},
+                cover: normalizeCover(r.cover || ''),
+                event_url: r.event_url,
+                ticket_url: r.ticket_url,
+                category
+              });
+            })
+            .filter(x => x.name)
             .sort((a,b)=> new Date(a.start_time||0) - new Date(b.start_time||0));
 
-            if (!events.length) return;
-            renderDots(); renderCarousel(); renderList();
+            eventsOnly  = all.filter(x => x.category === 'event');
+            coursesOnly = all.filter(x => x.category === 'course');
+
+            if (countEvents) countEvents.textContent = `(${eventsOnly.length})`;
+            if (countCourses) countCourses.textContent = `(${coursesOnly.length})`;
+
+            // default view: Events
+            setTab('event');
+
+            // keep your swipe
+            enableEventSwipe(goPrev, goNext);
           })
           .catch(err => console.error('CSV load error:', err));
+
+        /* Swipe (timing you liked) */
+        function enableEventSwipe(goPrev, goNext){
+          const card = document.getElementById('ev-card');
+          const anchor = document.getElementById('ev-link');
+          if (!card) return;
+          const TH=36, RS=90, FOLLOW=0.16, MAXT=0.5;
+          let sx=0, sy=0, dx=0, dy=0, active=false, id=null, lock=null, moved=false;
+
+          function stopClick(e){ if (moved){ e.preventDefault(); e.stopPropagation(); } }
+          anchor.addEventListener('click', stopClick);
+
+          function start(e){
+            if (e.pointerType==='mouse' && e.button!==0) return;
+            active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; moved=false;
+            card.classList.add('dragging'); card.setPointerCapture(id); document.body.style.userSelect='none';
+          }
+          function move(e){
+            if (!active || e.pointerId!==id) return;
+            dx=e.clientX-sx; dy=e.clientY-sy;
+            if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y';
+            if (lock==='x'){ e.preventDefault(); moved=true; const tx=dx*FOLLOW; const tilt=Math.max(-MAXT, Math.min(MAXT, dx*0.02)); card.style.transform=`translateX(${tx}px) rotate(${tilt}deg)`; }
+          }
+          function end(e){
+            if (!active || e.pointerId!==id) return;
+            active=false; card.classList.remove('dragging'); document.body.style.userSelect='';
+            const ax=Math.abs(dx), ay=Math.abs(dy);
+            if (lock==='x' && ax>TH && ay<RS){
+              if (dx<0){ goNext(); card.classList.add('swipe-left'); }
+              else { goPrev(); card.classList.add('swipe-right'); }
+              setTimeout(()=>card.classList.remove('swipe-left','swipe-right'), 460);
+            }
+            card.style.transition='transform .38s ease'; card.style.transform='';
+            setTimeout(()=> card.style.transition='', 380);
+            id=null; lock=null; moved=false;
+          }
+          card.addEventListener('pointerdown', start, {passive:false});
+          card.addEventListener('pointermove',  move,  {passive:false});
+          card.addEventListener('pointerup',    end,   {passive:false});
+          card.addEventListener('pointercancel',end,   {passive:false});
+          card.querySelectorAll('img,a').forEach(el=> el.addEventListener('dragstart', ev => ev.preventDefault()));
+        }
+      })();
+
+      /* SoundCloud swipe */
+      (function(){
+        const base='https://w.soundcloud.com/player/?url=', tail='&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true';
+        const playlists=[
+          {title:'Kizomba – N°1', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/152611885')+tail},
+          {title:"Kiz'Bourges N°2", url:base+encodeURIComponent('https://api.soundcloud.com/playlists/879844930')+tail},
+          {title:'Kizomba - Tarraxa', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/124156830')+tail},
+          {title:'Kizomba - Urban', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/323224243')+tail},
+          {title:'Kizomba - Douceur', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/266791296')+tail},
+          {title:'Kizomba - Authentik', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/237162467')+tail},
+          {title:'Semba Kiz’Bourges', url:base+encodeURIComponent('https://api.soundcloud.com/playlists/153330518')+tail}
+        ];
+        let idx=0;
+        const titleEl=document.getElementById('sc-title');
+        const frameEl=document.getElementById('sc-player');
+        const prevBtn=document.getElementById('sc-prev');
+        const nextBtn=document.getElementById('sc-next');
+        const carousel=document.querySelector('.soundcloud-carousel');
+        const playerWrap=document.querySelector('.sc-player');
+
+        const indicators=document.createElement('div');
+        indicators.style.textAlign='center'; indicators.style.marginTop='10px';
+        playlists.forEach((pl,i)=>{ const dot=document.createElement('span'); dot.textContent='●'; dot.style.cursor='pointer'; dot.style.margin='0 6px'; dot.style.fontSize='16px'; dot.style.transition='transform .2s, color .2s'; dot.addEventListener('click', ()=>{ idx=i; render(); }); indicators.appendChild(dot); });
+        carousel.appendChild(indicators);
+
+        function updateDots(){ [...indicators.children].forEach((dot,i)=>{ if(i===idx){ dot.style.color='#000'; dot.style.transform='scale(1.3)'; } else { dot.style.color='#ccc'; dot.style.transform='scale(1)'; } }); }
+        function render(){ titleEl.textContent=playlists[idx].title; if (frameEl && frameEl.src!==playlists[idx].url) frameEl.src=playlists[idx].url; updateDots(); }
+        function goPrev(){ idx=(idx-1+playlists.length)%playlists.length; render(); }
+        function goNext(){ idx=(idx+1)%playlists.length; render(); }
+
+        prevBtn.addEventListener('click', goPrev);
+        nextBtn.addEventListener('click', goNext);
+        document.addEventListener('keydown', (e)=>{ if (e.key==='ArrowLeft') goPrev(); if (e.key==='ArrowRight') goNext(); });
+
+        (function enableSoundSwipe(){
+          if (!playerWrap) return;
+          const TH=32, RS=90, FOLLOW=0.14;
+          let sx=0, sy=0, dx=0, dy=0, active=false, id=null, lock=null;
+
+          function start(e){ if (e.pointerType==='mouse' && e.button!==0) return; active=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; dx=dy=0; lock=null; playerWrap.classList.add('dragging'); playerWrap.setPointerCapture(id); document.body.style.userSelect='none'; }
+          function move(e){ if (!active || e.pointerId!==id) return; dx=e.clientX-sx; dy=e.clientY-sy; if (!lock && (Math.abs(dx)>8 || Math.abs(dy)>8)) lock=(Math.abs(dx)>Math.abs(dy))?'x':'y'; if (lock==='x'){ e.preventDefault(); playerWrap.style.transform=`translateX(${dx*FOLLOW}px)`; } }
+          function end(e){ if (!active || e.pointerId!==id) return; active=false; playerWrap.classList.remove('dragging'); document.body.style.userSelect=''; const ax=Math.abs(dx), ay=Math.abs(dy); if (lock==='x' && ax>TH && ay<RS){ if (dx<0){ goNext(); playerWrap.classList.add('swipe-left'); } else { goPrev(); playerWrap.classList.add('swipe-right'); } setTimeout(()=> playerWrap.classList.remove('swipe-left','swipe-right'), 480); } playerWrap.style.transition='transform .36s ease'; playerWrap.style.transform=''; setTimeout(()=> playerWrap.style.transition='', 360); id=null; lock=null; }
+          playerWrap.addEventListener('pointerdown', start, {passive:false});
+          playerWrap.addEventListener('pointermove',  move,  {passive:false});
+          playerWrap.addEventListener('pointerup',    end,   {passive:false});
+          playerWrap.addEventListener('pointercancel',end,   {passive:false});
+          frameEl.addEventListener('dragstart', ev => ev.preventDefault());
+        })();
+
+        render();
       })();
 
       /* Promo video: play/pause on view */
@@ -680,12 +876,15 @@
         const v = document.getElementById('courseAdVideo');
         if (!('IntersectionObserver' in window) || !v) return;
         const io = new IntersectionObserver((entries) => {
-          for (const e of entries) { if (e.isIntersecting) v.play().catch(()=>{}); else v.pause(); }
+          for (const e of entries) {
+            if (e.isIntersecting) v.play().catch(()=>{});
+            else v.pause();
+          }
         }, { threshold: 0.5 });
         io.observe(v);
       })();
 
-      /* Reveal on scroll */
+      /* Reveal on scroll (fail-safe) */
       (function(){
         try{
           const els = () => Array.from(document.querySelectorAll('.reveal'));
@@ -707,76 +906,74 @@
   </a>
 
   <script>
-  // Scroll progress bar
-  (function(){
-    const bar = document.getElementById('scrollbar');
-    if (!bar) return;
-    function update(){
-      const h = document.documentElement;
-      const max = (h.scrollHeight - window.innerHeight) || 1;
-      const p = Math.min(1, Math.max(0, window.scrollY / max));
-      bar.style.transform = 'scaleX(' + p + ')';
-    }
-    update();
-    window.addEventListener('scroll', update, {passive:true});
-    window.addEventListener('resize', update);
-  })();
-
-  // Mouse-follow glow for .btn
-  (function(){
-    function onMove(e){
-      const t = e.target.closest && e.target.closest('.btn');
-      if (!t) return;
-      const r = t.getBoundingClientRect();
-      t.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      t.style.setProperty('--my', (e.clientY - r.top) + 'px');
-    }
-    document.addEventListener('pointermove', onMove, {passive:true});
-  })();
-
-  // Floating donate FAB show/hide
-  (function(){
-    const fab = document.getElementById('donate-fab');
-    if (!fab) return;
-    const showAt = 220;
-    function toggle(){ fab.classList.toggle('show', window.scrollY > showAt); }
-    toggle();
-    window.addEventListener('scroll', toggle, {passive:true});
-  })();
-
-  // Smooth anchors + ripple
-  (function(){
-    document.addEventListener('click', function(e){
-      const a = e.target.closest('a[href^="#"]');
-      const btn = e.target.closest('.btn');
-      if (btn){
-        try{
-          const r = btn.getBoundingClientRect();
-          const x = e.clientX - r.left, y = e.clientY - r.top;
-          const d = Math.max(r.width, r.height);
-          const span = document.createElement('span');
-          span.className = 'ripple';
-          span.style.left = x+'px'; span.style.top = y+'px';
-          span.style.width = span.style.height = d+'px';
-          btn.appendChild(span); setTimeout(()=> span.remove(), 650);
-        }catch(_){}
-      }
-      if (!a) return;
-      const id = a.getAttribute('href').slice(1);
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (location.pathname === a.pathname && location.hostname === a.hostname){
-        e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'});
-        history.replaceState(null, '', '#'+id);
-      }
-    });
-  })();
-  </script>
-
-  <script>
-    /* ✅ CHANGE: apply tilt only to courses cards, not events cards */
+    // Scroll progress bar
     (function(){
-      const els = document.querySelectorAll('#cours .card'); /* was: .card */
+      const bar = document.getElementById('scrollbar');
+      if (!bar) return;
+      function update(){
+        const h = document.documentElement;
+        const max = (h.scrollHeight - window.innerHeight) || 1;
+        const p = Math.min(1, Math.max(0, window.scrollY / max));
+        bar.style.transform = 'scaleX(' + p + ')';
+      }
+      update();
+      window.addEventListener('scroll', update, {passive:true});
+      window.addEventListener('resize', update);
+    })();
+
+    // Mouse-follow glow for .btn
+    (function(){
+      function onMove(e){
+        const t = e.target.closest && e.target.closest('.btn');
+        if (!t) return;
+        const r = t.getBoundingClientRect();
+        t.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        t.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      }
+      document.addEventListener('pointermove', onMove, {passive:true});
+    })();
+
+    // Floating donate FAB show/hide
+    (function(){
+      const fab = document.getElementById('donate-fab');
+      if (!fab) return;
+      const showAt = 220;
+      function toggle(){ fab.classList.toggle('show', window.scrollY > showAt); }
+      toggle();
+      window.addEventListener('scroll', toggle, {passive:true});
+    })();
+
+    // Smooth anchors + ripple
+    (function(){
+      document.addEventListener('click', function(e){
+        const a = e.target.closest('a[href^="#"]');
+        const btn = e.target.closest('.btn');
+        if (btn){
+          try{
+            const r = btn.getBoundingClientRect();
+            const x = e.clientX - r.left, y = e.clientY - r.top;
+            const d = Math.max(r.width, r.height);
+            const span = document.createElement('span');
+            span.className = 'ripple';
+            span.style.left = x+'px'; span.style.top = y+'px';
+            span.style.width = span.style.height = d+'px';
+            btn.appendChild(span); setTimeout(()=> span.remove(), 650);
+          }catch(_){}
+        }
+        if (!a) return;
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (location.pathname === a.pathname && location.hostname === a.hostname){
+          e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'});
+          history.replaceState(null, '', '#'+id);
+        }
+      });
+    })();
+
+    // Card tilt (unchanged)
+    (function(){
+      const els = document.querySelectorAll('.card');
       els.forEach(el => {
         el.classList.add('tilt');
         let raf = null;
