@@ -1,7 +1,6 @@
 // scripts/ics_to_csv.js  (ESM, Node 20)
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
-import fetch from "node-fetch";
 import ical from "ical";
 import { DateTime } from "luxon";
 import Papa from "papaparse";
@@ -51,14 +50,12 @@ function normalizeCoverUrl(u) {
 
   if (/^data:image\//i.test(u)) return u;
 
-  // GitHub "blob" -> raw
   if (/^https?:\/\/github\.com\/.+\/blob\//i.test(u)) {
     return u
       .replace(/^https?:\/\/github\.com\//i, "https://raw.githubusercontent.com/")
       .replace("/blob/", "/");
   }
 
-  // Facebook blob: ignore (invalid)
   if (/^blob:https?:\/\//i.test(u)) return "";
 
   if (/^https?:\/\//i.test(u)) return u;
@@ -185,16 +182,19 @@ function keepManual(existingVal, incomingVal){
   if (hasVal(existingVal)) return existingVal;
   return clean(incomingVal);
 }
+
+/* 🔧 FIX 2 — patched */
 function preferICS(existingVal, incomingVal){
   if (isLocked(existingVal)) return unlock(existingVal);
-  return hasVal(incomingVal) ? clean(incomingVal) : clean(existingVal);
+  return clean(incomingVal || existingVal);
 }
+
 function safeCover(existingVal, incomingVal){
   const picked = keepManual(existingVal, incomingVal);
   return isGenericLogo(picked) ? (clean(existingVal) || "") : picked;
 }
 
-/* --- New robust merge --- */
+/* --- robust merge --- */
 function mergeRowsManualFirst(existing, incoming) {
   const now = DateTime.now().setZone(ZONE);
   const startExisting = DateTime.fromISO(existing.start_time, { zone: ZONE });
@@ -202,7 +202,7 @@ function mergeRowsManualFirst(existing, incoming) {
 
   if (startExisting < now && startIncoming > now) return incoming;
 
-  const merged = {
+  return {
     id: keepManual(existing.id, incoming.id),
     name: preferICS(existing.name, incoming.name),
     start_time: preferICS(existing.start_time, incoming.start_time),
@@ -211,15 +211,9 @@ function mergeRowsManualFirst(existing, incoming) {
     event_url: keepManual(existing.event_url, incoming.event_url),
     ticket_url: keepManual(existing.ticket_url, incoming.ticket_url),
   };
-
-  if (!hasVal(existing.cover) && hasVal(incoming.cover)) merged.cover = incoming.cover;
-  if (!hasVal(existing.event_url) && hasVal(incoming.event_url)) merged.event_url = incoming.event_url;
-  if (!hasVal(existing.ticket_url) && hasVal(incoming.ticket_url)) merged.ticket_url = incoming.ticket_url;
-
-  return merged;
 }
 
-/* --- Dedup key: name + date --- */
+/* --- Dedup key --- */
 function keyOf(row){
   const n = slug(row.name || "");
   const d = roundToMinuteISO(row.start_time || "");
@@ -236,11 +230,12 @@ function parseCSV(text) {
     name: clean(r.name),
     start_time: clean(r.start_time),
     place: clean(r.place),
-    cover: clean(r.cover),
-    event_url: clean(r.event_url),
-    ticket_url: clean(r.ticket_url),
+    cover: r.cover?.trim() || "",
+    event_url: r.event_url?.trim() || "",
+    ticket_url: r.ticket_url?.trim() || "",
   })).filter(r => r.name && r.start_time);
 }
+
 function unparseCSV(rows) {
   return Papa.unparse(rows, {
     header: true,
@@ -271,7 +266,8 @@ function toRowFromICS(ev) {
   if (tags.ticket_url) row.ticket_url = tags.ticketLock ? "!" + normalizeTicketUrl(tags.ticket_url) : normalizeTicketUrl(tags.ticket_url);
 
   if (process.env.DEBUG_ICS === "1")
-    console.log("[ICS]", row.start_time, row.name, { cover: row.cover, ticket: row.ticket_url, event: row.event_url });
+    console.log("[ICS]", row.start_time, row.name, row);
+
   return row;
 }
 
@@ -312,15 +308,14 @@ async function main() {
   for (const r of map.values()) {
     const start = DateTime.fromISO(r.start_time, { zone: ZONE });
     if (!start.isValid) continue;
-    const removeAt = start.plus({ hours: REMOVAL_DELAY_HOURS });
-    if (now >= removeAt) continue;
+    if (now >= start.plus({ hours: REMOVAL_DELAY_HOURS })) continue;
     kept.push(r);
   }
 
   kept.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
   await fs.writeFile(CSV_PATH, unparseCSV(kept), "utf8");
 
-  console.log(`Saved ${kept.length} unique upcoming rows (manual-first, locks respected, deduped by name+date, removed past beyond +${REMOVAL_DELAY_HOURS}h).`);
+  console.log(`Saved ${kept.length} upcoming events (ICS-refresh enabled, locks respected).`);
 }
 
 main().catch((err) => {
