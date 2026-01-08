@@ -37,6 +37,21 @@ function roundToMinuteISO(iso) {
     .toISO({ suppressMilliseconds: true });
 }
 
+/* ================= URL EXTRACTION (🔥 KEY FIX) ================= */
+function extractUrlFromText(text = "") {
+  if (!text) return "";
+
+  // HTML anchor <a href="...">
+  const html = text.match(/<a\s+[^>]*href=["']([^"']+)["']/i);
+  if (html) return clean(html[1]);
+
+  // Plain URL
+  const plain = text.match(/https?:\/\/[^\s"<>()]+/i);
+  if (plain) return clean(plain[0]);
+
+  return "";
+}
+
 /* ================= LOCK HELPERS ================= */
 function isLocked(v) {
   return typeof v === "string" && /^\s*!/.test(v);
@@ -46,43 +61,44 @@ function unlock(v) {
 }
 
 /* ================= MERGE POLICY ================= */
+/**
+ * Rule:
+ * - If locked → keep
+ * - Else → always prefer ICS
+ */
 function preferICS(existingVal, incomingVal) {
   if (isLocked(existingVal)) return unlock(existingVal);
   return clean(incomingVal || existingVal);
 }
 
-/* ================= COVER ================= */
-function extractCoverFromICS(ev) {
-  const desc = ev.description || "";
-  const m = desc.match(/\b(?:cover|image|poster)\s*:\s*(\S+)/i);
-  return m ? clean(m[1]) : "";
-}
-
-/* ================= TICKETS ================= */
-function extractTicketFromICS(ev) {
-  const desc = ev.description || "";
-  const m = desc.match(/\b(?:ticket|billet|tickets)\s*:\s*(\S+)/i);
-  return m ? clean(m[1]) : "";
-}
-
-/* ================= FIXED DESC TAG PARSER ================= */
+/* ================= DESC TAG PARSER ================= */
 function parseDescTags(desc = "") {
   const out = {};
   const patterns = {
-    cover: /(!)?\s*(cover|image|poster)\s*:\s*(\S+)/i,
-    ticket: /(!)?\s*(ticket|billet|tickets)\s*:\s*(\S+)/i,
-    event: /(!)?\s*(event|link|url)\s*:\s*(\S+)/i,
-    place: /(!)?\s*(place|adresse)\s*:\s*(.+)$/im,
+    cover: /(!)?\s*(cover|image|poster)\s*:\s*([^\n\r]+)/i,
+    ticket: /(!)?\s*(ticket|billet|tickets)\s*:\s*([^\n\r]+)/i,
+    event: /(!)?\s*(event|link|url)\s*:\s*([^\n\r]+)/i,
+    place: /(!)?\s*(place|adresse)\s*:\s*([^\n\r]+)/i,
   };
 
   for (const key in patterns) {
     const m = desc.match(patterns[key]);
     if (!m) continue;
     const bang = m[1];
-    const val = clean(m[m.length - 1]);
+    const raw = m[3];
+    const val = extractUrlFromText(raw) || clean(raw);
     out[key] = bang ? "!" + val : val;
   }
   return out;
+}
+
+/* ================= COVER / TICKET ================= */
+function extractCoverFromICS(ev) {
+  return extractUrlFromText(ev.description || "");
+}
+
+function extractTicketFromICS(ev) {
+  return extractUrlFromText(ev.description || "");
 }
 
 /* ================= CSV ================= */
@@ -174,7 +190,7 @@ async function main() {
   finalRows.sort((a,b)=>new Date(a.start_time)-new Date(b.start_time));
   await fs.writeFile(CSV_PATH, unparseCSV(finalRows), "utf8");
 
-  console.log(`✅ Synced ${finalRows.length} events (ticket & cover updates WORKING).`);
+  console.log(`✅ Synced ${finalRows.length} events (HTML-safe, auto-updating, locks respected).`);
 }
 
 main().catch(err => {
