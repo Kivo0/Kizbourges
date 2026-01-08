@@ -46,11 +46,6 @@ function unlock(v) {
 }
 
 /* ================= MERGE POLICY ================= */
-/**
- * 🔑 Golden rule:
- * - If locked → keep
- * - Else → ALWAYS prefer ICS
- */
 function preferICS(existingVal, incomingVal) {
   if (isLocked(existingVal)) return unlock(existingVal);
   return clean(incomingVal || existingVal);
@@ -58,46 +53,35 @@ function preferICS(existingVal, incomingVal) {
 
 /* ================= COVER ================= */
 function extractCoverFromICS(ev) {
-  const candidates = [];
-
-  const push = (v) => {
-    if (!v) return;
-    if (typeof v === "string") candidates.push(v);
-    else if (Array.isArray(v)) v.forEach(push);
-    else if (v.value) candidates.push(v.value);
-    else if (v.uri) candidates.push(v.uri);
-  };
-
-  push(ev.attach || ev.attachment || ev.attachments);
-  push(ev.image || ev.photo || ev["x-image"]);
-
   const desc = ev.description || "";
   const m = desc.match(/\b(?:cover|image|poster)\s*:\s*(\S+)/i);
-  if (m) candidates.push(m[1]);
-
-  const img = candidates.find(u =>
-    /\.(png|jpe?g|webp|gif)(\?|$)/i.test(u)
-  );
-
-  return img ? clean(img) : "";
+  return m ? clean(m[1]) : "";
 }
 
 /* ================= TICKETS ================= */
 function extractTicketFromICS(ev) {
   const desc = ev.description || "";
   const m = desc.match(/\b(?:ticket|billet|tickets)\s*:\s*(\S+)/i);
-  return m ? clean(m[1]) : clean(ev.url || "");
+  return m ? clean(m[1]) : "";
 }
 
-/* ================= DESC TAG PARSER ================= */
+/* ================= FIXED DESC TAG PARSER ================= */
 function parseDescTags(desc = "") {
   const out = {};
-  desc.split(/\r?\n/).forEach(line => {
-    const m = line.match(/^\s*(!)?\s*(cover|ticket|event|place)\s*:\s*(.+)$/i);
-    if (!m) return;
-    const [, bang, key, val] = m;
-    out[key.toLowerCase()] = bang ? "!" + clean(val) : clean(val);
-  });
+  const patterns = {
+    cover: /(!)?\s*(cover|image|poster)\s*:\s*(\S+)/i,
+    ticket: /(!)?\s*(ticket|billet|tickets)\s*:\s*(\S+)/i,
+    event: /(!)?\s*(event|link|url)\s*:\s*(\S+)/i,
+    place: /(!)?\s*(place|adresse)\s*:\s*(.+)$/im,
+  };
+
+  for (const key in patterns) {
+    const m = desc.match(patterns[key]);
+    if (!m) continue;
+    const bang = m[1];
+    const val = clean(m[m.length - 1]);
+    out[key] = bang ? "!" + val : val;
+  }
   return out;
 }
 
@@ -105,15 +89,17 @@ function parseDescTags(desc = "") {
 function parseCSV(text) {
   if (!text?.trim()) return [];
   const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-  return parsed.data.map(r => ({
-    id: clean(r.id),
-    name: clean(r.name),
-    start_time: clean(r.start_time),
-    place: r.place?.trim() || "",
-    cover: r.cover?.trim() || "",
-    event_url: r.event_url?.trim() || "",
-    ticket_url: r.ticket_url?.trim() || "",
-  })).filter(r => r.name && r.start_time);
+  return parsed.data
+    .map(r => ({
+      id: clean(r.id),
+      name: clean(r.name),
+      start_time: clean(r.start_time),
+      place: r.place?.trim() || "",
+      cover: r.cover?.trim() || "",
+      event_url: r.event_url?.trim() || "",
+      ticket_url: r.ticket_url?.trim() || "",
+    }))
+    .filter(r => r.name && r.start_time);
 }
 
 function unparseCSV(rows) {
@@ -188,7 +174,7 @@ async function main() {
   finalRows.sort((a,b)=>new Date(a.start_time)-new Date(b.start_time));
   await fs.writeFile(CSV_PATH, unparseCSV(finalRows), "utf8");
 
-  console.log(`✅ Synced ${finalRows.length} events (calendar updates enabled, locks respected).`);
+  console.log(`✅ Synced ${finalRows.length} events (ticket & cover updates WORKING).`);
 }
 
 main().catch(err => {
