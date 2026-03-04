@@ -1,21 +1,24 @@
-name: Update events CSV from Google Calendar (alt, :03 + every 10m)
+# .github/workflows/update_events_csv.yml
+name: Update events CSV from Google Calendar (:03 + every 10m)
 
 on:
   schedule:
-    - cron: '3-59/20 * * * *'   # every 10 minutes starting at minute 3 (UTC)
+    - cron: "3/10 * * * *"   # UTC: 03,13,23,33,43,53
   workflow_dispatch: {}
 
 permissions:
   contents: write
 
 jobs:
-  update-events-test:
+  update-events:
     runs-on: ubuntu-latest
     env:
       TZ: Europe/Paris
       REMOVAL_DELAY_HOURS: 30
+      # Optional horizon for recurring expansion:
+      # PAST_DAYS: 7
+      # FUTURE_DAYS: 120
 
-      
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -24,7 +27,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # no cache here (Option A), since no lockfile is committed
 
       - name: Initialize lightweight package.json
         run: |
@@ -35,11 +37,12 @@ jobs:
         run: |
           npm i --no-audit --no-fund \
             ical@0.8.0 \
+            ical-expander@3 \
             luxon@3 \
-            node-fetch@3 \
-            papaparse@5
+            papaparse@5 \
+            rrule@2
 
-      - name: Generate CSV from ICS (test)
+      - name: Generate CSV from ICS
         run: node scripts/ics_to_csv.js
         env:
           GCAL_ICS_URL: ${{ secrets.GCAL_ICS_URL }}
@@ -50,7 +53,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add kizbourges_events_template1.csv
           if ! git diff --cached --quiet; then
-            git commit -m "chore(test): update events CSV"
+            git commit -m "chore: update events CSV"
             git push
           else
             echo "No changes to commit."
