@@ -1,9 +1,9 @@
 // scripts/ics_to_csv.js  (ESM, Node 20)
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
-import ical from "ical";
 import { DateTime } from "luxon";
 import Papa from "papaparse";
+import IcalExpander from "ical-expander";
 
 /* ================= ENV ================= */
 const ICS_URL = process.env.GCAL_ICS_URL;
@@ -11,8 +11,13 @@ if (!ICS_URL) {
   console.error("Missing env GCAL_ICS_URL");
   process.exit(1);
 }
+
 const ZONE = process.env.TZ || "Europe/Paris";
 const REMOVAL_DELAY_HOURS = Number(process.env.REMOVAL_DELAY_HOURS ?? 24);
+
+const PAST_DAYS = Number(process.env.PAST_DAYS ?? 7);
+const FUTURE_DAYS = Number(process.env.FUTURE_DAYS ?? 120);
+
 const CSV_PATH = "kizbourges_events_template1.csv";
 
 /* ================= HELPERS ================= */
@@ -21,14 +26,16 @@ const clean = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
 function slug(s) {
   return clean(s)
     .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
 function toISOWithOffset(d) {
-  return DateTime.fromJSDate(d, { zone: ZONE })
-    .toISO({ suppressMilliseconds: true });
+  return DateTime.fromJSDate(d, { zone: ZONE }).toISO({
+    suppressMilliseconds: true,
+  });
 }
 
 function roundToMinuteISO(iso) {
@@ -37,7 +44,7 @@ function roundToMinuteISO(iso) {
     .toISO({ suppressMilliseconds: true });
 }
 
-/* ================= URL EXTRACTION (🔥 KEY FIX) ================= */
+/* ================= URL EXTRACTION ================= */
 function extractUrlFromText(text = "") {
   if (!text) return "";
 
@@ -63,15 +70,22 @@ function unlock(v) {
 /* ================= MERGE POLICY ================= */
 /**
  * Rule:
- * - If locked → keep
- * - Else → always prefer ICS
+ * - If existing is locked (starts with "!") → keep EXACTLY as-is (keep the "!")
+ * - Else → always prefer incoming (ICS) when present
  */
 function preferICS(existingVal, incomingVal) {
-  if (isLocked(existingVal)) return unlock(existingVal);
+  if (isLocked(existingVal)) return clean(existingVal); // keep "!" forever
   return clean(incomingVal || existingVal);
 }
 
-/* ================= DESC TAG PARSER ================= */
+/* ================= DESC TAG PARSER =================
+   Supported (case-insensitive):
+   - !cover: ...
+   - !ticket: ...
+   - !event: ...
+   - !place: ...
+   - pinned: true/false/1/0/yes/no
+*/
 function parseDescTags(desc = "") {
   const out = {};
   const patterns = {
@@ -79,21 +93,30 @@ function parseDescTags(desc = "") {
     ticket: /(!)?\s*(ticket|billet|tickets)\s*:\s*([^\n\r]+)/i,
     event: /(!)?\s*(event|link|url)\s*:\s*([^\n\r]+)/i,
     place: /(!)?\s*(place|adresse)\s*:\s*([^\n\r]+)/i,
+    pinned: /\s*(pinned|pin)\s*:\s*(true|false|1|0|yes|no)\s*$/im,
   };
 
-  for (const key in patterns) {
+  // classic fields
+  for (const key of ["cover", "ticket", "event", "place"]) {
     const m = desc.match(patterns[key]);
     if (!m) continue;
     const bang = m[1];
     const raw = m[3];
-    const val = extractUrlFromText(raw) || clean(raw);
+    const val = extractUrlFromText(raw) || clean(raw); // allows "Images/events/cid.jpg"
     out[key] = bang ? "!" + val : val;
   }
+
+  // pinned
+  const mp = desc.match(patterns.pinned);
+  if (mp) out.pinned = clean(mp[2]).toLowerCase();
+
   return out;
 }
 
-/* ================= COVER / TICKET ================= */
+/* ================= FALLBACK EXTRACTORS ================= */
 function extractCoverFromICS(ev) {
+  // If you ever embed a URL somewhere in description, this will pick it up;
+  // otherwise description tags (!cover: ...) are the intended way.
   return extractUrlFromText(ev.description || "");
 }
 
@@ -106,7 +129,7 @@ function parseCSV(text) {
   if (!text?.trim()) return [];
   const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
   return parsed.data
-    .map(r => ({
+    .map((r) => ({
       id: clean(r.id),
       name: clean(r.name),
       start_time: clean(r.start_time),
@@ -114,15 +137,27 @@ function parseCSV(text) {
       cover: r.cover?.trim() || "",
       event_url: r.event_url?.trim() || "",
       ticket_url: r.ticket_url?.trim() || "",
+      pinned: clean(r.pinned),
     }))
-    .filter(r => r.name && r.start_time);
+    .filter((r) => r.name && r.start_time);
 }
 
 function unparseCSV(rows) {
-  return Papa.unparse(rows, {
-    header: true,
-    columns: ["id","name","start_time","place","cover","event_url","ticket_url"],
-  }) + "\n";
+  return (
+    Papa.unparse(rows, {
+      header: true,
+      columns: [
+        "id",
+        "name",
+        "start_time",
+        "place",
+        "cover",
+        "event_url",
+        "ticket_url",
+        "pinned",
+      ],
+    }) + "\n"
+  );
 }
 
 /* ================= ICS → ROW ================= */
@@ -138,6 +173,7 @@ function toRowFromICS(ev) {
     cover: tags.cover ?? extractCoverFromICS(ev),
     event_url: tags.event ?? clean(ev.url || ""),
     ticket_url: tags.ticket ?? extractTicketFromICS(ev),
+    pinned: tags.pinned ?? "",
   };
 }
 
@@ -151,11 +187,20 @@ function mergeRows(existing, incoming) {
     cover: preferICS(existing.cover, incoming.cover),
     event_url: preferICS(existing.event_url, incoming.event_url),
     ticket_url: preferICS(existing.ticket_url, incoming.ticket_url),
+    pinned: preferICS(existing.pinned, incoming.pinned),
   };
 }
 
 function keyOf(r) {
-  return `event__${slug(r.name)}__${r.start_time.split("T")[0]}`;
+  // Prevent collisions: same name same day but different time
+  const dt = DateTime.fromISO(r.start_time, { zone: ZONE });
+  const stamp = dt.toFormat("yyyy-LL-dd'T'HH-mm"); // minute precision
+  return `event__${slug(r.name)}__${stamp}`;
+}
+
+function isPinnedValue(v) {
+  const s = clean(v).toLowerCase();
+  return s === "true" || s === "1" || s === "yes";
 }
 
 /* ================= MAIN ================= */
@@ -167,33 +212,82 @@ async function main() {
     : [];
 
   const res = await fetch(ICS_URL);
-  if (!res.ok) throw new Error("ICS fetch failed");
-  const data = ical.parseICS(await res.text());
+  if (!res.ok) throw new Error(`ICS fetch failed (${res.status})`);
+  const icsText = await res.text();
 
-  const incoming = Object.values(data)
-    .filter(e => e?.type === "VEVENT" && e.start && e.summary)
-    .map(toRowFromICS);
+  // Expand recurring events into occurrences for a useful website horizon
+  const expander = new IcalExpander({ ics: icsText, maxIterations: 5000 });
 
+  const rangeStart = now.minus({ days: PAST_DAYS }).toJSDate();
+  const rangeEnd = now.plus({ days: FUTURE_DAYS }).toJSDate();
+
+  const { events, occurrences } = expander.between(rangeStart, rangeEnd);
+
+  // Non-recurring events
+  const singleRows = (events || [])
+    .filter((e) => e?.startDate && e?.summary)
+    .map((e) =>
+      toRowFromICS({
+        uid: e.uid,
+        id: e.uid,
+        summary: e.summary,
+        start: e.startDate.toJSDate(),
+        location: e.location,
+        description: e.description,
+        url: e.url,
+      })
+    );
+
+  // Recurring occurrences (each instance becomes its own row)
+  const occRows = (occurrences || [])
+    .filter((o) => o?.startDate && o?.item?.summary)
+    .map((o) => {
+      const e = o.item; // master event
+      const startJS = o.startDate.toJSDate();
+      const stamp = DateTime.fromJSDate(startJS, { zone: ZONE }).toFormat(
+        "yyyyLLdd_HHmm"
+      );
+      const occId = `${clean(e.uid || e.id || e.summary)}__${stamp}`;
+
+      return toRowFromICS({
+        uid: occId,
+        id: occId,
+        summary: e.summary,
+        start: startJS,
+        location: e.location,
+        description: e.description,
+        url: e.url,
+      });
+    });
+
+  const incoming = [...singleRows, ...occRows];
+
+  // Merge existing + incoming with locks respected
   const map = new Map();
-
-  [...existing, ...incoming].forEach(r => {
+  [...existing, ...incoming].forEach((r) => {
     r.start_time = roundToMinuteISO(r.start_time);
     const k = keyOf(r);
     map.set(k, map.has(k) ? mergeRows(map.get(k), r) : r);
   });
 
-  const finalRows = [...map.values()].filter(r => {
+  // Removal policy:
+  // - keep pinned rows forever
+  // - otherwise keep until start_time + REMOVAL_DELAY_HOURS
+  const finalRows = [...map.values()].filter((r) => {
+    if (isPinnedValue(r.pinned)) return true;
     const start = DateTime.fromISO(r.start_time, { zone: ZONE });
     return now < start.plus({ hours: REMOVAL_DELAY_HOURS });
   });
 
-  finalRows.sort((a,b)=>new Date(a.start_time)-new Date(b.start_time));
+  finalRows.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
   await fs.writeFile(CSV_PATH, unparseCSV(finalRows), "utf8");
 
-  console.log(`✅ Synced ${finalRows.length} events (HTML-safe, auto-updating, locks respected).`);
+  console.log(
+    `✅ Synced ${finalRows.length} events (recurrences expanded, locks preserved, pinned supported).`
+  );
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
