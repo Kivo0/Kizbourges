@@ -1,4 +1,10 @@
-// scripts/ics_to_csv.js  (ESM, Node 20)
+// scripts/ics_to_csv.js (ESM, Node 20)
+// - Recurrences expanded (weekly courses work)
+// - Locks preserved with "!" (e.g., !cover: Images/events/cid.jpg)
+// - "pinned: true" keeps rows forever (ignores removal delay)
+// - Cover merge policy: if CSV already has a cover, DO NOT replace it (unless you clear it or lock it)
+// - Supports EventURL: / TicketURL: in descriptions
+
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { DateTime } from "luxon";
@@ -13,12 +19,11 @@ if (!ICS_URL) {
 }
 
 const ZONE = process.env.TZ || "Europe/Paris";
-const REMOVAL_DELAY_HOURS = Number(process.env.REMOVAL_DELAY_HOURS ?? 24);
+const CSV_PATH = "kizbourges_events_template1.csv";
 
+const REMOVAL_DELAY_HOURS = Number(process.env.REMOVAL_DELAY_HOURS ?? 24);
 const PAST_DAYS = Number(process.env.PAST_DAYS ?? 7);
 const FUTURE_DAYS = Number(process.env.FUTURE_DAYS ?? 120);
-
-const CSV_PATH = "kizbourges_events_template1.csv";
 
 /* ================= HELPERS ================= */
 const clean = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
@@ -67,46 +72,68 @@ function unlock(v) {
   return typeof v === "string" ? v.replace(/^\s*!/, "").trim() : v;
 }
 
-/* ================= MERGE POLICY ================= */
+/* ================= MERGE POLICIES ================= */
 /**
- * Rule:
+ * Default policy:
  * - If existing is locked (starts with "!") → keep EXACTLY as-is (keep the "!")
- * - Else → always prefer incoming (ICS) when present
+ * - Else → prefer incoming (ICS) when present
  */
 function preferICS(existingVal, incomingVal) {
   if (isLocked(existingVal)) return clean(existingVal); // keep "!" forever
   return clean(incomingVal || existingVal);
 }
 
+/**
+ * Keep-existing policy (for cover images):
+ * - If existing is locked → keep as-is
+ * - Else if existing is non-empty → keep existing (do NOT replace)
+ * - Else → take incoming
+ */
+function keepExistingIfSet(existingVal, incomingVal) {
+  if (isLocked(existingVal)) return clean(existingVal);
+  const ex = clean(existingVal);
+  if (ex) return ex;
+  return clean(incomingVal || "");
+}
+
 /* ================= DESC TAG PARSER =================
-   Supported (case-insensitive):
-   - !cover: ...
-   - !ticket: ...
-   - !event: ...
-   - !place: ...
-   - pinned: true/false/1/0/yes/no
+Supported (case-insensitive):
+- !cover: ...
+- !ticket: ...
+- !event: ...
+- !place: ...
+- pinned: true/false/1/0/yes/no
+
+Also supports:
+- EventURL: ...
+- TicketURL: ...
 */
 function parseDescTags(desc = "") {
   const out = {};
+
   const patterns = {
     cover: /(!)?\s*(cover|image|poster)\s*:\s*([^\n\r]+)/i,
-    ticket: /(!)?\s*(ticket|billet|tickets)\s*:\s*([^\n\r]+)/i,
-    event: /(!)?\s*(event|link|url)\s*:\s*([^\n\r]+)/i,
+    ticket: /(!)?\s*(ticketurl|ticket_url|ticket|billet|tickets)\s*:\s*([^\n\r]+)/i,
+    event: /(!)?\s*(eventurl|event_url|event|link|url)\s*:\s*([^\n\r]+)/i,
     place: /(!)?\s*(place|adresse)\s*:\s*([^\n\r]+)/i,
     pinned: /\s*(pinned|pin)\s*:\s*(true|false|1|0|yes|no)\s*$/im,
   };
 
-  // classic fields
   for (const key of ["cover", "ticket", "event", "place"]) {
     const m = desc.match(patterns[key]);
     if (!m) continue;
+
     const bang = m[1];
     const raw = m[3];
-    const val = extractUrlFromText(raw) || clean(raw); // allows "Images/events/cid.jpg"
+
+    // Allows either:
+    // - URLs (https://...)
+    // - local paths (Images/events/cid.jpg)
+    const val = extractUrlFromText(raw) || clean(raw);
+
     out[key] = bang ? "!" + val : val;
   }
 
-  // pinned
   const mp = desc.match(patterns.pinned);
   if (mp) out.pinned = clean(mp[2]).toLowerCase();
 
@@ -115,11 +142,8 @@ function parseDescTags(desc = "") {
 
 /* ================= FALLBACK EXTRACTORS ================= */
 function extractCoverFromICS(ev) {
-  // If you ever embed a URL somewhere in description, this will pick it up;
-  // otherwise description tags (!cover: ...) are the intended way.
   return extractUrlFromText(ev.description || "");
 }
-
 function extractTicketFromICS(ev) {
   return extractUrlFromText(ev.description || "");
 }
@@ -184,7 +208,10 @@ function mergeRows(existing, incoming) {
     name: preferICS(existing.name, incoming.name),
     start_time: preferICS(existing.start_time, incoming.start_time),
     place: preferICS(existing.place, incoming.place),
-    cover: preferICS(existing.cover, incoming.cover),
+
+    // ✅ main change: don't replace an existing cover already in the CSV
+    cover: keepExistingIfSet(existing.cover, incoming.cover),
+
     event_url: preferICS(existing.event_url, incoming.event_url),
     ticket_url: preferICS(existing.ticket_url, incoming.ticket_url),
     pinned: preferICS(existing.pinned, incoming.pinned),
@@ -244,6 +271,8 @@ async function main() {
     .map((o) => {
       const e = o.item; // master event
       const startJS = o.startDate.toJSDate();
+
+      // Stable per-occurrence id
       const stamp = DateTime.fromJSDate(startJS, { zone: ZONE }).toFormat(
         "yyyyLLdd_HHmm"
       );
@@ -262,13 +291,13 @@ async function main() {
 
   const incoming = [...singleRows, ...occRows];
 
-  // Merge existing + incoming with locks respected
+  // Merge existing + incoming
   const map = new Map();
-  [...existing, ...incoming].forEach((r) => {
+  for (const r of [...existing, ...incoming]) {
     r.start_time = roundToMinuteISO(r.start_time);
     const k = keyOf(r);
     map.set(k, map.has(k) ? mergeRows(map.get(k), r) : r);
-  });
+  }
 
   // Removal policy:
   // - keep pinned rows forever
@@ -283,7 +312,7 @@ async function main() {
   await fs.writeFile(CSV_PATH, unparseCSV(finalRows), "utf8");
 
   console.log(
-    `✅ Synced ${finalRows.length} events (recurrences expanded, locks preserved, pinned supported).`
+    `✅ Synced ${finalRows.length} events (recurrences expanded, locks preserved, pinned supported, cover preserved).`
   );
 }
 
