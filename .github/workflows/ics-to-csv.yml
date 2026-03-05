@@ -2,7 +2,7 @@ name: Update events CSV from Google Calendar
 
 on:
   schedule:
-    - cron: '2-59/17 * * * *'   # every 5 min, starting at :02 UTC to avoid top-of-hour load
+    - cron: "3/16 * * * *"   # every 5 minutes starting at :02 UTC
   workflow_dispatch: {}
 
 permissions:
@@ -14,7 +14,8 @@ jobs:
     env:
       TZ: Europe/Paris
       REMOVAL_DELAY_HOURS: 29
-
+      PAST_DAYS: 7
+      FUTURE_DAYS: 120
 
     steps:
       - name: Checkout repo
@@ -24,7 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # no cache here (Option A), since no lockfile is committed
 
       - name: Initialize lightweight package.json
         run: |
@@ -34,10 +34,10 @@ jobs:
       - name: Install runtime dependencies
         run: |
           npm i --no-audit --no-fund \
-            ical@0.8.0 \
+            ical-expander@3 \
             luxon@3 \
-            node-fetch@3 \
-            papaparse@5
+            papaparse@5 \
+            rrule@2
 
       - name: Generate CSV from ICS
         run: node scripts/ics_to_csv.js
