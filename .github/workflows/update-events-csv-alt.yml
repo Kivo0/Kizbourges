@@ -3,7 +3,7 @@ name: Update events CSV from Google Calendar (:03 + every 10m)
 
 on:
   schedule:
-    - cron: "3/10 * * * *"   # UTC: 03,13,23,33,43,53
+    - cron: "3/10 * * * *"   # UTC minutes: 03,13,23,33,43,53
   workflow_dispatch: {}
 
 permissions:
@@ -15,9 +15,9 @@ jobs:
     env:
       TZ: Europe/Paris
       REMOVAL_DELAY_HOURS: 30
-      # Optional horizon for recurring expansion:
-      # PAST_DAYS: 7
-      # FUTURE_DAYS: 120
+      # How far to expand recurring events for the website:
+      PAST_DAYS: 7
+      FUTURE_DAYS: 120
 
     steps:
       - name: Checkout repo
@@ -36,7 +36,6 @@ jobs:
       - name: Install runtime dependencies
         run: |
           npm i --no-audit --no-fund \
-            ical@0.8.0 \
             ical-expander@3 \
             luxon@3 \
             papaparse@5 \
