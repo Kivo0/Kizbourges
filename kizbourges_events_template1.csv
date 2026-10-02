@@ -1,3 +1,4 @@
 id,name,start_time,end_time,place,cover,event_url,ticket_url,category,pinned
 kizbourges-weekly-course,Cours Kizomba,2026-10-06T20:00:00+02:00,2026-10-06T21:00:00+02:00,"Salle Baptiste Marcet, 2 Rue Parmentier, 18000 Bourges",Images/events/cid.jpg,,,course,
 kizbourges-weekly-practice,Pratique,2026-10-06T21:00:00+02:00,2026-10-06T22:00:00+02:00,"Salle Baptiste Marcet, 2 Rue Parmentier, 18000 Bourges",Images/events/cid.jpg,,,course,
+64ADD675-208D-4D5D-A7B5-F09799594991,Soirée Danse au Stargames à Bourges,2026-10-17T19:30:00+02:00,2026-10-18T01:00:00+02:00,Stargames Bourges,,,,event,
